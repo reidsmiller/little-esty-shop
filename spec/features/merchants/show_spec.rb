@@ -30,7 +30,7 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
       within('#item_index') do
       click_link "My Items"
 
-      expect(current_path).to eq("/merchants/#{merchant.id}/items")
+      expect(current_path).to eq(merchant_items_path(merchant))
       end
     end
 
@@ -48,7 +48,7 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
       within('#invoice_index') do
       click_link "My Invoices"
 
-      expect(current_path).to eq("/merchants/#{merchant.id}/invoices")
+      expect(current_path).to eq(merchant_invoices_path(merchant))
       end
     end
   end
