@@ -45,7 +45,7 @@ group :development, :test do
   gem 'launchy'
   gem 'capybara'
   gem 'faker'
-  gem 'factory_bot'
+  gem 'factory_bot_rails'
   gem 'shoulda-matchers', '~> 5.0'
   gem 'simplecov'
 end
