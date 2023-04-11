@@ -7,5 +7,6 @@ namespace :csv_load do
     CSV.foreach("db/data/invoice_items.csv", headers: true) do |row|
         InvoiceItem.create!(row.to_h)
     end
+    ActiveRecord::Base.connection.reset_pk_sequence!('invoice_items')
   end
 end
