@@ -6,8 +6,8 @@
 <div id="successful_transactions">
   <h3>Top 5 Customers with largest number of successful transactions:</h3>
   <ol>
-    <% Customer.top_5_successful_trans.each do |customer| %>
-      <li><%= customer.first_name %> <%= customer.last_name %>: <%= customer.success_transaction_count %>
+    <% Customer.top_5_successful_transactions.each do |customer| %>
+      <li><%= customer.first_name %> <%= customer.last_name %>: <%= customer.successful_transactions_count %>
     <% end %>
   </ol>
 </div>

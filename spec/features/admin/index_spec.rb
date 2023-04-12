@@ -10,7 +10,7 @@ RSpec.describe 'admin_dashboard', type: :feature do
       @customer_5 = create(:customer)
       @customer_6 = create(:customer)
       @customer_7 = create(:customer)
-
+      
       @invoice_1 = create(:invoice, customer_id: @customer_1.id)
       @invoice_2 = create(:invoice, customer_id: @customer_2.id)
       @invoice_3 = create(:invoice, customer_id: @customer_3.id)
@@ -18,42 +18,19 @@ RSpec.describe 'admin_dashboard', type: :feature do
       @invoice_5 = create(:invoice, customer_id: @customer_5.id)
       @invoice_6 = create(:invoice, customer_id: @customer_6.id)
       @invoice_7 = create(:invoice, customer_id: @customer_7.id)
-
-      create(:transaction, result: 'success', invoice_id: @invoice_1.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_1.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_1.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_2.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_2.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_2.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_2.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_3.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_3.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_3.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_3.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_3.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_4.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_4.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_4.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_4.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_4.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_4.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_5.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_5.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_5.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_5.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_5.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_5.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_5.id)
+      
+      create_list(:transaction, 3, result: 'success', invoice_id: @invoice_1.id)
+      create_list(:transaction, 4, result: 'success', invoice_id: @invoice_2.id)
+      create_list(:transaction, 5, result: 'success', invoice_id: @invoice_3.id)
+      create_list(:transaction, 6, result: 'success', invoice_id: @invoice_4.id)
+      create_list(:transaction, 7, result: 'success', invoice_id: @invoice_5.id)
       create(:transaction, result: 'failed', invoice_id: @invoice_5.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_7.id)
-      create(:transaction, result: 'success', invoice_id: @invoice_7.id)
-      create(:transaction, result: 'failed', invoice_id: @invoice_7.id)
-      create(:transaction, result: 'failed', invoice_id: @invoice_7.id)
-      create(:transaction, result: 'failed', invoice_id: @invoice_7.id)
-      create(:transaction, result: 'failed', invoice_id: @invoice_7.id)
-      create(:transaction, result: 'failed', invoice_id: @invoice_7.id)
+      create_list(:transaction, 2, result: 'success', invoice_id: @invoice_7.id)
+      create_list(:transaction, 5, result: 'failed', invoice_id: @invoice_7.id)
+      
+      visit admin_index_path
     end
-
+    
     it 'I see a header indicating that I am on the admin dashboard' do
       expect(page).to have_content('Admin Dashboard')
     end
@@ -73,8 +50,9 @@ RSpec.describe 'admin_dashboard', type: :feature do
     end
 
     it 'I see the names of the top 5 customers who have conducted the largest number of successful transactions' do
-      within("#successful_transactions") do
-        expect(page).to have_content("Top 5 Customers with largest number of successful transactions: ")
+      within("div#successful_transactions") do
+        save_and_open_page
+        expect(page).to have_content("Top 5 Customers with largest number of successful transactions:")
         expect(page).to have_content(@customer_5.last_name)
         expect(page).to have_content(@customer_4.last_name)
         expect(page).to have_content(@customer_3.last_name)
@@ -92,7 +70,7 @@ RSpec.describe 'admin_dashboard', type: :feature do
     end
 
     it 'next to each customer name I see the number of successful transactions they have conducted' do
-      within("#successful_transactions") do
+      within("div#successful_transactions") do
         expect(page).to have_content("#{@customer_5.first_name} #{@customer_5.last_name}: 7")
         expect(page).to have_content("#{@customer_4.first_name} #{@customer_4.last_name}: 6")
         expect(page).to have_content("#{@customer_3.first_name} #{@customer_3.last_name}: 5")
