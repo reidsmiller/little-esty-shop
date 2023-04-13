@@ -30,9 +30,17 @@ RSpec.describe 'edit_admin_merchant', type: :feature do
       visit edit_admin_merchant_path(@merchant_2)
       fill_in 'name', with: 'Honeydukes'
       click_button 'Update Merchant'
-      expect(current_path).to eq(admin_merchant_path(@merchant_1))
+      expect(current_path).to eq(admin_merchant_path(@merchant_2))
       expect(page).to have_content("Merchant Info Successfully Updated")
       expect(page).to have_content("Honeydukes")
+    end
+
+    it 'if I fill out the form with no info and click submit I get an error message and am redirected back to edit page' do
+      visit edit_admin_merchant_path(@merchant_1)
+      fill_in 'name', with: ''
+      click_button 'Update Merchant'
+      expect(current_path).to eq(edit_admin_merchant_path(@merchant_1))
+      expect(page).to have_content("Required Information Missing")
     end
   end
 end
