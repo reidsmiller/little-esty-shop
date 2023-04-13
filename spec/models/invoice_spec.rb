@@ -10,6 +10,8 @@ RSpec.describe Invoice, type: :model do
 
   describe '#instance methods' do
     before(:each) do
+      @merchant = create(:merchant)
+
       @customer_1 = create(:customer)
       @customer_2 = create(:customer)
       @customer_3 = create(:customer)
@@ -18,13 +20,13 @@ RSpec.describe Invoice, type: :model do
       @customer_6 = create(:customer)
       @customer_7 = create(:customer)
 
-      @item_1: create(:item)
-      @item_2: create(:item)
-      @item_3: create(:item)
-      @item_4: create(:item)
-      @item_5: create(:item)
-      @item_6: create(:item)
-      @item_7: create(:item)
+      @item_1 = create(:item, merchant_id: @merchant.id)
+      @item_2 = create(:item, merchant_id: @merchant.id)
+      @item_3 = create(:item, merchant_id: @merchant.id)
+      @item_4 = create(:item, merchant_id: @merchant.id)
+      @item_5 = create(:item, merchant_id: @merchant.id)
+      @item_6 = create(:item, merchant_id: @merchant.id)
+      @item_7 = create(:item, merchant_id: @merchant.id)
       
       @invoice_1 = create(:invoice, status: 'in progress', customer_id: @customer_1.id)
       @invoice_2 = create(:invoice, status: 'in progress', customer_id: @customer_2.id)
@@ -35,13 +37,13 @@ RSpec.describe Invoice, type: :model do
       @invoice_7 = create(:invoice, status: 'in progress', customer_id: @customer_7.id)
 
 
-      create(:invoice_item, invoice_id: @invoice_1, item_id: @item_1.id, status: 'packaged')
-      create(:invoice_item, invoice_id: @invoice_1, item_id: @item_2.id, status: 'shipped')
-      create(:invoice_item, invoice_id: @invoice_2, item_id: @item_3.id, status: 'pending')
-      create(:invoice_item, invoice_id: @invoice_2, item_id: @item_4.id, status: 'shipped')
-      create(:invoice_item, invoice_id: @invoice_3, item_id: @item_5.id, status: 'pending')
-      create(:invoice_item, invoice_id: @invoice_4, item_id: @item_6.id, status: 'packaged')
-      create(:invoice_item, invoice_id: @invoice_5, item_id: @item_7.id, status: 'shipped')
+      create(:invoice_item, invoice_id: @invoice_1.id, item_id: @item_1.id, status: 'packaged')
+      create(:invoice_item, invoice_id: @invoice_1.id, item_id: @item_2.id, status: 'shipped')
+      create(:invoice_item, invoice_id: @invoice_2.id, item_id: @item_3.id, status: 'pending')
+      create(:invoice_item, invoice_id: @invoice_2.id, item_id: @item_4.id, status: 'shipped')
+      create(:invoice_item, invoice_id: @invoice_3.id, item_id: @item_5.id, status: 'pending')
+      create(:invoice_item, invoice_id: @invoice_4.id, item_id: @item_6.id, status: 'packaged')
+      create(:invoice_item, invoice_id: @invoice_5.id, item_id: @item_7.id, status: 'shipped')
     end
 
     describe '.invoice_items_not_shipped' do

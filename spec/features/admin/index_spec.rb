@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe 'admin_dashboard', type: :feature do
   describe 'As an admin, when I visit the admin dashboard' do
     before(:each) do
+      @merchant = create(:merchant)
+
       @customer_1 = create(:customer)
       @customer_2 = create(:customer)
       @customer_3 = create(:customer)
@@ -11,13 +13,13 @@ RSpec.describe 'admin_dashboard', type: :feature do
       @customer_6 = create(:customer)
       @customer_7 = create(:customer)
 
-      @item_1: create(:item)
-      @item_2: create(:item)
-      @item_3: create(:item)
-      @item_4: create(:item)
-      @item_5: create(:item)
-      @item_6: create(:item)
-      @item_7: create(:item)
+      @item_1 = create(:item, merchant_id: @merchant.id)
+      @item_2 = create(:item, merchant_id: @merchant.id)
+      @item_3 = create(:item, merchant_id: @merchant.id)
+      @item_4 = create(:item, merchant_id: @merchant.id)
+      @item_5 = create(:item, merchant_id: @merchant.id)
+      @item_6 = create(:item, merchant_id: @merchant.id)
+      @item_7 = create(:item, merchant_id: @merchant.id)
 
       @invoice_1 = create(:invoice, status: 'in progress', customer_id: @customer_1.id)
       @invoice_2 = create(:invoice, status: 'in progress', customer_id: @customer_2.id)
@@ -36,13 +38,13 @@ RSpec.describe 'admin_dashboard', type: :feature do
       create_list(:transaction, 2, result: 'success', invoice_id: @invoice_7.id)
       create_list(:transaction, 5, result: 'failed', invoice_id: @invoice_7.id)
 
-      create(:invoice_item, invoice_id: @invoice_1, item_id: @item_1.id, status: 'packaged')
-      create(:invoice_item, invoice_id: @invoice_1, item_id: @item_2.id, status: 'shipped')
-      create(:invoice_item, invoice_id: @invoice_2, item_id: @item_3.id, status: 'pending')
-      create(:invoice_item, invoice_id: @invoice_2, item_id: @item_4.id, status: 'shipped')
-      create(:invoice_item, invoice_id: @invoice_3, item_id: @item_5.id, status: 'pending')
-      create(:invoice_item, invoice_id: @invoice_4, item_id: @item_6.id, status: 'packaged')
-      create(:invoice_item, invoice_id: @invoice_5, item_id: @item_7.id, status: 'shipped')
+      create(:invoice_item, invoice_id: @invoice_1.id, item_id: @item_1.id, status: 'packaged')
+      create(:invoice_item, invoice_id: @invoice_1.id, item_id: @item_2.id, status: 'shipped')
+      create(:invoice_item, invoice_id: @invoice_2.id, item_id: @item_3.id, status: 'pending')
+      create(:invoice_item, invoice_id: @invoice_2.id, item_id: @item_4.id, status: 'shipped')
+      create(:invoice_item, invoice_id: @invoice_3.id, item_id: @item_5.id, status: 'pending')
+      create(:invoice_item, invoice_id: @invoice_4.id, item_id: @item_6.id, status: 'packaged')
+      create(:invoice_item, invoice_id: @invoice_5.id, item_id: @item_7.id, status: 'shipped')
       
       visit admin_index_path
     end
@@ -67,7 +69,6 @@ RSpec.describe 'admin_dashboard', type: :feature do
 
     it 'I see the names of the top 5 customers who have conducted the largest number of successful transactions' do
       within("div#successful_transactions") do
-        save_and_open_page
         expect(page).to have_content("Top 5 Customers with largest number of successful transactions:")
         expect(page).to have_content(@customer_5.last_name)
         expect(page).to have_content(@customer_4.last_name)
@@ -99,11 +100,11 @@ RSpec.describe 'admin_dashboard', type: :feature do
       items that have not yet been shipped and each invoice id links to that invoices admin show page' do
       within("div#incomplete_invoices") do
         expect(page).to have_content("Incomplete Invoices:")
-        expect(page).to have_link(@invoice_1.id)
-        expect(page).to have_link(@invoice_2.id)
-        expect(page).to have_link(@invoice_3.id)
-        expect(page).to have_link(@invoice_4.id)
-        expect(page).to_not have_link(@invoice_5.id)
+        expect(page).to have_link("#{@invoice_1.id}")
+        expect(page).to have_link("#{@invoice_2.id}")
+        expect(page).to have_link("#{@invoice_3.id}")
+        expect(page).to have_link("#{@invoice_4.id}")
+        expect(page).to_not have_link("#{@invoice_5.id}")
 
         click_link "#{@invoice_1.id}"
         expect(current_path).to eq(admin_invoice_path(@invoice_1))

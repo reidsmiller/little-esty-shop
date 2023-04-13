@@ -7,7 +7,7 @@ class Invoice < ApplicationRecord
 
   enum status: ["cancelled", "in progress", "completed"]
 
-  def invoice_items_not_shipped
-    
+  def self.invoice_items_not_shipped
+    select("invoices.*").joins(:invoice_items).where(invoice_items: {status: ["pending", "packaged"]})
   end
 end
