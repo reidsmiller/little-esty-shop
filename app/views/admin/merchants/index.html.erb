@@ -1,0 +1,8 @@
+<h1>Admin Merchant Index Page</h1>
+<div id="all_merchants">
+  <ol>
+    <% @merchants.each do |merchant| %>
+      <%= merchant.name %>
+    <% end %>
+  </ol>
+</div>
