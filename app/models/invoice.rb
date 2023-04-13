@@ -6,4 +6,8 @@ class Invoice < ApplicationRecord
   has_many :transactions
 
   enum status: ["cancelled", "in progress", "completed"]
+
+  def invoice_items_not_shipped
+    
+  end
 end

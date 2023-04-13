@@ -10,14 +10,22 @@ RSpec.describe 'admin_dashboard', type: :feature do
       @customer_5 = create(:customer)
       @customer_6 = create(:customer)
       @customer_7 = create(:customer)
-      
-      @invoice_1 = create(:invoice, customer_id: @customer_1.id)
-      @invoice_2 = create(:invoice, customer_id: @customer_2.id)
-      @invoice_3 = create(:invoice, customer_id: @customer_3.id)
-      @invoice_4 = create(:invoice, customer_id: @customer_4.id)
-      @invoice_5 = create(:invoice, customer_id: @customer_5.id)
-      @invoice_6 = create(:invoice, customer_id: @customer_6.id)
-      @invoice_7 = create(:invoice, customer_id: @customer_7.id)
+
+      @item_1: create(:item)
+      @item_2: create(:item)
+      @item_3: create(:item)
+      @item_4: create(:item)
+      @item_5: create(:item)
+      @item_6: create(:item)
+      @item_7: create(:item)
+
+      @invoice_1 = create(:invoice, status: 'in progress', customer_id: @customer_1.id)
+      @invoice_2 = create(:invoice, status: 'in progress', customer_id: @customer_2.id)
+      @invoice_3 = create(:invoice, status: 'in progress', customer_id: @customer_3.id)
+      @invoice_4 = create(:invoice, status: 'in progress', customer_id: @customer_4.id)
+      @invoice_5 = create(:invoice, status: 'in progress', customer_id: @customer_5.id)
+      @invoice_6 = create(:invoice, status: 'in progress', customer_id: @customer_6.id)
+      @invoice_7 = create(:invoice, status: 'in progress', customer_id: @customer_7.id)
       
       create_list(:transaction, 3, result: 'success', invoice_id: @invoice_1.id)
       create_list(:transaction, 4, result: 'success', invoice_id: @invoice_2.id)
@@ -27,6 +35,14 @@ RSpec.describe 'admin_dashboard', type: :feature do
       create(:transaction, result: 'failed', invoice_id: @invoice_5.id)
       create_list(:transaction, 2, result: 'success', invoice_id: @invoice_7.id)
       create_list(:transaction, 5, result: 'failed', invoice_id: @invoice_7.id)
+
+      create(:invoice_item, invoice_id: @invoice_1, item_id: @item_1.id, status: 'packaged')
+      create(:invoice_item, invoice_id: @invoice_1, item_id: @item_2.id, status: 'shipped')
+      create(:invoice_item, invoice_id: @invoice_2, item_id: @item_3.id, status: 'pending')
+      create(:invoice_item, invoice_id: @invoice_2, item_id: @item_4.id, status: 'shipped')
+      create(:invoice_item, invoice_id: @invoice_3, item_id: @item_5.id, status: 'pending')
+      create(:invoice_item, invoice_id: @invoice_4, item_id: @item_6.id, status: 'packaged')
+      create(:invoice_item, invoice_id: @invoice_5, item_id: @item_7.id, status: 'shipped')
       
       visit admin_index_path
     end
@@ -76,6 +92,21 @@ RSpec.describe 'admin_dashboard', type: :feature do
         expect(page).to have_content("#{@customer_3.first_name} #{@customer_3.last_name}: 5")
         expect(page).to have_content("#{@customer_2.first_name} #{@customer_2.last_name}: 4")
         expect(page).to have_content("#{@customer_1.first_name} #{@customer_1.last_name}: 3")
+      end
+    end
+
+    it 'I see a section for incomplete invoices and a list of the ids of all invoices that have 
+      items that have not yet been shipped and each invoice id links to that invoices admin show page' do
+      within("div#incomplete_invoices") do
+        expect(page).to have_content("Incomplete Invoices:")
+        expect(page).to have_link(@invoice_1.id)
+        expect(page).to have_link(@invoice_2.id)
+        expect(page).to have_link(@invoice_3.id)
+        expect(page).to have_link(@invoice_4.id)
+        expect(page).to_not have_link(@invoice_5.id)
+
+        click_link "#{@invoice_1.id}"
+        expect(current_path).to eq(admin_invoice_path(@invoice_1))
       end
     end
   end

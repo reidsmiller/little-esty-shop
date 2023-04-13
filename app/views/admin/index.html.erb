@@ -11,3 +11,12 @@
     <% end %>
   </ol>
 </div>
+
+<div id="incomplete_invoices">
+  <h3>Incomplete Invoices:</h3>
+  <ul>
+    <% Invoice.invoice_items_not_shipped.each do |invoice| %>
+      <li><%= link_to "#{invoice.id}", admin_invoice_path(invoice) %></li>
+    <% end %>
+  </ul>
+</div>
