@@ -55,7 +55,7 @@ RSpec.describe 'admin_invoice_show3333', type: :feature do
     end
 
     it 'has a header indicating that I am on the admin dashboard invoice show page' do
-      expect(page).to have_content("Admin Dashboard - Invoice ##{@invoice_1}")
+      expect(page).to have_content("Admin Dashboard - Invoice Show Page")
     end
 
     it 'displays the information related to the that invoice' do
@@ -65,7 +65,7 @@ RSpec.describe 'admin_invoice_show3333', type: :feature do
         expect(page).to have_content(@invoice_1.created_at.strftime("%A, %B %e, %Y"))
         expect(page).to have_content(@invoice_1.customer.first_name)
         expect(page).to have_content(@invoice_1.customer.last_name)
-        expect(invoice_1.customer.first_name).to appear_before(invoice_1.customer.last_name)
+        expect(@invoice_1.customer.first_name).to appear_before(@invoice_1.customer.last_name)
       end
     end
   end
