@@ -16,7 +16,7 @@
   <h3>Incomplete Invoices:</h3>
   <ul>
     <% Invoice.invoice_items_not_shipped.each do |invoice| %>
-      <li><%= link_to "#{invoice.id}", admin_invoice_path(invoice) %></li>
+      <li><%= link_to "#{invoice.id}", admin_invoice_path(invoice) %> <%= invoice.format_time_stamp %></li>
     <% end %>
   </ul>
 </div>
