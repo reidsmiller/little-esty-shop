@@ -22,3 +22,14 @@
     <% end %>
   <% end %>
 </div>
+
+<div class="items-column">
+  <%= content_tag :div, id: "shippable_items" do %>
+    <h3>Items Ready to Ship</h3>
+    <% @merchant.unshipped_items.each do |item| %>
+    <li>
+      <%= item.name %>
+    </li>
+    <% end %>
+  <% end %>
+</div>
