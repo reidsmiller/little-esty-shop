@@ -58,7 +58,7 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
   describe 'Top 5 Customers Column' do
     it 'should display the names of the top 5 customers by successful transactions in descending order' do
       visit "/merchants/#{merchant.id}/dashboard"
-      
+      save_and_open_page
       within('#top_5_customers') do
         expect(customer_5.first_name).to appear_before(customer_1.first_name)
         expect(customer_1.first_name).to appear_before(customer_6.first_name)

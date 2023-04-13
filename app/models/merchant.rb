@@ -7,6 +7,6 @@ class Merchant < ApplicationRecord
   has_many :transactions, through: :invoices
 
   def top_five_customers
-    require 'pry'; binding.pry
+    Customer.joins(:transactions).select("customers.*, COUNT(result)").group(:id).where("transactions.result = 1", "customers.merchants = #{@merchant}").order(count: :desc).limit(5)
   end
 end
