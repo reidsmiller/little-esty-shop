@@ -58,7 +58,7 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
   describe 'Top 5 Customers Column' do
     it 'should display the names of the top 5 customers by successful transactions in descending order' do
       visit "/merchants/#{merchant.id}/dashboard"
-      save_and_open_page
+   
       within('#top_5_customers') do
         expect(customer_5.first_name).to appear_before(customer_1.first_name)
         expect(customer_1.first_name).to appear_before(customer_6.first_name)
@@ -81,8 +81,24 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
       end
     end
 
-    xit 'should display, next to the names, the number of successful transations of each top 5 customer' do
+    it 'should display, next to the names, the number of successful transations of each top 5 customer' do
+      visit "/merchants/#{merchant.id}/dashboard"
+      
+      within('#top_5_customers') do
 
+        expect(page).to have_content(inv_5_transaction_s.count)
+        expect(page).to have_content(inv_1_transaction_s.count)
+        expect(page).to have_content(inv_6_transaction_s.count)
+        expect(page).to have_content(inv_3_transaction_s.count)
+        expect(page).to have_content(inv_2_transaction_s.count)
+
+        expect(customer_5.last_name).to appear_before("11")
+        expect(customer_1.last_name).to appear_before("10")
+        expect(customer_6.last_name).to appear_before("8")
+        expect(customer_3.last_name).to appear_before("7")
+
+        expect(page).to_not have_content(inv_4_transaction_s.count)
+      end
     end
   end
   describe 'displays links to merchant sub indexes' do

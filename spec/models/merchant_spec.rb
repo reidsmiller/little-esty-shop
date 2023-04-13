@@ -47,7 +47,7 @@ RSpec.describe Merchant, type: :model do
     let!(:inv_5_transaction_s) { create_list(:transaction, 11, result: 1, invoice_id: invoice_5.id) }
     let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id: invoice_6.id) }
 
-      it 'retrieves five customers with the highest number of successful transactions from highest to lowest' do
+      it '#customers retrieves five customers with the highest number of successful transactions from highest to lowest' do
         expect(merchant.top_five_customers).to eq([customer_5, customer_1, customer_6, customer_3, customer_2])
       end
     end

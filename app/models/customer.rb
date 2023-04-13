@@ -4,4 +4,8 @@ class Customer < ApplicationRecord
   has_many :items, through: :invoices
   has_many :transactions, through: :invoices
   has_many :merchants, through: :items
+
+  def succesful_transactions
+    self.transactions.where(result: 1).count
+  end
 end
