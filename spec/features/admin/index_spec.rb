@@ -117,18 +117,10 @@ RSpec.describe 'admin_dashboard', type: :feature do
 
     it 'I see the date that each invoice was created, formatted like Monday, July 18, 2019 from oldest to newest' do
       within("div#incomplete_invoices") do
-        static_time_1 = Time.zone.parse('2023-04-13 00:50:37')
-      static_time_2 = Time.zone.parse('2023-04-12 00:50:37')
-      static_time_3 = Time.zone.parse('2023-04-11 00:50:37')
-      static_time_4 = Time.zone.parse('2023-04-10 00:50:37')
-      static_time_5 = Time.zone.parse('2023-04-09 00:50:37')
-      static_time_6 = Time.zone.parse('2023-04-08 00:50:37')
-      static_time_7 = Time.zone.parse('2023-04-07 00:50:37')
-
-      expect("#{@invoice_1.id}").to appear_before('Thursday, April 13, 2023')
-      expect("#{@invoice_2.id}").to appear_before('Wednesday, April 12, 2023')
-      expect("#{@invoice_3.id}").to appear_before('Tuesday, April 11, 2023')
-      expect("#{@invoice_4.id}").to appear_before('Monday, April 10, 2023')
+        expect("#{@invoice_1.id}").to appear_before('Thursday, April 13, 2023')
+        expect("#{@invoice_2.id}").to appear_before('Wednesday, April 12, 2023')
+        expect("#{@invoice_3.id}").to appear_before('Tuesday, April 11, 2023')
+        expect("#{@invoice_4.id}").to appear_before('Monday, April 10, 2023')
       end
     end
   end

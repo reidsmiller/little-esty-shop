@@ -3,6 +3,5 @@ class Admin::InvoicesController < ApplicationController
   end
 
   def show
-    
   end
 end
