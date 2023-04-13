@@ -11,3 +11,14 @@
   <%= link_to "My Invoices", merchant_invoices_path(@merchant) %>
   <% end %>
 </div>
+
+<div class="best-customers">
+  <%= content_tag :div, id: "top_5_customers" do %>
+  <h3>Top 5 Customers</h3>
+  <p>1.<%=  %></p>
+  <p>2.<%=  %></p>
+  <p>3.<%=  %></p>
+  <p>4.<%=  %></p>
+  <p>5.<%=  %></p>
+  <% end %>
+</div>
