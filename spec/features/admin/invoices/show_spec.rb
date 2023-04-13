@@ -1,7 +1,8 @@
+# spec/features/admin/invoices/show_spec.rb
 require 'rails_helper'
 
-RSpec.describe 'admin_invoice_index', type: :feature do
-  describe 'As an admin, when I visit the admin invoice index' do
+RSpec.describe 'admin_invoice_show3333', type: :feature do
+  describe 'As an admin, when I visit the admin invoice show page' do
     before(:each) do
       @merchant = create(:merchant)
 
@@ -50,41 +51,21 @@ RSpec.describe 'admin_invoice_index', type: :feature do
       create(:invoice_item, invoice_id: @invoice_4.id, item_id: @item_6.id, status: 'packaged')
       create(:invoice_item, invoice_id: @invoice_5.id, item_id: @item_7.id, status: 'shipped')
 
-      visit admin_invoices_path
+      visit admin_invoice_path(@invoice_1.id)
     end
 
-    it 'has a  header indicating that I am on the admin dashboard invoices index page' do
-      expect(page).to have_content('Admin Dashboard - Invoices')
+    it 'has a header indicating that I am on the admin dashboard invoice show page' do
+      expect(page).to have_content("Admin Dashboard - Invoice Show Page")
     end
 
-    it 'shows all invoices in the system with links to their show pages' do
-      within("div#all_invoices") do
-        expect(page).to have_link(@invoice_1.id)
-        expect(page).to have_link(@invoice_2.id)
-        expect(page).to have_link(@invoice_3.id)
-        expect(page).to have_link(@invoice_4.id)
-        expect(page).to have_link(@invoice_5.id)
-        expect(page).to have_link(@invoice_6.id)
-        expect(page).to have_link(@invoice_7.id)
-      end
-    end
-
-    it 'when I click on an invoice id link, I am taken to that invoice show page' do
-      within("div#all_invoices") do
-        visit admin_invoices_path
-        click_link(@invoice_1.id)
-
-        expect(current_path).to eq(admin_invoice_path(@invoice_1))
-
-        visit admin_invoices_path
-        click_link(@invoice_2.id)
-
-        expect(current_path).to eq(admin_invoice_path(@invoice_2))
-
-        visit admin_invoices_path
-        click_link(@invoice_3.id)
-
-        expect(current_path).to eq(admin_invoice_path(@invoice_3))
+    it 'displays the information related to the that invoice' do
+      within("div#invoice_info") do
+        expect(page).to have_content(@invoice_1.id)
+        expect(page).to have_content(@invoice_1.status)
+        expect(page).to have_content(@invoice_1.created_at.strftime("%A, %B %e, %Y"))
+        expect(page).to have_content(@invoice_1.customer.first_name)
+        expect(page).to have_content(@invoice_1.customer.last_name)
+        expect(@invoice_1.customer.first_name).to appear_before(@invoice_1.customer.last_name)
       end
     end
   end

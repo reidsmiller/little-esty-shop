@@ -1,0 +1,10 @@
+<h1>Admin Dashboard - Invoice Show Page</h1>
+<div id="invoice_info">
+  <h3>Invoice Info:</h3>
+  <ul>
+    <li>Invoice ID: <%= @invoice.id %></li>
+    <li>Status: <%= @invoice.status %></li>
+    <li>Created At: <%= @invoice.format_time_stamp %></li>
+    <li>Customer: <%= @invoice.customer.first_name %> <%= @invoice.customer.last_name %></li>
+  </ul>
+</div>
