@@ -1,14 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Invoice, type: :model do
-  describe 'relationships' do
-    it { should belong_to :customer }
-    it { should have_many :invoice_items }
-    it { should have_many(:items).through(:invoice_items) }
-    it { should have_many :transactions }
-  end
-
-  describe '#instance methods' do
+RSpec.describe 'admin_invoice_index', type: :feature do
+  describe 'As an admin, when I visit the admin invoice index' do
     before(:each) do
       @merchant = create(:merchant)
 
@@ -27,7 +20,7 @@ RSpec.describe Invoice, type: :model do
       @item_5 = create(:item, merchant_id: @merchant.id)
       @item_6 = create(:item, merchant_id: @merchant.id)
       @item_7 = create(:item, merchant_id: @merchant.id)
-      
+
       static_time_1 = Time.zone.parse('2023-04-13 00:50:37')
       static_time_2 = Time.zone.parse('2023-04-12 00:50:37')
       static_time_3 = Time.zone.parse('2023-04-11 00:50:37')
@@ -40,6 +33,14 @@ RSpec.describe Invoice, type: :model do
       @invoice_6 = create(:invoice, status: 'in progress', customer_id: @customer_6.id)
       @invoice_7 = create(:invoice, status: 'in progress', customer_id: @customer_7.id)
 
+      create_list(:transaction, 3, result: 'success', invoice_id: @invoice_1.id)
+      create_list(:transaction, 4, result: 'success', invoice_id: @invoice_2.id)
+      create_list(:transaction, 5, result: 'success', invoice_id: @invoice_3.id)
+      create_list(:transaction, 6, result: 'success', invoice_id: @invoice_4.id)
+      create_list(:transaction, 7, result: 'success', invoice_id: @invoice_5.id)
+      create(:transaction, result: 'failed', invoice_id: @invoice_5.id)
+      create_list(:transaction, 2, result: 'success', invoice_id: @invoice_7.id)
+      create_list(:transaction, 5, result: 'failed', invoice_id: @invoice_7.id)
 
       create(:invoice_item, invoice_id: @invoice_1.id, item_id: @item_1.id, status: 'packaged')
       create(:invoice_item, invoice_id: @invoice_1.id, item_id: @item_2.id, status: 'shipped')
@@ -48,20 +49,39 @@ RSpec.describe Invoice, type: :model do
       create(:invoice_item, invoice_id: @invoice_3.id, item_id: @item_5.id, status: 'pending')
       create(:invoice_item, invoice_id: @invoice_4.id, item_id: @item_6.id, status: 'packaged')
       create(:invoice_item, invoice_id: @invoice_5.id, item_id: @item_7.id, status: 'shipped')
+
+      visit admin_invoices_path
     end
 
-    describe '.invoice_items_not_shipped' do
-      it 'returns all invoices with items not yet shipped' do
-        expect(Invoice.invoice_items_not_shipped).to eq([@invoice_1, @invoice_2, @invoice_3, @invoice_4])
+    it 'has a  header indicating that I am on the admin dashboard invoices index page' do
+      expect(page).to have_content('Admin Dashboard - Invoices')
+    end
+
+    it 'shows all invoices in the system with links to their show pages' do
+      within("div#all_invoices") do
+        expect(page).to have_link(@invoice_1.id)
+        expect(page).to have_link(@invoice_2.id)
+        expect(page).to have_link(@invoice_3.id)
+        expect(page).to have_link(@invoice_4.id)
+        expect(page).to have_link(@invoice_5.id)
+        expect(page).to have_link(@invoice_6.id)
+        expect(page).to have_link(@invoice_7.id)
       end
     end
 
-    describe '.invoice_items_not_shipped' do
-      it 'returns a formatted date time' do
-        expect(@invoice_1.format_time_stamp).to eq('Thursday, April 13, 2023')
-        expect(@invoice_2.format_time_stamp).to eq('Wednesday, April 12, 2023')
-        expect(@invoice_3.format_time_stamp).to eq('Tuesday, April 11, 2023')
-        expect(@invoice_4.format_time_stamp).to eq('Monday, April 10, 2023')
+    it 'when I click on an invoice id link, I am taken to that invoice show page' do
+      within("div#all_invoices") do
+        click_link(@invoice_1.id)
+
+        expect(current_path).to eq(admin_invoice_path(@invoice_1))
+
+        click_link(@invoice_2.id)
+
+        expect(current_path).to eq(admin_invoice_path(@invoice_2))
+
+        click_link(@invoice_3.id)
+
+        expect(current_path).to eq(admin_invoice_path(@invoice_3))
       end
     end
   end
