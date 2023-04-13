@@ -71,14 +71,17 @@ RSpec.describe 'admin_invoice_index', type: :feature do
 
     it 'when I click on an invoice id link, I am taken to that invoice show page' do
       within("div#all_invoices") do
+        visit admin_invoices_path
         click_link(@invoice_1.id)
 
         expect(current_path).to eq(admin_invoice_path(@invoice_1))
 
+        visit admin_invoices_path
         click_link(@invoice_2.id)
 
         expect(current_path).to eq(admin_invoice_path(@invoice_2))
 
+        visit admin_invoices_path
         click_link(@invoice_3.id)
 
         expect(current_path).to eq(admin_invoice_path(@invoice_3))
