@@ -21,10 +21,14 @@ RSpec.describe 'admin_dashboard', type: :feature do
       @item_6 = create(:item, merchant_id: @merchant.id)
       @item_7 = create(:item, merchant_id: @merchant.id)
 
-      @invoice_1 = create(:invoice, status: 'in progress', customer_id: @customer_1.id)
-      @invoice_2 = create(:invoice, status: 'in progress', customer_id: @customer_2.id)
-      @invoice_3 = create(:invoice, status: 'in progress', customer_id: @customer_3.id)
-      @invoice_4 = create(:invoice, status: 'in progress', customer_id: @customer_4.id)
+      static_time_1 = Time.zone.parse('2023-04-13 00:50:37')
+      static_time_2 = Time.zone.parse('2023-04-12 00:50:37')
+      static_time_3 = Time.zone.parse('2023-04-11 00:50:37')
+      static_time_4 = Time.zone.parse('2023-04-10 00:50:37')
+      @invoice_1 = create(:invoice, status: 'in progress', customer_id: @customer_1.id, created_at: static_time_1)
+      @invoice_2 = create(:invoice, status: 'in progress', customer_id: @customer_2.id, created_at: static_time_2)
+      @invoice_3 = create(:invoice, status: 'in progress', customer_id: @customer_3.id, created_at: static_time_3)
+      @invoice_4 = create(:invoice, status: 'in progress', customer_id: @customer_4.id, created_at: static_time_4)
       @invoice_5 = create(:invoice, status: 'in progress', customer_id: @customer_5.id)
       @invoice_6 = create(:invoice, status: 'in progress', customer_id: @customer_6.id)
       @invoice_7 = create(:invoice, status: 'in progress', customer_id: @customer_7.id)
@@ -108,6 +112,23 @@ RSpec.describe 'admin_dashboard', type: :feature do
 
         click_link "#{@invoice_1.id}"
         expect(current_path).to eq(admin_invoice_path(@invoice_1))
+      end
+    end
+
+    it 'I see the date that each invoice was created, formatted like Monday, July 18, 2019 from oldest to newest' do
+      within("div#incomplete_invoices") do
+        static_time_1 = Time.zone.parse('2023-04-13 00:50:37')
+      static_time_2 = Time.zone.parse('2023-04-12 00:50:37')
+      static_time_3 = Time.zone.parse('2023-04-11 00:50:37')
+      static_time_4 = Time.zone.parse('2023-04-10 00:50:37')
+      static_time_5 = Time.zone.parse('2023-04-09 00:50:37')
+      static_time_6 = Time.zone.parse('2023-04-08 00:50:37')
+      static_time_7 = Time.zone.parse('2023-04-07 00:50:37')
+
+      expect("#{@invoice_1.id}").to appear_before('Thursday, April 13, 2023')
+      expect("#{@invoice_2.id}").to appear_before('Wednesday, April 12, 2023')
+      expect("#{@invoice_3.id}").to appear_before('Tuesday, April 11, 2023')
+      expect("#{@invoice_4.id}").to appear_before('Monday, April 10, 2023')
       end
     end
   end
