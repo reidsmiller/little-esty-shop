@@ -112,5 +112,12 @@ RSpec.describe 'admin_merchants_index', type: :feature do
         expect(page).to have_link("#{@merchant_4.name}")
       end
     end
+
+    it 'I see a link to create a new merchant, and when I click this link I am taken to a new merchant page' do
+      visit admin_merchants_path
+      expect(page).to have_link('Create New Merchant')
+      click_link 'Create New Merchant'
+      expect(current_path).to eq(new_admin_merchant_path)
+    end
   end
 end
