@@ -7,7 +7,7 @@
       <li id="admin_<%= merchant.id %>">
         <%= link_to "#{merchant.name}", admin_merchant_path(merchant) %>
         <%= render partial: 'endisable', locals: {
-          obj: merchant, 
+          merchant: merchant, 
           status: 'disabled',
           button_text: 'Disable'} %>
       </li>
@@ -22,7 +22,7 @@
       <li id="admin_<%= merchant.id %>">
         <%= link_to "#{merchant.name}", admin_merchant_path(merchant) %>
         <%= render partial: 'endisable', locals: {
-          obj: merchant, 
+          merchant: merchant, 
           status: 'enabled', 
           button_text: 'Enable'} %>
       </li>
