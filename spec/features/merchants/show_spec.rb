@@ -168,9 +168,9 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
       end
     end
     
-    xit 'should display the ID of the item to the right of item name' do
+    it 'should display the ID of the item to the right of item name' do
       visit "/merchants/#{merchant.id}/dashboard"
-
+      # save_and_open_page
       within "#shippable_items" do
         expect(item_4.name).to appear_before(invoice_4.id)
         expect(item_5.name).to appear_before(invoice_5.id)

@@ -19,6 +19,7 @@ RSpec.describe Merchant, type: :model do
     let!(:item_7) { create(:item, merchant_id: merchant.id) }
     let!(:item_8) { create(:item, merchant_id: merchant.id) }
     let!(:item_9) { create(:item, merchant_id: merchant_1.id) }
+    let!(:item_10) { create(:item, merchant_id: merchant_1.id) }
 
     let!(:customer_1) { create(:customer, first_name: 'Branden', last_name: 'Smith') }
     let!(:customer_2) { create(:customer, first_name: 'Reilly', last_name: 'Robertson') }
@@ -34,6 +35,7 @@ RSpec.describe Merchant, type: :model do
     let!(:invoice_5) { customer_5.invoices.create }
     let!(:invoice_6) { customer_6.invoices.create }
     let!(:invoice_7) { customer_6.invoices.create }
+    let!(:invoice_8) { customer_6.invoices.create }
 
     let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2) }
     let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
@@ -42,6 +44,7 @@ RSpec.describe Merchant, type: :model do
     let!(:invoice_item_5) { create(:invoice_item, item_id: item_5.id, invoice_id: invoice_5.id, status: 0) }
     let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id, status: 1) }
     let!(:invoice_item_7) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_7.id, status: 1) }
+    let!(:invoice_item_8) { create(:invoice_item, item_id: item_10.id, invoice_id: invoice_8.id, status: 1) }
 
     let!(:inv_1_transaction_s) { create_list(:transaction, 10, result: 1, invoice_id: invoice_1.id) }
     let!(:inv_1_transaction_f) { create_list(:transaction, 5, result: 0, invoice_id: invoice_1.id) }
@@ -51,6 +54,7 @@ RSpec.describe Merchant, type: :model do
     let!(:inv_4_transaction_f) { create_list(:transaction, 20, result: 0, invoice_id: invoice_4.id) }
     let!(:inv_5_transaction_s) { create_list(:transaction, 11, result: 1, invoice_id: invoice_5.id) }
     let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id: invoice_6.id) }
+    let!(:inv_7_transaction_s) { create_list(:transaction, 20, result: 1, invoice_id: invoice_8.id) }
     
     describe '#top_five_customers' do
       it '#customers retrieves five customers with the highest number of successful transactions from highest to lowest' do
