@@ -4,6 +4,47 @@ RSpec.describe Customer, type: :model do
   describe 'relationships' do
     it { should have_many :invoices }
     it { should have_many(:items).through(:invoices)}
+    it { should have_many(:transactions).through(:invoices)}
+  end
+  
+  describe 'validations' do
+    it { should validate_presence_of(:first_name) }
+    it { should validate_presence_of(:last_name) }
+  end
+
+  describe '#instance methods' do
+    before(:each) do
+      @customer_1 = create(:customer)
+      @customer_2 = create(:customer)
+      @customer_3 = create(:customer)
+      @customer_4 = create(:customer)
+      @customer_5 = create(:customer)
+      @customer_6 = create(:customer)
+      @customer_7 = create(:customer)
+
+      @invoice_1 = create(:invoice, customer_id: @customer_1.id)
+      @invoice_2 = create(:invoice, customer_id: @customer_2.id)
+      @invoice_3 = create(:invoice, customer_id: @customer_3.id)
+      @invoice_4 = create(:invoice, customer_id: @customer_4.id)
+      @invoice_5 = create(:invoice, customer_id: @customer_5.id)
+      @invoice_6 = create(:invoice, customer_id: @customer_6.id)
+      @invoice_7 = create(:invoice, customer_id: @customer_7.id)
+
+      create_list(:transaction, 3, result: 'success', invoice_id: @invoice_1.id)
+      create_list(:transaction, 4, result: 'success', invoice_id: @invoice_2.id)
+      create_list(:transaction, 5, result: 'success', invoice_id: @invoice_3.id)
+      create_list(:transaction, 6, result: 'success', invoice_id: @invoice_4.id)
+      create_list(:transaction, 7, result: 'success', invoice_id: @invoice_5.id)
+      create(:transaction, result: 'failed', invoice_id: @invoice_5.id)
+      create_list(:transaction, 2, result: 'success', invoice_id: @invoice_7.id)
+      create_list(:transaction, 5, result: 'failed', invoice_id: @invoice_7.id)
+    end
+
+    describe '.top_5_successful_trans' do
+      it 'can find the top 5 customers with highest number successful transactions' do
+        expect(Customer.top_5_successful_transactions).to eq([@customer_5, @customer_4, @customer_3, @customer_2, @customer_1])
+      end
+    end
   end
 
   describe 'instance methods' do
