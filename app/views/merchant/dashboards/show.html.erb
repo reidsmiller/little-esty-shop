@@ -1,0 +1,35 @@
+<h2><%= @merchant.name %></h2>
+
+<div class="item_column">
+  <%= content_tag :div, id: "item_index" do %>
+  <%= link_to "My Items", merchant_items_path(@merchant) %>
+  <% end %>
+</div>
+
+<div class="invoice_column">
+  <%= content_tag :div, id: "invoice_index" do %>
+  <%= link_to "My Invoices", merchant_invoices_path(@merchant) %>
+  <% end %>
+</div>
+
+<div class="best-customers">
+  <%= content_tag :div, id: "top_5_customers" do %>
+    <h3>Top 5 Customers</h3>
+    <% @merchant.top_five_customers.each do |customer| %>
+      <ul>
+      <li><%= customer.first_name %> <%= customer.last_name %> - <%= customer.succesful_transactions %> purchases</li>
+      </ul>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="items-column">
+  <%= content_tag :div, id: "shippable_items" do %>
+    <h3>Items Ready to Ship</h3>
+    <% @merchant.unshipped_items.each do |item| %>
+    <li>
+      <%= item.name %>
+    </li>
+    <% end %>
+  <% end %>
+</div>
