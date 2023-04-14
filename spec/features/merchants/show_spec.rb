@@ -215,17 +215,22 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
       end
     end
 
-    #Next to each Item name I see the date that the invoice was created
-# And I see the date formatted like "Monday, July 18, 2019"
-# And I see that the list is ordered from oldest to newest
-    it 'displays invoice creation formatted date like "Monday, July 18, 2019"'
+    it 'displays invoice creation formatted date like "Monday, July 18, 2019"' do
       visit "/merchants/#{merchant.id}/dashboard"
-
       expect(page).to have_content(item_4.invoice_formatted_date)
       expect(page).to have_content(item_5.invoice_formatted_date)
       expect(page).to have_content(item_6.invoice_formatted_date)
 
-      expect(item_4.invoice_formatted_date).to appear_before(item_5.invoice_formatted_date)
-      expect('Thursday, April 13, 2023').to appear_before('Wednesday, April 12, 2023')
+      
+      expect(page).to have_content('Thursday, April 13, 2023')
+      expect(page).to have_content('Wednesday, April 12, 2023')
+    end
+
+    it 'orders the items by invoice creation date from oldest to newest' do
+      visit "/merchants/#{merchant.id}/dashboard"
+      
+      expect(item_5.invoice_formatted_date).to appear_before(item_4.invoice_formatted_date)
+      expect('Wednesday, April 12, 2023').to appear_before('Thursday, April 13, 2023')
+    end
   end
 end

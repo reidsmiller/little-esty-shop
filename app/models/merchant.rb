@@ -15,8 +15,9 @@ class Merchant < ApplicationRecord
   end
 
   def unshipped_items
-    Item.joins(:invoice_items)
-    .select("items.*, invoice_items.status")
+    Item.joins(invoices: [:invoice_items])
+    .select("items.*, invoices.created_at as creation_date, invoice_items.status")
     .where("invoice_items.status != 2 AND items.merchant_id = ?", self.id)
+    .order(:creation_date)
   end
 end
