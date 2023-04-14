@@ -7,17 +7,16 @@ class Merchant < ApplicationRecord
   has_many :transactions, through: :invoices
 
   def top_five_customers
-    # require 'pry'; binding.pry
-    Customer.joins(:transactions)
-    .select("customers.*, COUNT(result)")
-    .group(:id).where("transactions.result = 1", "customers.merchants = #{@merchant}")
-    .order(count: :desc).limit(5)
+    Customer.joins(invoices: [:transactions, :invoice_items => :item])  
+    .select("customers.*, COUNT(result) as transactions_count")
+    .group(:id)
+    .where("transactions.result = ? AND items.merchant_id = ?", 1, self.id)
+    .order(transactions_count: :desc).limit(5)
   end
 
   def unshipped_items
-    # require 'pry'; binding.pry
     Item.joins(:invoice_items)
     .select("items.*, invoice_items.status")
-    .where("invoice_items.status != 2", "items.merchant = #{merchant}")
+    .where("invoice_items.status != 2 AND items.merchant_id = ?", self.id)
   end
 end

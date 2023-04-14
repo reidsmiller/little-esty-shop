@@ -27,9 +27,9 @@
   <%= content_tag :div, id: "shippable_items" do %>
     <h3>Items Ready to Ship</h3>
     <% @merchant.unshipped_items.each do |item| %>
-    <li>
-      <%= item.name %>
-    </li>
+    <ul>
+      <li><%= item.name %> - Invoice # <%= item.merchant_id %></li>
+    </ul>
     <% end %>
   <% end %>
 </div>
