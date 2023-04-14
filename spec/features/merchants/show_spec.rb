@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Merchant Dashboard/Show Page' do
   let!(:merchant) { create(:merchant) }
+  let!(:merchant_1) { create(:merchant) }
   
   let!(:item_1) { create(:item, merchant_id: merchant.id) }
   let!(:item_2) { create(:item, merchant_id: merchant.id) }
@@ -9,6 +10,9 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
   let!(:item_4) { create(:item, merchant_id: merchant.id) }
   let!(:item_5) { create(:item, merchant_id: merchant.id) }
   let!(:item_6) { create(:item, merchant_id: merchant.id) }
+  let!(:item_7) { create(:item, merchant_id: merchant.id) }
+  let!(:item_8) { create(:item, merchant_id: merchant.id) }
+  let!(:item_9) { create(:item, merchant_id: merchant_1.id) }
 
   let!(:customer_1) { create(:customer, first_name: 'Branden', last_name: 'Smith') }
   let!(:customer_2) { create(:customer, first_name: 'Reilly', last_name: 'Robertson') }
@@ -23,13 +27,15 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
   let!(:invoice_4) { customer_4.invoices.create }
   let!(:invoice_5) { customer_5.invoices.create }
   let!(:invoice_6) { customer_6.invoices.create }
+  let!(:invoice_7) { customer_6.invoices.create }
 
-  let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id) }
-  let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id) }
-  let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id) }
-  let!(:invoice_item_4) { create(:invoice_item, item_id: item_4.id, invoice_id: invoice_4.id) }
-  let!(:invoice_item_5) { create(:invoice_item, item_id: item_5.id, invoice_id: invoice_5.id) }
-  let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id) }
+  let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2) }
+  let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
+  let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id, status: 2) }
+  let!(:invoice_item_4) { create(:invoice_item, item_id: item_4.id, invoice_id: invoice_4.id, status: 0) }
+  let!(:invoice_item_5) { create(:invoice_item, item_id: item_5.id, invoice_id: invoice_5.id, status: 0) }
+  let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id, status: 1) }
+  let!(:invoice_item_7) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_7.id, status: 1) }
 
   let!(:inv_1_transaction_s) { create_list(:transaction, 10, result: 1, invoice_id: invoice_1.id) }
   let!(:inv_1_transaction_f) { create_list(:transaction, 5, result: 0, invoice_id: invoice_1.id) }
@@ -95,6 +101,7 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
       end
     end
   end
+  
   describe 'displays links to merchant sub indexes' do
     it 'should display a link to merchant item index' do
       visit "/merchants/#{merchant.id}/dashboard"
@@ -129,6 +136,81 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
       click_link "My Invoices"
 
       expect(current_path).to eq(merchant_invoices_path(merchant))
+      end
+    end
+  end
+  
+  describe 'items ready to ship' do 
+    it 'should display a list of name for unshipped ordered items' do
+      visit "/merchants/#{merchant.id}/dashboard"
+
+      within "#shippable_items" do
+        expect(page).to have_content("Items Ready to Ship")
+        
+        expect(page).to have_content(item_4.name)
+        expect(page).to have_content(item_5.name)
+        expect(page).to have_content(item_6.name)
+
+        expect(page).to_not have_content(item_1.name)
+        expect(page).to_not have_content(item_2.name)
+        expect(page).to_not have_content(item_3.name)
+
+        expect(page).to_not have_content(item_7.name)
+        expect(page).to_not have_content(item_8.name)
+        expect(page).to_not have_content(item_9.name)
+      end
+    end
+    
+    it 'should display the ID of the item to the right of item name' do
+      visit "/merchants/#{merchant.id}/dashboard"
+      
+      within "#shippable_items" do
+        
+        expect(page).to have_content(invoice_4.id)
+        expect(page).to have_content(invoice_5.id)
+        expect(page).to have_content(invoice_6.id)
+        
+        # invoice_4_id = invoice_4.id
+        # invoice_5_id = invoice_5.id
+        # invoice_6_id = invoice_6.id
+
+        # expect(invoice_4_id).to appear_before(invoice_5_id)
+        # expect(invoice_5_id).to appear_before(invoice_6_id)
+
+        expect(page).to_not have_content(invoice_1.id)
+        expect(page).to_not have_content(invoice_2.id)
+        expect(page).to_not have_content(invoice_3.id)
+        expect(page).to_not have_content(invoice_7.id)
+      end
+    end
+    
+    it 'each ID is a link that routes to the merchants invoice show page' do
+      visit "/merchants/#{merchant.id}/dashboard"
+
+      within "#shippable_items" do
+        expect(page).to have_content(invoice_4.id)
+        expect(page).to have_content(invoice_5.id)
+        expect(page).to have_content(invoice_6.id)
+        
+        expect(page).to have_link(invoice_4.id)
+        expect(page).to have_link(invoice_5.id)
+        expect(page).to have_link(invoice_6.id)
+        save_and_open_page
+        click_link(invoice_4.id)
+
+        expect(current_path).to eq(merchant_invoice_path(merchant, invoice_4))
+        
+        visit "/merchants/#{merchant.id}/dashboard"
+        
+        click_link(invoice_5.id)
+
+        expect(current_path).to eq(merchant_invoice_path(merchant, invoice_5))
+        
+        visit "/merchants/#{merchant.id}/dashboard"
+        
+        click_link(invoice_6.id)
+
+        expect(current_path).to eq(merchant_invoice_path(merchant, invoice_6))
       end
     end
   end
