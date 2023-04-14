@@ -72,10 +72,13 @@ RSpec.describe 'admin_invoice_show3333', type: :feature do
     it 'also displays item name, quantity, price, and status' do
       within("div#invoice_items") do
         expect(page).to have_content(@item_1.name)
-        expect(page).to have_content(@item_1.unit_price)
-        expect(page).to have_content(@item_1.unit_price * @invoice_1.invoice_items.first.quantity)
+        expect(page).to have_content(@item_1.format_unit_price)
         expect(page).to have_content(@invoice_1.invoice_items.first.quantity)
         expect(page).to have_content(@invoice_1.invoice_items.first.status)
+        expect(page).to have_content(@item_2.name)
+        expect(page).to have_content(@item_2.format_unit_price)
+        expect(page).to have_content(@invoice_1.invoice_items.last.quantity)
+        expect(page).to have_content(@invoice_1.invoice_items.last.status)
       end
     end
   end
