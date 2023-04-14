@@ -68,5 +68,15 @@ RSpec.describe 'admin_invoice_show3333', type: :feature do
         expect(@invoice_1.customer.first_name).to appear_before(@invoice_1.customer.last_name)
       end
     end
+
+    it 'also displays item name, quantity, price, and status' do
+      within("div#invoice_items") do
+        expect(page).to have_content(@item_1.name)
+        expect(page).to have_content(@item_1.unit_price)
+        expect(page).to have_content(@item_1.unit_price * @invoice_1.invoice_items.first.quantity)
+        expect(page).to have_content(@invoice_1.invoice_items.first.quantity)
+        expect(page).to have_content(@invoice_1.invoice_items.first.status)
+      end
+    end
   end
 end
