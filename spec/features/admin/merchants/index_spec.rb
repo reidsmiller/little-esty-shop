@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe 'admin_merchants_index', type: :feature do
   describe 'As an admin, when I visit the admin merchants index' do
     before(:each) do
-      @merchant_1 = create(:merchant)
-      @merchant_2 = create(:merchant, status: 'disabled')
-      @merchant_3 = create(:merchant)
+      @merchant_1 = create(:merchant, status: 'enabled')
+      @merchant_2 = create(:merchant)
+      @merchant_3 = create(:merchant, status: 'enabled')
       @merchant_4 = create(:merchant)
 
       visit admin_merchants_path
@@ -32,27 +32,27 @@ RSpec.describe 'admin_merchants_index', type: :feature do
       expect(page).to have_content("#{@merchant_2.name}")
     end
 
-    it 'I see a button next to each merchant to disable or enable that merchant' do
+    it 'I see a button next to each merchant to either disable or enable that merchant' do
       visit admin_merchants_path
 
       within("li#admin_#{@merchant_1.id}") do
-        expect(page).to have_button('Enable')
         expect(page).to have_button('Disable')
+        expect(page).to_not have_button('Enable')
       end
 
       within("li#admin_#{@merchant_2.id}") do
         expect(page).to have_button('Enable')
-        expect(page).to have_button('Disable')
+        expect(page).to_not have_button('Disable')
       end
 
       within("li#admin_#{@merchant_3.id}") do
-        expect(page).to have_button('Enable')
+        expect(page).to_not have_button('Enable')
         expect(page).to have_button('Disable')
       end
 
       within("li#admin_#{@merchant_4.id}") do
         expect(page).to have_button('Enable')
-        expect(page).to have_button('Disable')
+        expect(page).to_not have_button('Disable')
       end
     end
 
@@ -71,6 +71,45 @@ RSpec.describe 'admin_merchants_index', type: :feature do
         click_button 'Enable'
         expect(current_path).to eq(admin_merchants_path)
         expect(Merchant.find(@merchant_2.id).status).to eq('enabled')
+      end
+    end
+
+    it 'I see a section for enabled merchants and disabled merchants and see each merchant in the appropriate section' do
+      visit admin_merchants_path
+
+      expect(page).to have_content("Enabled Merchants")
+      expect(page).to have_content("Disabled Merchants")
+
+      within("div#enabled_merchants") do
+        expect(page).to have_link("#{@merchant_1.name}")
+        expect(page).to_not have_link("#{@merchant_2.name}")
+        expect(page).to have_link("#{@merchant_3.name}")
+        expect(page).to_not have_link("#{@merchant_4.name}")
+      end
+
+      within("div#disabled_merchants") do
+        expect(page).to_not have_link("#{@merchant_1.name}")
+        expect(page).to have_link("#{@merchant_2.name}")
+        expect(page).to_not have_link("#{@merchant_3.name}")
+        expect(page).to have_link("#{@merchant_4.name}")
+      end
+
+      within("li#admin_#{@merchant_1.id}") do
+        click_button 'Disable'
+      end
+
+      within("div#enabled_merchants") do
+        expect(page).to_not have_link("#{@merchant_1.name}")
+        expect(page).to_not have_link("#{@merchant_2.name}")
+        expect(page).to have_link("#{@merchant_3.name}")
+        expect(page).to_not have_link("#{@merchant_4.name}")
+      end
+
+      within("div#disabled_merchants") do
+        expect(page).to have_link("#{@merchant_1.name}")
+        expect(page).to have_link("#{@merchant_2.name}")
+        expect(page).to_not have_link("#{@merchant_3.name}")
+        expect(page).to have_link("#{@merchant_4.name}")
       end
     end
   end
