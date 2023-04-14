@@ -8,6 +8,10 @@ RSpec.describe Invoice, type: :model do
     it { should have_many :transactions }
   end
 
+  describe 'validations' do
+    it { should validate_presence_of(:status) }
+  end
+
   describe '#instance methods' do
     before(:each) do
       @merchant = create(:merchant)
