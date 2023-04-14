@@ -40,7 +40,7 @@ RSpec.describe 'edit_admin_merchant', type: :feature do
       fill_in 'name', with: ''
       click_button 'Update Merchant'
       expect(current_path).to eq(edit_admin_merchant_path(@merchant_1))
-      expect(page).to have_content("Required Information Missing")
+      expect(page).to have_content("Merchant Not Updated: Required Information Missing")
     end
   end
 end

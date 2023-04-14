@@ -41,5 +41,15 @@ RSpec.describe 'new_admin_merchant', type: :feature do
         expect(page).to have_link('Gladrags Wizard Wear')
       end
     end
+
+    it 'if I enter no information it sends me back to the new merchant form with a flash message' do
+      visit new_admin_merchant_path
+
+      click_button 'Submit'
+      expect(page).to have_content("Merchant Not Created: Required Information Missing")
+      expect(page).to have_content("New Merchant")
+      expect(page).to have_content("Name:")
+      expect(page).to have_field('name')
+    end
   end
 end

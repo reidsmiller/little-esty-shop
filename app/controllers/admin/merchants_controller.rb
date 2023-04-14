@@ -16,7 +16,14 @@ class Admin::MerchantsController < ApplicationController
   end
 
   def create
-    
+    merchant = Merchant.new(merchant_params)
+    if merchant.save
+      flash[:notice] = "Merchant Successfully Created"
+      redirect_to admin_merchants_path
+    else
+      flash[:notice] = "Merchant Not Created: Required Information Missing."
+      render :new
+    end
   end
 
   def update
@@ -29,7 +36,7 @@ class Admin::MerchantsController < ApplicationController
         redirect_to admin_merchants_path
       end
     else
-      flash[:notice] = "Required Information Missing"
+      flash[:notice] = "Merchant Not Updated: Required Information Missing"
       redirect_to edit_admin_merchant_path(@merchant)
     end
   end
