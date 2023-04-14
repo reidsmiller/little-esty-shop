@@ -1,17 +1,29 @@
 <h1>Admin Merchant Index Page</h1>
-<div id="all_merchants">
+<div id="enabled_merchants">
+  <h3>Enabled Merchants</h3>
   <ol>
-    <% @merchants.each do |merchant| %>
+    <% @enabled_merchants.each do |merchant| %>
+      <li id="admin_<%= merchant.id %>">
+        <%= link_to "#{merchant.name}", admin_merchant_path(merchant) %>
+        <%= render partial: 'endisable', locals: {
+          obj: merchant, 
+          status: 'disabled',
+          button_text: 'Disable'} %>
+      </li>
+    <% end %>
+  </ol>
+</div>
+
+<div id="disabled_merchants">
+  <h3>Disabled Merchants</h3>
+  <ol>
+    <% @disabled_merchants.each do |merchant| %>
       <li id="admin_<%= merchant.id %>">
         <%= link_to "#{merchant.name}", admin_merchant_path(merchant) %>
         <%= render partial: 'endisable', locals: {
           obj: merchant, 
           status: 'enabled', 
           button_text: 'Enable'} %>
-        <%= render partial: 'endisable', locals: {
-          obj: merchant, 
-          status: 'disabled',
-          button_text: 'Disable'} %>
       </li>
     <% end %>
   </ol>
