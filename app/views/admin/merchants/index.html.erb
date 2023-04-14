@@ -2,10 +2,16 @@
 <div id="all_merchants">
   <ol>
     <% @merchants.each do |merchant| %>
-      <li>
+      <li id="admin_<%= merchant.id %>">
         <%= link_to "#{merchant.name}", admin_merchant_path(merchant) %>
-        <%= render partial: 'endisable', locals: {obj: merchant, button_text: 'Enable'} %>
-        <%= render partial: 'endisable', locals: {obj: merchant, button_text: 'Disable'} %>
+        <%= render partial: 'endisable', locals: {
+          obj: merchant, 
+          status: 'enabled', 
+          button_text: 'Enable'} %>
+        <%= render partial: 'endisable', locals: {
+          obj: merchant, 
+          status: 'disabled',
+          button_text: 'Disable'} %>
       </li>
     <% end %>
   </ol>
