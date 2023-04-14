@@ -69,7 +69,7 @@ RSpec.describe 'Merchant/invoices index page' do
     it 'should display invoice ids associated with merchant as links to merchant/invoices show page' do
       visit merchant_invoices_path(merchant)
       
-      # within "#invoices" do
+      within "#invoices" do
         expect(page).to have_link("#{invoice_1.id}")
         expect(page).to have_link("#{invoice_2.id}")
         expect(page).to have_link("#{invoice_3.id}")
@@ -81,13 +81,15 @@ RSpec.describe 'Merchant/invoices index page' do
         click_link("#{invoice_1.id}")
         
         expect(current_path).to eq(merchant_invoice_path(merchant, invoice_1.id))
-      # end
+      end
+      
+      visit merchant_invoices_path(merchant)
 
-      # within "#invoices" do
-      #   click_link("#{invoice_2.id}")
+      within "#invoices" do
+        click_link("#{invoice_2.id}")
 
-      #   expect(current_path).to eq(merchant_invoice_path(merchant, invoice_2.id))
-      # end
+        expect(current_path).to eq(merchant_invoice_path(merchant, invoice_2.id))
+      end
     end
   end
 end
