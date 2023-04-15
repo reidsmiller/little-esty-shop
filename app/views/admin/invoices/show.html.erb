@@ -8,6 +8,11 @@
     <li>Customer: <%= @invoice.customer.first_name %> <%= @invoice.customer.last_name %></li>
   </ul>
 </div>
+<div id="total_revenue">
+  <h3>Total Revenue:</h3>
+  <ul>
+    <li>Total Revenue: $<%= @invoice.format_total_revenue %></li>
+  </ul>
 <br>
 <div id="invoice_items">
 <h2>Invoice Items:</h2>
