@@ -60,7 +60,9 @@ RSpec.describe 'Merchant Items Index Page' do
     it 'displays names of all items under this merchant within Enabled items section' do
       visit "/merchants/#{merchant.id}/items"
 
-      within "Enabled Items" do
+      within('#enabled_items') do
+      save_and_open_page
+        expect(page).to have_content("Enabled Items")
         expect(page).to have_content(item_1.name)
         expect(page).to have_content(item_2.name)
         expect(page).to have_content(item_3.name)
