@@ -39,15 +39,13 @@ RSpec.describe Customer, type: :model do
       create_list(:transaction, 2, result: 'success', invoice_id: @invoice_7.id)
       create_list(:transaction, 5, result: 'failed', invoice_id: @invoice_7.id)
     end
-
+  
     describe '.top_5_successful_trans' do
       it 'can find the top 5 customers with highest number successful transactions' do
         expect(Customer.top_5_successful_transactions).to eq([@customer_5, @customer_4, @customer_3, @customer_2, @customer_1])
       end
     end
-  end
 
-  describe 'instance methods' do
     describe 'succesful_transactions' do
       let!(:merchant) { create(:merchant) }
   
@@ -65,13 +63,13 @@ RSpec.describe Customer, type: :model do
       let!(:customer_5) { create(:customer, first_name: 'Brandon', last_name: 'Popular') }
       let!(:customer_6) { create(:customer, first_name: 'Caroline', last_name: 'Rasmussen') }
     
-      let!(:invoice_1) { customer_1.invoices.create }
-      let!(:invoice_2) { customer_2.invoices.create }
-      let!(:invoice_3) { customer_3.invoices.create }
-      let!(:invoice_4) { customer_4.invoices.create }
-      let!(:invoice_5) { customer_5.invoices.create }
-      let!(:invoice_6) { customer_6.invoices.create }
-    
+      let!(:invoice_1) { create(:invoice, customer_id: customer_1.id) }
+      let!(:invoice_2) { create(:invoice, customer_id: customer_2.id) }
+      let!(:invoice_3) { create(:invoice, customer_id: customer_3.id) }
+      let!(:invoice_4) { create(:invoice, customer_id: customer_4.id) }
+      let!(:invoice_5) { create(:invoice, customer_id: customer_5.id) }
+      let!(:invoice_6) { create(:invoice, customer_id: customer_6.id) }
+      
       let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id) }
       let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id) }
       let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id) }
