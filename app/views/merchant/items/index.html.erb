@@ -1,0 +1,12 @@
+<h2><%= @merchant.name %></h2>
+
+<div class="enabled-items-column">
+  <%= content_tag :div, id: "enabled_items" do %>
+    <h3>Enabled Items</h3>
+    <% @merchant.items.each do |item| %>
+    <ul>
+      <li><%= item.name %>
+    </ul>
+    <% end %>
+  <% end %>
+</div>
