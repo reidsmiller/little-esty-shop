@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe 'Merchant Items Index Page' do
+RSpec.describe 'Merchant Items show Page' do
 
   let!(:merchant) { create(:merchant) }
   let!(:merchant_1) { create(:merchant) }
   
-  let!(:item_1) { create(:item, merchant_id: merchant.id) }
+  let!(:item_1) { create(:item, merchant_id: merchant.id, description: "Faker is actually really annoying when it creates the same data between multiple objects!!!") }
   let!(:item_2) { create(:item, merchant_id: merchant.id) }
   let!(:item_3) { create(:item, merchant_id: merchant.id) }
   let!(:item_4) { create(:item, merchant_id: merchant.id) }
@@ -50,61 +50,29 @@ RSpec.describe 'Merchant Items Index Page' do
   let!(:inv_5_transaction_s) { create_list(:transaction, 11, result: 1, invoice_id: invoice_5.id) }
   let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id: invoice_6.id) }
 
-  describe 'Display of all items' do
-    it 'Displays Name of merchant' do
-      visit "/merchants/#{merchant.id}/items"
+  describe 'Page Display' do
+    it 'Displays name of merchant selling this item' do
+      visit merchant_item_path(merchant, item_1)
 
       expect(page).to have_content(merchant.name)
     end
 
-    it 'displays names of all items under this merchant within Enabled items section' do
-      visit "/merchants/#{merchant.id}/items"
-
-      within('#enabled_items') do
+    it "displays attributes of item and not of other items" do
+      visit merchant_item_path(merchant, item_1)
       
-        expect(page).to have_content("Enabled Items")
+      within("#item_name") do
         expect(page).to have_content(item_1.name)
-        expect(page).to have_content(item_2.name)
-        expect(page).to have_content(item_3.name)
-        expect(page).to have_content(item_4.name)
-        expect(page).to have_content(item_5.name)
-        expect(page).to have_content(item_6.name)
-        expect(page).to have_content(item_7.name)
-        expect(page).to have_content(item_8.name)
+        expect(page).to_not have_content(item_2.name)
+      end
+
+      within("#item_attributes") do
+        expect(page).to have_content(item_1.description)
+        expect(page).to have_content(item_1.unit_price)
+
+        expect(page).to_not have_content(item_3.description)
+        expect(page).to_not have_content(item_4.unit_price)
       end
     end
-
-    it 'does not display names of items for other merchants' do
-      visit "/merchants/#{merchant.id}/items"
-
-      expect(page).to_not have_content(item_9.name)
-    end
   end
 
-  describe 'item name links ' do
-    it "each item name is a link that redirects to it's own merchant item show page" do
-      visit "/merchants/#{merchant.id}/items"
-      
-      expect(page).to have_link(item_1.name)
-      expect(page).to have_link(item_2.name)
-      expect(page).to have_link(item_3.name)
-      expect(page).to have_link(item_4.name)
-      expect(page).to have_link(item_5.name)
-      expect(page).to have_link(item_6.name)
-      expect(page).to have_link(item_7.name)
-      expect(page).to have_link(item_8.name)
-
-      click_link item_1.name
-      expect(current_path).to eq(merchant_item_path(merchant, item_1))
-      visit "/merchants/#{merchant.id}/items"
-
-
-      click_link item_2.name
-      expect(current_path).to eq(merchant_item_path(merchant, item_2))
-      visit "/merchants/#{merchant.id}/items"
-
-      click_link item_3.name
-      expect(current_path).to eq(merchant_item_path(merchant, item_3))
-    end
-  end
 end

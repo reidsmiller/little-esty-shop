@@ -5,7 +5,7 @@
     <h3>Enabled Items</h3>
     <% @merchant.items.each do |item| %>
     <ul>
-      <li><%= item.name %>
+      <li><%= link_to item.name,  merchant_item_path(@merchant, item) %>
     </ul>
     <% end %>
   <% end %>
