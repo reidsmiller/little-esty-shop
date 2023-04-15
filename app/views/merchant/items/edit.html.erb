@@ -1,0 +1,13 @@
+<h2><%= "Edit #{@item.name}'s Information:" %></h2>
+
+<%= form_with model: @item, url: merchant_item_path(@merchant, @item), local: true do |form| %>
+  <%= form.label :name, "Name:" %>
+  <%= form.text_field :name %>
+  <%= form.label :description, "Description:" %>
+  <%= form.text_field :description %>
+  <%= form.label :unit_price, "Unit Price: $" %>
+  <%= form.text_field :unit_price %>
+  <%= form.submit "Submit" %>
+<% end %>
+
+

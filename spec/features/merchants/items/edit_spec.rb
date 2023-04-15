@@ -65,7 +65,7 @@ RSpec.describe 'Merchant Items edit page' do
     it 'exists and has item attributes pre-filled' do
       visit edit_merchant_item_path(merchant, item_1)
 
-      expect(page).to have_content("Edit #{item_1}'s Information:")
+      expect(page).to have_content("Edit #{item_1.name}'s Information:")
       expect(page).to have_content("Name:")
       expect(find_field('item_name').value).to match("#{item_1.name}")
       expect(page).to have_content("Description:")
@@ -75,7 +75,7 @@ RSpec.describe 'Merchant Items edit page' do
 
       visit edit_merchant_item_path(merchant_1, item_9)
 
-      expect(page).to have_content("Edit #{item_9}'s Information:")
+      expect(page).to have_content("Edit #{item_9.name}'s Information:")
       expect(find_field('item_name').value).to match("#{item_9.name}")
       expect(find_field('item_description').value).to match("#{item_9.description}")
       expect(find_field('item_unit_price').value).to match("#{item_9.unit_price}")
@@ -97,7 +97,7 @@ RSpec.describe 'Merchant Items edit page' do
     it 'unit_price edited by user as money amount gets converted into cent integer value' do
       visit edit_merchant_item_path(merchant_1, item_9)
 
-      fill_in 'item_unit_price' with: "9.00"
+      fill_in 'item_unit_price', with: "9.00"
       click_button 'Submit'
 
       expect(current_path).to eq(merchant_item_path(merchant_1, item_9))
