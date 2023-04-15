@@ -12,3 +12,9 @@
     <p>Current Price: <%= @item.unit_price %></p>
   <% end %>
 </div>
+
+<div class="update_item_column">
+  <%= content_tag :div, id: "update_item" do %>
+    <p><%= link_to "Update Item", edit_merchant_item_path(@merchant, @item) %></p>
+  <% end %>
+</div>
