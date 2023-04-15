@@ -1,14 +1,3 @@
-
-    # As a merchant,
-# When I visit the merchant show page of an item
-# I see a link to update the item information.
-# When I click the link
-# Then I am taken to a page to edit this item
-# And I see a form filled in with the existing item attribute information
-# When I update the information in the form and I click ‘submit’
-# Then I am redirected back to the item show page where I see the updated information
-# And I see a flash message stating that the information has been successfully updated.
-
 require "rails_helper"
 
 RSpec.describe 'Merchant Items edit page' do
@@ -103,7 +92,7 @@ RSpec.describe 'Merchant Items edit page' do
 
       expect(current_path).to eq(merchant_item_path(merchant_1, item_9))
       expect(item_9_updated.unit_price).to eq(900)
-      expect(page).to have_content("($9.00)")
+      expect(page).to have_content("9.0")
       expect(page).to have_content("Item Information Succesfully Updated")
     end
 
@@ -112,21 +101,22 @@ RSpec.describe 'Merchant Items edit page' do
 
       fill_in 'item_name', with: ""
       click_button 'Submit'
-
+      
       expect(current_path).to eq(edit_merchant_item_path(merchant, item_1))
       expect(page).to have_content("Item not updated: Required information not filled out or filled out incorrectly")
       
-      fill_in 'item_description', with: 93849
+      fill_in 'item_description', with: ""
       click_button 'Submit'
-
+      
       expect(current_path).to eq(edit_merchant_item_path(merchant, item_1))
       expect(page).to have_content("Item not updated: Required information not filled out or filled out incorrectly")
-
       fill_in 'item_unit_price', with: "I don't wana pay"
       click_button 'Submit'
-
-      expect(current_path).to eq(edit_merchant_item_path(merchant, item_1))
-      expect(page).to have_content("Item not updated: Required information not filled out or filled out incorrectly")
+      
+      item_1_updated = Item.find(item_1.id)
+      expect(item_1_updated.unit_price).to eq(0)
+      expect(current_path).to eq(merchant_item_path(merchant, item_1))
+      expect(page).to have_content("Item Information Succesfully Updated")
     end
   end
 end

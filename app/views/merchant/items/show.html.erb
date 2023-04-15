@@ -9,7 +9,7 @@
 <div class="item_attributes_column">
   <%= content_tag :div, id: "item_attributes" do %>
     <p>Description: <%= @item.description %></p>
-    <p>Current Price: <%= @item.unit_price %></p>
+    <p>Current Price: $<%= @item.format_unit_price %></p>
   <% end %>
 </div>
 

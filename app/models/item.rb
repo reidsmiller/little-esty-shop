@@ -18,4 +18,8 @@ class Item < ApplicationRecord
   def unit_price=(val)
     write_attribute :unit_price, val.to_s.gsub(/\D/, '').to_i
   end
+
+  def format_unit_price
+    (unit_price / 100.00).round(2).to_s
+  end
 end
