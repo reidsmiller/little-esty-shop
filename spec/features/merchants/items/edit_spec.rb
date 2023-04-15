@@ -1,6 +1,6 @@
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe 'Merchant Items show Page' do
+RSpec.describe 'Merchant Items edit page' do
 
   let!(:merchant) { create(:merchant) }
   let!(:merchant_1) { create(:merchant) }
@@ -50,39 +50,73 @@ RSpec.describe 'Merchant Items show Page' do
   let!(:inv_5_transaction_s) { create_list(:transaction, 11, result: 1, invoice_id: invoice_5.id) }
   let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id: invoice_6.id) }
 
-  describe 'Page Display' do
-    it 'Displays name of merchant selling this item' do
-      visit merchant_item_path(merchant, item_1)
+  describe "Edit form" do
+    it 'exists and has item attributes pre-filled' do
+      visit edit_merchant_item_path(merchant, item_1)
 
-      expect(page).to have_content(merchant.name)
+      expect(page).to have_content("Edit #{item_1.name}'s Information:")
+      expect(page).to have_content("Name:")
+      expect(find_field('item_name').value).to match("#{item_1.name}")
+      expect(page).to have_content("Description:")
+      expect(find_field('item_description').value).to match("#{item_1.description}")
+      expect(page).to have_content("Unit Price: $")
+      expect(find_field('item_unit_price').value).to match("#{item_1.unit_price}")
+
+      visit edit_merchant_item_path(merchant_1, item_9)
+
+      expect(page).to have_content("Edit #{item_9.name}'s Information:")
+      expect(find_field('item_name').value).to match("#{item_9.name}")
+      expect(find_field('item_description').value).to match("#{item_9.description}")
+      expect(find_field('item_unit_price').value).to match("#{item_9.unit_price}")
     end
 
-    it "displays attributes of item and not of other items" do
-      visit merchant_item_path(merchant, item_1)
+    it 'when info is filled and submit button clicked page redirects to merchant item show page and I see a flash message' do
+      visit edit_merchant_item_path(merchant, item_1)
+
+      fill_in 'item_name', with: "Rubber Ducky"
+      fill_in 'item_description', with: "Yellow bath tub toy that quacks"
+      click_button 'Submit'
+
+      expect(current_path).to eq(merchant_item_path(merchant, item_1))
+      expect(page).to have_content("Rubber Ducky")
+      expect(page).to have_content("Yellow bath tub toy that quacks")
+      expect(page).to have_content("Item Information Succesfully Updated")
+    end
+
+    it 'unit_price edited by user as money amount gets converted into cent integer value' do
+      visit edit_merchant_item_path(merchant_1, item_9)
+
+      fill_in 'item_unit_price', with: "9.00"
+      click_button 'Submit'
+      item_9_updated = Item.find(item_9.id)
+
+      expect(current_path).to eq(merchant_item_path(merchant_1, item_9))
+      expect(item_9_updated.unit_price).to eq(900)
+      expect(page).to have_content("9.0")
+      expect(page).to have_content("Item Information Succesfully Updated")
+    end
+
+    it 'if form is filled out with no info or incorrect data type and submit is clicked, page redirects to edit page and I see a flash error message' do
+      visit edit_merchant_item_path(merchant, item_1)
+
+      fill_in 'item_name', with: ""
+      click_button 'Submit'
       
-      within("#item_name") do
-        expect(page).to have_content(item_1.name)
-        expect(page).to_not have_content(item_2.name)
-      end
-
-      within("#item_attributes") do
-        expect(page).to have_content(item_1.description)
-        expect(page).to have_content(item_1.unit_price)
-
-        expect(page).to_not have_content(item_3.description)
-        expect(page).to_not have_content(item_4.unit_price)
-      end
-    end
-
-    it 'link to update item exists and redirects to page to edit item' do
-      visit merchant_item_path(merchant, item_1)
-
-      within("#update_item") do
-      expect(page).to have_link("Update Item")
-      click_link("Update Item")
-
       expect(current_path).to eq(edit_merchant_item_path(merchant, item_1))
-      end
+      expect(page).to have_content("Item not updated: Required information not filled out or filled out incorrectly")
+      
+      fill_in 'item_description', with: ""
+      click_button 'Submit'
+      
+      expect(current_path).to eq(edit_merchant_item_path(merchant, item_1))
+      expect(page).to have_content("Item not updated: Required information not filled out or filled out incorrectly")
+      fill_in 'item_unit_price', with: "I don't wana pay"
+      click_button 'Submit'
+      
+      item_1_updated = Item.find(item_1.id)
+      expect(item_1_updated.unit_price).to eq(0)
+      expect(current_path).to eq(merchant_item_path(merchant, item_1))
+      expect(page).to have_content("Item Information Succesfully Updated")
     end
   end
 end
