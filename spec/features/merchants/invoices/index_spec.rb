@@ -1,9 +1,3 @@
-# As a merchant,
-# When I visit my merchant's invoices index (/merchants/merchant_id/invoices)
-# Then I see all of the invoices that include at least one of my merchant's items
-# And for each invoice I see its id
-# And each id links to the merchant invoice show page
-
 require 'rails_helper'
 
 RSpec.describe 'Merchant/invoices index page' do
@@ -82,7 +76,7 @@ RSpec.describe 'Merchant/invoices index page' do
         
         expect(current_path).to eq(merchant_invoice_path(merchant, invoice_1.id))
       end
-      
+
       visit merchant_invoices_path(merchant)
 
       within "#invoices" do

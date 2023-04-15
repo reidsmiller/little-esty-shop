@@ -1,10 +1,3 @@
-# As a merchant
-# When I visit my merchant dashboard
-# Then I see a section for "Items Ready to Ship"
-# In that section I see a list of the names of all of my items that
-# have been ordered and have not yet been shipped,
-# And next to each Item I see the id of the invoice that ordered my item
-# And each invoice id is a link to my merchant's invoice show page
 require 'rails_helper'
 
 RSpec.describe 'Merchant Dashboard/Show Page' do
@@ -185,7 +178,7 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
     
     xit 'each ID is a link that routes to the merchants invoice show page' do
       visit "/merchants/#{merchant.id}/dashboard"
-
+      
       within "#shippable_items" do
         expect(page).to have_content(invoice_4.id)
         expect(page).to have_content(invoice_5.id)
