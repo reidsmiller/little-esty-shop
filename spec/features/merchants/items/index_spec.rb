@@ -61,7 +61,7 @@ RSpec.describe 'Merchant Items Index Page' do
       visit "/merchants/#{merchant.id}/items"
 
       within('#enabled_items') do
-      save_and_open_page
+      
         expect(page).to have_content("Enabled Items")
         expect(page).to have_content(item_1.name)
         expect(page).to have_content(item_2.name)
@@ -78,6 +78,33 @@ RSpec.describe 'Merchant Items Index Page' do
       visit "/merchants/#{merchant.id}/items"
 
       expect(page).to_not have_content(item_9.name)
+    end
+  end
+
+  describe 'item name links ' do
+    it "each item name is a link that redirects to it's own merchant item show page" do
+      visit "/merchants/#{merchant.id}/items"
+
+      expect(page).to have_link(item_1.name)
+      expect(page).to have_link(item_2.name)
+      expect(page).to have_link(item_3.name)
+      expect(page).to have_link(item_4.name)
+      expect(page).to have_link(item_5.name)
+      expect(page).to have_link(item_6.name)
+      expect(page).to have_link(item_7.name)
+      expect(page).to have_link(item_8.name)
+
+      click_link item_1.name
+      expect(current_path).to eq(merchant_item(merchant, item_1))
+      visit "/merchants/#{merchant.id}/items"
+
+
+      click_link item_1.name
+      expect(current_path).to eq(merchant_item(merchant, item_2))
+      visit "/merchants/#{merchant.id}/items"
+
+      click_link item_1.name
+      expect(current_path).to eq(merchant_item(merchant, item_3))
     end
   end
 end
