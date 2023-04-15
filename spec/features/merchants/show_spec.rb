@@ -24,13 +24,13 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
   static_time_1 = Time.zone.parse('2023-04-13 00:50:37')
   static_time_2 = Time.zone.parse('2023-04-12 00:50:37')
 
-  let!(:invoice_1) { customer_1.invoices.create }
-  let!(:invoice_2) { customer_2.invoices.create }
-  let!(:invoice_3) { customer_3.invoices.create }
+  let!(:invoice_1) { create(:invoice, customer_id: customer_1.id) }
+  let!(:invoice_2) { create(:invoice, customer_id: customer_2.id) }
+  let!(:invoice_3) { create(:invoice, customer_id: customer_3.id) }
   let!(:invoice_4) { create(:invoice, customer_id: customer_4.id, created_at: static_time_1) }
   let!(:invoice_5) { create(:invoice, customer_id: customer_5.id, created_at: static_time_2) }
-  let!(:invoice_6) { customer_6.invoices.create }
-  let!(:invoice_7) { customer_6.invoices.create }
+  let!(:invoice_6) { create(:invoice, customer_id: customer_6.id) }
+  let!(:invoice_7) { create(:invoice, customer_id: customer_6.id) }
 
   let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2) }
   let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
@@ -157,7 +157,6 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
         expect(page).to_not have_content(item_1.name)
         expect(page).to_not have_content(item_2.name)
         expect(page).to_not have_content(item_3.name)
-
         expect(page).to_not have_content(item_7.name)
         expect(page).to_not have_content(item_8.name)
         expect(page).to_not have_content(item_9.name)
