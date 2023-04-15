@@ -1,6 +1,17 @@
-require 'rails_helper'
 
-RSpec.describe 'Merchant Items show Page' do
+    # As a merchant,
+# When I visit the merchant show page of an item
+# I see a link to update the item information.
+# When I click the link
+# Then I am taken to a page to edit this item
+# And I see a form filled in with the existing item attribute information
+# When I update the information in the form and I click ‘submit’
+# Then I am redirected back to the item show page where I see the updated information
+# And I see a flash message stating that the information has been successfully updated.
+
+require "rails_helper"
+
+RSpec.describe 'Merchant Items edit page' do
 
   let!(:merchant) { create(:merchant) }
   let!(:merchant_1) { create(:merchant) }
@@ -50,39 +61,71 @@ RSpec.describe 'Merchant Items show Page' do
   let!(:inv_5_transaction_s) { create_list(:transaction, 11, result: 1, invoice_id: invoice_5.id) }
   let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id: invoice_6.id) }
 
-  describe 'Page Display' do
-    it 'Displays name of merchant selling this item' do
-      visit merchant_item_path(merchant, item_1)
+  describe "Edit form" do
+    it 'exists and has item attributes pre-filled' do
+      visit edit_merchant_item_path(merchant, item_1)
 
-      expect(page).to have_content(merchant.name)
+      expect(page).to have_content("Edit #{item_1}'s Information:")
+      expect(page).to have_content("Name:")
+      expect(find_field('item_name').value).to match("#{item_1.name}")
+      expect(page).to have_content("Description:")
+      expect(find_field('item_description').value).to match("#{item_1.description}")
+      expect(page).to have_content("Unit Price: $")
+      expect(find_field('item_unit_price').value).to match("#{item_1.unit_price}")
+
+      visit edit_merchant_item_path(merchant_1, item_9)
+
+      expect(page).to have_content("Edit #{item_9}'s Information:")
+      expect(find_field('item_name').value).to match("#{item_9.name}")
+      expect(find_field('item_description').value).to match("#{item_9.description}")
+      expect(find_field('item_unit_price').value).to match("#{item_9.unit_price}")
     end
 
-    it "displays attributes of item and not of other items" do
-      visit merchant_item_path(merchant, item_1)
-      
-      within("#item_name") do
-        expect(page).to have_content(item_1.name)
-        expect(page).to_not have_content(item_2.name)
-      end
+    it 'when info is filled and submit button clicked page redirects to merchant item show page and I see a flash message' do
+      visit edit_merchant_item_path(merchant, item_1)
 
-      within("#item_attributes") do
-        expect(page).to have_content(item_1.description)
-        expect(page).to have_content(item_1.unit_price)
+      fill_in 'item_name', with: "Rubber Ducky"
+      fill_in 'item_description', with: "Yellow bath tub toy that quacks"
+      click_button 'Submit'
 
-        expect(page).to_not have_content(item_3.description)
-        expect(page).to_not have_content(item_4.unit_price)
-      end
+      expect(current_path).to eq(merchant_item_path(merchant, item_1))
+      expect(page).to have_content("Rubber Ducky")
+      expect(page).to have_content("Yellow bath tub toy that quacks")
+      expect(page).to have_content("Item Information Succesfully Updated")
     end
 
-    it 'link to update item exists and redirects to page to edit item' do
-      visit merchant_item_path(merchant, item_1)
+    it 'unit_price edited by user as money amount gets converted into cent integer value' do
+      visit edit_merchant_item_path(merchant_1, item_9)
 
-      within("#update_item") do
-      expect(page).to have_link("Update Item")
-      click_link("Update Item")
+      fill_in 'item_unit_price' with: "9.00"
+      click_button 'Submit'
+
+      expect(current_path).to eq(merchant_item_path(merchant_1, item_9))
+      expect(item_9.unit_price).to eq(900)
+      expect(page).to have_content("($9.00)")
+      expect(page).to have_content("Item Information Succesfully Updated")
+    end
+
+    it 'if form is filled out with no info or incorrect data type and submit is clicked, page redirects to edit page and I see a flash error message' do
+      visit edit_merchant_item_path(merchant, item_1)
+
+      fill_in 'item_name', with: ""
+      click_button 'Submit'
 
       expect(current_path).to eq(edit_merchant_item_path(merchant, item_1))
-      end
+      expect(page).to have_content("Item not updated: Required information not filled out or filled out incorrectly")
+      
+      fill_in 'item_description', with: 93849
+      click_button 'Submit'
+
+      expect(current_path).to eq(edit_merchant_item_path(merchant, item_1))
+      expect(page).to have_content("Item not updated: Required information not filled out or filled out incorrectly")
+
+      fill_in 'item_unit_price', with: "I don't wana pay"
+      click_button 'Submit'
+
+      expect(current_path).to eq(edit_merchant_item_path(merchant, item_1))
+      expect(page).to have_content("Item not updated: Required information not filled out or filled out incorrectly")
     end
   end
 end
