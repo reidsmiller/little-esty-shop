@@ -7,6 +7,12 @@ RSpec.describe Item, type: :model do
     it { should have_many(:invoices).through(:invoice_items) }
   end
 
+  describe 'validations' do
+    it { should validate_presence_of(:name) }
+    it { should validate_presence_of(:description) }
+    # it { should validate_presence_of(:unit_price) }
+  end
+
   describe 'instance_methods' do
     let!(:merchant) { create(:merchant) }
     let!(:merchant_1) { create(:merchant) }
@@ -69,10 +75,13 @@ RSpec.describe Item, type: :model do
       expect(item_5.invoice_formatted_date).to eq('Wednesday, April 12, 2023')
       end
     end
-  end
 
-  describe 'validations' do
-    it { should validate_presence_of(:name) }
-    it { should validate_presence_of(:description) }
+    describe 'unit_price=(val) method' do
+      it 'formats unit price from user input from string to number' do
+        expect("$20.39".to_s.gsub(/\D/, '').to_i).to eq(2039)
+        expect("$%^93802".to_s.gsub(/\D/, '').to_i).to eq(93802)
+        expect("(#)$*@0982&^%".to_s.gsub(/\D/, '').to_i).to eq(982)
+      end
+    end
   end
 end

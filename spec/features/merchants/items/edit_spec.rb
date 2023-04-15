@@ -99,9 +99,10 @@ RSpec.describe 'Merchant Items edit page' do
 
       fill_in 'item_unit_price', with: "9.00"
       click_button 'Submit'
+      item_9_updated = Item.find(item_9.id)
 
       expect(current_path).to eq(merchant_item_path(merchant_1, item_9))
-      expect(item_9.unit_price).to eq(900)
+      expect(item_9_updated.unit_price).to eq(900)
       expect(page).to have_content("($9.00)")
       expect(page).to have_content("Item Information Succesfully Updated")
     end

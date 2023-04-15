@@ -1,10 +1,8 @@
 class Item < ApplicationRecord
   self.primary_key = :id
   validates :name, presence: true
-  validates :name, numericality: false
   validates :description, presence: true
-  validates :description, numericality: false
-  validates :unit_price, numericality: { only_integer: true }
+  validates :unit_price, presence: true
   belongs_to :merchant
   has_many :invoice_items
   has_many :invoices, through: :invoice_items
@@ -15,5 +13,9 @@ class Item < ApplicationRecord
 
   def invoice_formatted_date
     invoice_items.first.invoice.created_at.strftime("%A, %B %e, %Y")
+  end
+
+  def unit_price=(val)
+    write_attribute :unit_price, val.to_s.gsub(/\D/, '').to_i
   end
 end
