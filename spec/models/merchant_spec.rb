@@ -60,7 +60,6 @@ RSpec.describe Merchant, type: :model do
 
     describe '#unshipped_items' do
       it 'retrieves items from this merchant that have an order and that order status is not shipped' do
-        # require 'pry'; binding.pry
         expect(merchant.unshipped_items).to eq([item_4, item_5, item_6])
       end
     end
