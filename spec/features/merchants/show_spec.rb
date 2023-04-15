@@ -21,11 +21,14 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
   let!(:customer_5) { create(:customer, first_name: 'Brandon', last_name: 'Popular') }
   let!(:customer_6) { create(:customer, first_name: 'Caroline', last_name: 'Rasmussen') }
 
+  static_time_1 = Time.zone.parse('2023-04-13 00:50:37')
+  static_time_2 = Time.zone.parse('2023-04-12 00:50:37')
+
   let!(:invoice_1) { customer_1.invoices.create }
   let!(:invoice_2) { customer_2.invoices.create }
   let!(:invoice_3) { customer_3.invoices.create }
-  let!(:invoice_4) { customer_4.invoices.create }
-  let!(:invoice_5) { customer_5.invoices.create }
+  let!(:invoice_4) { create(:invoice, customer_id: customer_4.id, created_at: static_time_1) }
+  let!(:invoice_5) { create(:invoice, customer_id: customer_5.id, created_at: static_time_2) }
   let!(:invoice_6) { customer_6.invoices.create }
   let!(:invoice_7) { customer_6.invoices.create }
 
@@ -166,21 +169,19 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
       
       within "#shippable_items" do
         
-        expect(page).to have_content(invoice_4.id)
-        expect(page).to have_content(invoice_5.id)
-        expect(page).to have_content(invoice_6.id)
-        
-        # invoice_4_id = invoice_4.id
-        # invoice_5_id = invoice_5.id
-        # invoice_6_id = invoice_6.id
-
-        # expect(invoice_4_id).to appear_before(invoice_5_id)
-        # expect(invoice_5_id).to appear_before(invoice_6_id)
-
-        expect(page).to_not have_content(invoice_1.id)
-        expect(page).to_not have_content(invoice_2.id)
-        expect(page).to_not have_content(invoice_3.id)
-        expect(page).to_not have_content(invoice_7.id)
+      
+      expect(page).to have_content(invoice_4.id)
+      expect(page).to have_content(invoice_5.id)
+      expect(page).to have_content(invoice_6.id)
+      
+      expect(page).to_not have_content(invoice_1.id)
+      expect(page).to_not have_content(invoice_2.id)
+      expect(page).to_not have_content(invoice_3.id)
+      expect(page).to_not have_content(invoice_7.id)
+      
+      # expect(invoice_4.id).to appear_before(invoice_5.id)
+      # expect(invoice_5.id).to appear_before(invoice_6.id)
+    
       end
     end
     
@@ -195,7 +196,7 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
         expect(page).to have_link(invoice_4.id)
         expect(page).to have_link(invoice_5.id)
         expect(page).to have_link(invoice_6.id)
-        save_and_open_page
+       
         click_link(invoice_4.id)
 
         expect(current_path).to eq(merchant_invoice_path(merchant, invoice_4))
@@ -212,6 +213,24 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
 
         expect(current_path).to eq(merchant_invoice_path(merchant, invoice_6))
       end
+    end
+
+    it 'displays invoice creation formatted date like "Monday, July 18, 2019"' do
+      visit "/merchants/#{merchant.id}/dashboard"
+      expect(page).to have_content(item_4.invoice_formatted_date)
+      expect(page).to have_content(item_5.invoice_formatted_date)
+      expect(page).to have_content(item_6.invoice_formatted_date)
+
+      
+      expect(page).to have_content('Thursday, April 13, 2023')
+      expect(page).to have_content('Wednesday, April 12, 2023')
+    end
+
+    it 'orders the items by invoice creation date from oldest to newest' do
+      visit "/merchants/#{merchant.id}/dashboard"
+      
+      expect(item_5.invoice_formatted_date).to appear_before(item_4.invoice_formatted_date)
+      expect('Wednesday, April 12, 2023').to appear_before('Thursday, April 13, 2023')
     end
   end
 end

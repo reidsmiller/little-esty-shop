@@ -28,11 +28,14 @@ RSpec.describe Item, type: :model do
     let!(:customer_5) { create(:customer, first_name: 'Brandon', last_name: 'Popular') }
     let!(:customer_6) { create(:customer, first_name: 'Caroline', last_name: 'Rasmussen') }
   
+    static_time_1 = Time.zone.parse('2023-04-13 00:50:37')
+    static_time_2 = Time.zone.parse('2023-04-12 00:50:37')
+
     let!(:invoice_1) { customer_1.invoices.create }
     let!(:invoice_2) { customer_2.invoices.create }
     let!(:invoice_3) { customer_3.invoices.create }
-    let!(:invoice_4) { customer_4.invoices.create }
-    let!(:invoice_5) { customer_5.invoices.create }
+    let!(:invoice_4) { create(:invoice, customer_id: customer_4.id, created_at: static_time_1) }
+    let!(:invoice_5) { create(:invoice, customer_id: customer_5.id, created_at: static_time_2) }
     let!(:invoice_6) { customer_6.invoices.create }
     let!(:invoice_7) { customer_6.invoices.create }
   
@@ -57,6 +60,13 @@ RSpec.describe Item, type: :model do
       it 'locates the id of the invoice joined to this item through invoice_items for a partcular merchant' do
         expect(item_4.item_invoice_id_for_merchant).to eq(invoice_4.id)
         expect(item_5.item_invoice_id_for_merchant).to eq(invoice_5.id)
+      end
+    end
+
+    describe 'invoice_formatted_date' do
+      it 'formats the creation_at date to be like "Thursday, April 13, 2023"' do
+      expect(item_4.invoice_formatted_date).to eq('Thursday, April 13, 2023')
+      expect(item_5.invoice_formatted_date).to eq('Wednesday, April 12, 2023')
       end
     end
   end

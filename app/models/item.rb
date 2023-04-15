@@ -9,4 +9,8 @@ class Item < ApplicationRecord
   def item_invoice_id_for_merchant
     invoice_items.first.invoice_id
   end
+
+  def invoice_formatted_date
+    invoice_items.first.invoice.created_at.strftime("%A, %B %e, %Y")
+  end
 end
