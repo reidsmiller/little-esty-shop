@@ -8,8 +8,7 @@ class Invoice < ApplicationRecord
 
   enum status: ["cancelled", "in progress", "completed"]
 
-  # def merchant_invoices
-  #   require 'pry'; binding.pry
-  #   self.pluck(:merchant_id)
-  # end
+  def created_at_custom
+    created_at.strftime("%A, %B %e, %Y")
+  end
 end
