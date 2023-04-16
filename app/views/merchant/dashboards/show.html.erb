@@ -27,9 +27,10 @@
   <%= content_tag :div, id: "shippable_items" do %>
     <h3>Items Ready to Ship</h3>
     <% @merchant.unshipped_items.each do |item| %>
-    <li>
-      <%= item.name %>
-    </li>
+    <ul>
+      <li><%= item.name %> - Invoice # <%= link_to "#{item.item_invoice_id_for_merchant}", merchant_invoice_path(@merchant, item.item_invoice_id_for_merchant)%> -
+      <%= item.invoice_formatted_date %></li>
+    </ul>
     <% end %>
   <% end %>
 </div>

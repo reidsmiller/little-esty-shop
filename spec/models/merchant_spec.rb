@@ -5,6 +5,10 @@ RSpec.describe Merchant, type: :model do
     it { should have_many :items }
   end
 
+  describe 'validations' do
+    it { should validate_presence_of(:name) }
+  end
+
   describe 'instance_methods' do
     
     let!(:merchant) { create(:merchant) }
@@ -19,6 +23,7 @@ RSpec.describe Merchant, type: :model do
     let!(:item_7) { create(:item, merchant_id: merchant.id) }
     let!(:item_8) { create(:item, merchant_id: merchant.id) }
     let!(:item_9) { create(:item, merchant_id: merchant_1.id) }
+    let!(:item_10) { create(:item, merchant_id: merchant_1.id) }
 
     let!(:customer_1) { create(:customer, first_name: 'Branden', last_name: 'Smith') }
     let!(:customer_2) { create(:customer, first_name: 'Reilly', last_name: 'Robertson') }
@@ -27,13 +32,14 @@ RSpec.describe Merchant, type: :model do
     let!(:customer_5) { create(:customer, first_name: 'Brandon', last_name: 'Popular') }
     let!(:customer_6) { create(:customer, first_name: 'Caroline', last_name: 'Rasmussen') }
 
-    let!(:invoice_1) { customer_1.invoices.create }
-    let!(:invoice_2) { customer_2.invoices.create }
-    let!(:invoice_3) { customer_3.invoices.create }
-    let!(:invoice_4) { customer_4.invoices.create }
-    let!(:invoice_5) { customer_5.invoices.create }
-    let!(:invoice_6) { customer_6.invoices.create }
-    let!(:invoice_7) { customer_6.invoices.create }
+    let!(:invoice_1) { create(:invoice, customer_id: customer_1.id) }
+    let!(:invoice_2) { create(:invoice, customer_id: customer_2.id) }
+    let!(:invoice_3) { create(:invoice, customer_id: customer_3.id) }
+    let!(:invoice_4) { create(:invoice, customer_id: customer_4.id) }
+    let!(:invoice_5) { create(:invoice, customer_id: customer_5.id) }
+    let!(:invoice_6) { create(:invoice, customer_id: customer_6.id) }
+    let!(:invoice_7) { create(:invoice, customer_id: customer_6.id) }
+    let!(:invoice_8) { create(:invoice, customer_id: customer_6.id) }
 
     let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2) }
     let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
@@ -42,6 +48,7 @@ RSpec.describe Merchant, type: :model do
     let!(:invoice_item_5) { create(:invoice_item, item_id: item_5.id, invoice_id: invoice_5.id, status: 0) }
     let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id, status: 1) }
     let!(:invoice_item_7) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_7.id, status: 1) }
+    let!(:invoice_item_8) { create(:invoice_item, item_id: item_10.id, invoice_id: invoice_8.id, status: 1) }
 
     let!(:inv_1_transaction_s) { create_list(:transaction, 10, result: 1, invoice_id: invoice_1.id) }
     let!(:inv_1_transaction_f) { create_list(:transaction, 5, result: 0, invoice_id: invoice_1.id) }
@@ -51,18 +58,18 @@ RSpec.describe Merchant, type: :model do
     let!(:inv_4_transaction_f) { create_list(:transaction, 20, result: 0, invoice_id: invoice_4.id) }
     let!(:inv_5_transaction_s) { create_list(:transaction, 11, result: 1, invoice_id: invoice_5.id) }
     let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id: invoice_6.id) }
+    let!(:inv_7_transaction_s) { create_list(:transaction, 20, result: 1, invoice_id: invoice_8.id) }
     
     describe '#top_five_customers' do
       it '#customers retrieves five customers with the highest number of successful transactions from highest to lowest' do
         expect(merchant.top_five_customers).to eq([customer_5, customer_1, customer_6, customer_3, customer_2])
       end
     end
-
+  
     describe '#unshipped_items' do
       it 'retrieves items from this merchant that have an order and that order status is not shipped' do
-        # require 'pry'; binding.pry
         expect(merchant.unshipped_items).to eq([item_4, item_5, item_6])
       end
     end
-  end
+  end 
 end

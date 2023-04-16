@@ -1,0 +1,7 @@
+<h3 style="background-color:LightGray;"><center>Invoice #<%= @invoice.id %><center></h3>
+<ul><b>Status:</b> <%= @invoice.status %></ul>
+<br>
+<ul><b>Created on:</b> <%= @invoice.format_time_stamp %></ul>
+<ul><b>Total Revenue:</b> <%=  %></ul>
+<ul><h2>Customer:</h2>
+<ul><%= @invoice.customer_full_name%></ul>
