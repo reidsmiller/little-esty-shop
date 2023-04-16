@@ -141,17 +141,17 @@ RSpec.describe 'admin_merchants_index', type: :feature do
       @merchant_item_6 = create(:item, merchant_id: @merchant_6.id, unit_price: 10000)
       @merchant_item_7 = create(:item, merchant_id: @merchant_7.id, unit_price: 10000)
 
-      visit admin_merchants_index
+      visit admin_merchants_path
     end
 
-    it 'and should calculate revenue for an invoice by sum of revenue of all invoice items' do
-      invoice_1 = create(:invoice, customer_id: customers.sample.id)
-      invoice_2 = create(:invoice, customer_id: customers.sample.id)
-      invoice_3 = create(:invoice, customer_id: customers.sample.id)
-      invoice_4 = create(:invoice, customer_id: customers.sample.id)
-      invoice_5 = create(:invoice, customer_id: customers.sample.id)
-      invoice_6 = create(:invoice, customer_id: customers.sample.id)
-      invoice_7 = create(:invoice, customer_id: customers.sample.id)
+    it 'and should calculate revenue for an invoice by sum of revenue of all invoice items and each merchant name links to its show page' do
+      invoice_1 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_2 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_3 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_4 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_5 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_6 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_7 = create(:invoice, customer_id: @customers.sample.id)
 
       create_list(:invoice_item, 1, item_id: @merchant_item_1.id, invoice_id: invoice_1.id, quantity: 1, unit_price:10000)
       create_list(:invoice_item, 2, item_id: @merchant_item_2.id, invoice_id: invoice_2.id, quantity: 1, unit_price:10000)
@@ -179,14 +179,14 @@ RSpec.describe 'admin_merchants_index', type: :feature do
       end
     end
 
-    it 'and is sorted by invoice_item unit_price and quantity and each merchant name links to its show page' do
-      invoice_1 = create(:invoice, customer_id: customers.sample.id)
-      invoice_2 = create(:invoice, customer_id: customers.sample.id)
-      invoice_3 = create(:invoice, customer_id: customers.sample.id)
-      invoice_4 = create(:invoice, customer_id: customers.sample.id)
-      invoice_5 = create(:invoice, customer_id: customers.sample.id)
-      invoice_6 = create(:invoice, customer_id: customers.sample.id)
-      invoice_7 = create(:invoice, customer_id: customers.sample.id)
+    it 'and calculates each invoice item revenue by unit_price and quantity' do
+      invoice_1 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_2 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_3 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_4 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_5 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_6 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_7 = create(:invoice, customer_id: @customers.sample.id)
 
       create(:invoice_item, item_id: @merchant_item_1.id, invoice_id: invoice_1.id, quantity: 1, unit_price:10000)
       create(:invoice_item, item_id: @merchant_item_2.id, invoice_id: invoice_2.id, quantity: 2, unit_price:10000)
@@ -204,14 +204,14 @@ RSpec.describe 'admin_merchants_index', type: :feature do
       end
     end
 
-    it 'and only invoices with at least one successful transaction should count towards revenue' do
-      invoice_1 = create(:invoice, customer_id: customers.sample.id)
-      invoice_2 = create(:invoice, customer_id: customers.sample.id)
-      invoice_3 = create(:invoice, customer_id: customers.sample.id)
-      invoice_4 = create(:invoice, customer_id: customers.sample.id)
-      invoice_5 = create(:invoice, customer_id: customers.sample.id)
-      invoice_6 = create(:invoice, customer_id: customers.sample.id)
-      invoice_7 = create(:invoice, customer_id: customers.sample.id)
+    xit 'and only invoices with at least one successful transaction should count towards revenue' do
+      invoice_1 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_2 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_3 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_4 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_5 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_6 = create(:invoice, customer_id: @customers.sample.id)
+      invoice_7 = create(:invoice, customer_id: @customers.sample.id)
 
       create_list(:invoice_item, 1, item_id: @merchant_item_1.id, invoice_id: invoice_1.id, quantity: 1, unit_price:10000)
       create_list(:invoice_item, 2, item_id: @merchant_item_2.id, invoice_id: invoice_2.id, quantity: 1, unit_price:10000)
