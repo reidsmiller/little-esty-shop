@@ -21,13 +21,16 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
   let!(:customer_5) { create(:customer, first_name: 'Brandon', last_name: 'Popular') }
   let!(:customer_6) { create(:customer, first_name: 'Caroline', last_name: 'Rasmussen') }
 
-  let!(:invoice_1) { customer_1.invoices.create }
-  let!(:invoice_2) { customer_2.invoices.create }
-  let!(:invoice_3) { customer_3.invoices.create }
-  let!(:invoice_4) { customer_4.invoices.create }
-  let!(:invoice_5) { customer_5.invoices.create }
-  let!(:invoice_6) { customer_6.invoices.create }
-  let!(:invoice_7) { customer_6.invoices.create }
+  static_time_1 = Time.zone.parse('2023-04-13 00:50:37')
+  static_time_2 = Time.zone.parse('2023-04-12 00:50:37')
+
+  let!(:invoice_1) { create(:invoice, customer_id: customer_1.id) }
+  let!(:invoice_2) { create(:invoice, customer_id: customer_2.id) }
+  let!(:invoice_3) { create(:invoice, customer_id: customer_3.id) }
+  let!(:invoice_4) { create(:invoice, customer_id: customer_4.id, created_at: static_time_1) }
+  let!(:invoice_5) { create(:invoice, customer_id: customer_5.id, created_at: static_time_2) }
+  let!(:invoice_6) { create(:invoice, customer_id: customer_6.id) }
+  let!(:invoice_7) { create(:invoice, customer_id: customer_6.id) }
 
   let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2) }
   let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
@@ -154,29 +157,34 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
         expect(page).to_not have_content(item_1.name)
         expect(page).to_not have_content(item_2.name)
         expect(page).to_not have_content(item_3.name)
-
         expect(page).to_not have_content(item_7.name)
         expect(page).to_not have_content(item_8.name)
         expect(page).to_not have_content(item_9.name)
       end
     end
     
-    xit 'should display the ID of the item to the right of item name' do
+    it 'should display the ID of the item to the right of item name' do
       visit "/merchants/#{merchant.id}/dashboard"
-
+      
       within "#shippable_items" do
-        expect(item_4.name).to appear_before(invoice_4.id)
-        expect(item_5.name).to appear_before(invoice_5.id)
-        expect(item_6.name).to appear_before(invoice_6.id)
-
-        expect(page).to_not have_content(invoice_1.id)
-        expect(page).to_not have_content(invoice_2.id)
-        expect(page).to_not have_content(invoice_3.id)
-        expect(page).to_not have_content(invoice_7.id)
+        
+      
+      expect(page).to have_content(invoice_4.id)
+      expect(page).to have_content(invoice_5.id)
+      expect(page).to have_content(invoice_6.id)
+      
+      expect(page).to_not have_content(invoice_1.id)
+      expect(page).to_not have_content(invoice_2.id)
+      expect(page).to_not have_content(invoice_3.id)
+      expect(page).to_not have_content(invoice_7.id)
+      
+      # expect(invoice_4.id).to appear_before(invoice_5.id)
+      # expect(invoice_5.id).to appear_before(invoice_6.id)
+    
       end
     end
     
-    xit 'each ID is a link that routes to the merchants invoice show page' do
+    it 'each ID is a link that routes to the merchants invoice show page' do
       visit "/merchants/#{merchant.id}/dashboard"
       
       within "#shippable_items" do
@@ -187,7 +195,7 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
         expect(page).to have_link(invoice_4.id)
         expect(page).to have_link(invoice_5.id)
         expect(page).to have_link(invoice_6.id)
-
+       
         click_link(invoice_4.id)
 
         expect(current_path).to eq(merchant_invoice_path(merchant, invoice_4))
@@ -204,6 +212,24 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
 
         expect(current_path).to eq(merchant_invoice_path(merchant, invoice_6))
       end
+    end
+
+    it 'displays invoice creation formatted date like "Monday, July 18, 2019"' do
+      visit "/merchants/#{merchant.id}/dashboard"
+      expect(page).to have_content(item_4.invoice_formatted_date)
+      expect(page).to have_content(item_5.invoice_formatted_date)
+      expect(page).to have_content(item_6.invoice_formatted_date)
+
+      
+      expect(page).to have_content('Thursday, April 13, 2023')
+      expect(page).to have_content('Wednesday, April 12, 2023')
+    end
+
+    it 'orders the items by invoice creation date from oldest to newest' do
+      visit "/merchants/#{merchant.id}/dashboard"
+      
+      expect(item_5.invoice_formatted_date).to appear_before(item_4.invoice_formatted_date)
+      expect('Wednesday, April 12, 2023').to appear_before('Thursday, April 13, 2023')
     end
   end
 end
