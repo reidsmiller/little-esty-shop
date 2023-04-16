@@ -64,5 +64,15 @@ RSpec.describe Invoice, type: :model do
         expect(@invoice_4.format_time_stamp).to eq('Monday, April 10, 2023')
       end
     end
+
+    describe '.total_revenue' do
+      it 'returns the total revenue for an invoice' do
+        expect(@invoice_1.total_revenue).to eq(100)
+        expect(@invoice_2.total_revenue).to eq(100)
+        expect(@invoice_3.total_revenue).to eq(100)
+        expect(@invoice_4.total_revenue).to eq(100)
+        expect(@invoice_5.total_revenue).to eq(100)
+      end
+    end
   end
 end

@@ -8,3 +8,23 @@
     <li>Customer: <%= @invoice.customer.first_name %> <%= @invoice.customer.last_name %></li>
   </ul>
 </div>
+<br>
+<div id="invoice_items">
+<h2>Invoice Items:</h2>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Quantity</th>
+      <th>Unit Price</th>
+      <th>Status</th>
+    </tr>
+    <% @invoice.invoice_items.each do |invoice_item| %>
+      <tr>
+        <td><%= invoice_item.item.name %></td>
+        <td><%= invoice_item.quantity %></td>
+        <td>$<%= invoice_item.item.format_unit_price %></td>
+        <td><%= invoice_item.status %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
