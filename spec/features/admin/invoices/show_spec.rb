@@ -84,7 +84,7 @@ RSpec.describe 'admin_invoice_show3333', type: :feature do
 
     it 'displays the total revenue that will be generated from this invoice' do
       within("div#total_revenue") do
-        expect(page).to have_content(@invoice_1.total_revenue)
+        expect(page).to have_content(@invoice_1.format_total_revenue)
       end
     end
   end
