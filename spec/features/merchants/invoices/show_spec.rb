@@ -1,6 +1,17 @@
+# As a merchant
+# When I visit my merchant invoice show page
+# Then I see all of my items on the invoice including:
+
+# Item name
+# The quantity of the item ordered
+# The price the Item sold for
+# The Invoice Item status
+# And I do not see any information related to Items for other merchants
+
+
 require 'rails_helper'
 
-RSpec.describe 'Merchant/invoices show page' do
+RSpec.describe 'Merchant/invoice show page' do
 let!(:merchant) { create(:merchant) }
 let!(:merchant_1) { create(:merchant) }
 
@@ -72,6 +83,17 @@ let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id:
       
       expect(page).to have_content(invoice_2.customer_full_name)
       expect(invoice_2.customer.first_name).to appear_before(invoice_2.customer.last_name)
+    end
+  end
+
+  describe 'Items associated with an invoice belonging to a merchant' do
+    it "should display items' name, quantity, unit price" do
+      visit merchant_invoice_path(merchant, invoice_1.id)
+save_and_open_page
+      expect(page).to have_content(invoice_1.items.name)
+      expect(page).to have_content(invoice_1.invoice_items.first.status)
+      expect(page).to have_content(invoice_1.invoice_items.first.quantity)
+      expect(page).to have_content(invoice_1.invoice_items.first.unit_price)
     end
   end
 end
