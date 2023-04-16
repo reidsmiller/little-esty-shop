@@ -3,10 +3,13 @@ class Item < ApplicationRecord
   validates :name, presence: true
   validates :description, presence: true
   validates :unit_price, presence: true
+  validates :status, presence: true
   belongs_to :merchant
   has_many :invoice_items
   has_many :invoices, through: :invoice_items
 
+  enum status: ['enabled', 'disabled']
+  
   def item_invoice_id_for_merchant
     invoice_items.first.invoice_id
   end
