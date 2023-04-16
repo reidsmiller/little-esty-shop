@@ -5,7 +5,13 @@
     <h3>Enabled Items</h3>
     <% @merchant.items.each do |item| %>
     <ul>
-      <li><%= link_to item.name,  merchant_item_path(@merchant, item) %>
+      <li id="merchant_<%= item.id %>">
+      <%= link_to item.name,  merchant_item_path(@merchant, item) %>         
+        <%= form_with model: item, url: merchant_item_path(@merchant, item), local: true do |form| %> 
+          <%= form.hidden_field :status, value: "disabled" %>
+          <%= form.submit "Disable" %>
+        <% end %>
+      </li>
     </ul>
     <% end %>
   <% end %>
