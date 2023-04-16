@@ -1,12 +1,3 @@
-# As a merchant
-# When I visit my merchant's invoice show page(/merchants/merchant_id/invoices/invoice_id)
-# Then I see information related to that invoice including:
-
-# Invoice id
-# Invoice status
-# Invoice created_at date in the format "Monday, July 18, 2019"
-# Customer first and last name
-
 require 'rails_helper'
 
 RSpec.describe 'Merchant/invoices show page' do
@@ -31,13 +22,17 @@ let!(:customer_5) { create(:customer, first_name: 'Brandon', last_name: 'Popular
 let!(:customer_6) { create(:customer, first_name: 'Caroline', last_name: 'Rasmussen') }
 let!(:customer_8) { create(:customer, first_name: 'Billy', last_name: 'Joel') }
 
-let!(:invoice_1) { customer_1.invoices.create }
-let!(:invoice_2) { customer_2.invoices.create }
-let!(:invoice_3) { customer_3.invoices.create }
-let!(:invoice_4) { customer_4.invoices.create }
-let!(:invoice_5) { customer_5.invoices.create }
-let!(:invoice_6) { customer_6.invoices.create }
-let!(:invoice_7) { customer_8.invoices.create }
+static_time_1 = Time.zone.parse('2023-04-13 00:50:37')
+static_time_2 = Time.zone.parse('2023-04-12 00:50:37')
+static_time_3 = Time.zone.parse('2023-04-15 00:50:37')
+
+let!(:invoice_1) { create(:invoice, customer_id: customer_1.id, created_at: static_time_1) }
+let!(:invoice_2) { create(:invoice, customer_id: customer_2.id, created_at: static_time_2) }
+let!(:invoice_3) { create(:invoice, customer_id: customer_3.id, created_at: static_time_3) }
+let!(:invoice_4) { create(:invoice, customer_id: customer_4.id) }
+let!(:invoice_5) { create(:invoice, customer_id: customer_5.id) }
+let!(:invoice_6) { create(:invoice, customer_id: customer_6.id) }
+let!(:invoice_7) { create(:invoice, customer_id: customer_6.id) }
 
 let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2) }
 let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
@@ -62,21 +57,23 @@ let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id:
       
       expect(page).to have_content(invoice_1.id)
       expect(page).to have_content(invoice_1.status)
-      expect(page).to have_content(invoice_1.created_at_custom)
+      expect(page).to have_content(invoice_1.format_time_stamp)
       
       visit merchant_invoice_path(merchant, invoice_2.id)
       
       expect(page).to have_content(invoice_2.id)
       expect(page).to have_content(invoice_2.status)
-      expect(page).to have_content(invoice_2.created_at_custom)
-      # expect(page).to_not have_content(invoice_3.created_at_custom)
+      expect(page).to have_content(invoice_2.format_time_stamp)
+      expect(page).to_not have_content(invoice_3.format_time_stamp)
     end
 
     it 'should display the first and last name of the customer associated with this invoice.' do
       visit merchant_invoice_path(merchant, invoice_2.id)
       
-      expect(page).to have_content(invoice_2.customer.first_name)
-      expect(page).to have_content(invoice_2.customer.last_name)
+      expect(page).to have_content(invoice_2.customer_full_name)
+      expect(invoice_2.customer.first_name).to appear_before(invoice_2.customer.last_name)
     end
   end
 end
+
+#save_and_open_page

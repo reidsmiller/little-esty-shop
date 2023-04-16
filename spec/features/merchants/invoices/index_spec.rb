@@ -22,13 +22,14 @@ RSpec.describe 'Merchant/invoices index page' do
   let!(:customer_6) { create(:customer, first_name: 'Caroline', last_name: 'Rasmussen') }
   let!(:customer_8) { create(:customer, first_name: 'Billy', last_name: 'Joel') }
 
-  let!(:invoice_1) { customer_1.invoices.create }
-  let!(:invoice_2) { customer_2.invoices.create }
-  let!(:invoice_3) { customer_3.invoices.create }
-  let!(:invoice_4) { customer_4.invoices.create }
-  let!(:invoice_5) { customer_5.invoices.create }
-  let!(:invoice_6) { customer_6.invoices.create }
-  let!(:invoice_7) { customer_8.invoices.create }
+  let!(:invoice_1) { create(:invoice, customer_id: customer_1.id) }
+  let!(:invoice_2) { create(:invoice, customer_id: customer_2.id) }
+  let!(:invoice_3) { create(:invoice, customer_id: customer_3.id) }
+  let!(:invoice_4) { create(:invoice, customer_id: customer_4.id) }
+  let!(:invoice_5) { create(:invoice, customer_id: customer_5.id) }
+  let!(:invoice_6) { create(:invoice, customer_id: customer_6.id) }
+  let!(:invoice_7) { create(:invoice, customer_id: customer_6.id) }
+  let!(:invoice_8) { create(:invoice, customer_id: customer_6.id) }
 
   let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2) }
   let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
@@ -78,7 +79,7 @@ RSpec.describe 'Merchant/invoices index page' do
       end
 
       visit merchant_invoices_path(merchant)
-
+      
       within "#invoices" do
         click_link("#{invoice_2.id}")
 
