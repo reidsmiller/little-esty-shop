@@ -8,7 +8,6 @@ RSpec.describe Invoice, type: :model do
     it { should have_many :transactions }
   end
 
-
   describe 'validations' do
     it { should validate_presence_of(:status) }
   end
@@ -67,6 +66,26 @@ RSpec.describe Invoice, type: :model do
         expect(@invoice_2.format_time_stamp).to eq('Wednesday, April 12, 2023')
         expect(@invoice_3.format_time_stamp).to eq('Tuesday, April 11, 2023')
         expect(@invoice_4.format_time_stamp).to eq('Monday, April 10, 2023')
+      end
+    end
+    
+    describe 'additional instance methods' do
+      let!(:customer_1) { create(:customer, first_name: 'Branden', last_name: 'Smith') }
+      let!(:customer_2) { create(:customer, first_name: 'Reilly', last_name: 'Robertson') }
+      let!(:customer_3) { create(:customer, first_name: 'Grace', last_name: 'Chavez') }
+
+      static_time_1 = Time.zone.parse('2023-04-13 00:50:37')
+      static_time_2 = Time.zone.parse('2023-04-12 00:50:37')
+      static_time_3 = Time.zone.parse('2023-04-15 00:50:37')
+
+      let!(:invoice_1) { create(:invoice, customer_id: customer_1.id, created_at: static_time_1) }
+      let!(:invoice_2) { create(:invoice, customer_id: customer_2.id, created_at: static_time_2) }
+      let!(:invoice_3) { create(:invoice, customer_id: customer_3.id, created_at: static_time_3) }
+      
+      it '#customer_full_name' do
+        expect(invoice_1.customer_full_name).to eq("Branden Smith")
+        expect(invoice_2.customer_full_name).to eq("Reilly Robertson")
+        expect(invoice_3.customer_full_name).to eq("Grace Chavez")
       end
     end
   end
