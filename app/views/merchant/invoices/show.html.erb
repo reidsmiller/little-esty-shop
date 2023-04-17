@@ -4,4 +4,48 @@
 <ul><b>Created on:</b> <%= @invoice.format_time_stamp %></ul>
 <ul><b>Total Revenue:</b> <%=  %></ul>
 <ul><h2>Customer:</h2>
-<ul><%= @invoice.customer_full_name%></ul>
+<ul style="font-size:20px;"><%= @invoice.customer_full_name%></ul>
+<ul style="font-size:20px;">123 Main St.</ul>
+<ul style="font-size:20px;">Anywhere, USA</ul>
+<br>
+<br>
+<style>
+table, th, td {
+  border:1px solid black;
+  padding: 15px;
+  margin: 2px;
+  font-size: 20px;
+}
+</style>
+<body>
+<div id="invoice_items"> 
+<h2>Items on this Invoice:</h2>
+
+<table style="width:100%">
+  <tr>
+    <td style="background-color:DarkGrey; color:White"><center>Item Name</td>
+    <td style="background-color:DarkGrey; color:White"><center>Quantity</td>
+    <td style="background-color:DarkGrey; color:White"><center>Unit Price</td>
+    <td style="background-color:DarkGrey; color:White"><center>Status</td>
+  </tr>
+  <tr>
+    <%@invoice.invoice_items.each do |invoice_item| %>
+      <td style="background-color:LightGrey;"><center><%= @invoice.items_name %></td>
+      <td style="background-color:LightGrey;"><center><%= invoice_item.quantity %></td>
+      <td style="background-color:LightGrey;"><center>$<%= invoice_item.format_unit_price %></td>
+      <td style="background-color:LightGrey;"><center><select style="font-size:20px" id="status" name="status">
+        <option value="1"><%= invoice_item.status %></option>
+        <option value="2"><%= @invoice.invoice_items.last.status %></option>
+        <option value="3"><%= invoice_item.status %></option>
+        </select>
+      </td>
+    <% end %>
+  </tr>
+</table>
+</div>
+</body>
+
+
+
+
+

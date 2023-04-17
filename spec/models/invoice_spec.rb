@@ -70,6 +70,12 @@ RSpec.describe Invoice, type: :model do
     end
     
     describe 'additional instance methods' do
+      let!(:merchant) { create(:merchant) }
+
+      let!(:item_1) { create(:item, merchant_id: merchant.id, name: "Grandaddy Purple") }
+      let!(:item_2) { create(:item, merchant_id: merchant.id, name: "Girl Scout Cookies") }
+      let!(:item_3) { create(:item, merchant_id: merchant.id, name: "OG Kush") }
+
       let!(:customer_1) { create(:customer, first_name: 'Branden', last_name: 'Smith') }
       let!(:customer_2) { create(:customer, first_name: 'Reilly', last_name: 'Robertson') }
       let!(:customer_3) { create(:customer, first_name: 'Grace', last_name: 'Chavez') }
@@ -82,10 +88,20 @@ RSpec.describe Invoice, type: :model do
       let!(:invoice_2) { create(:invoice, customer_id: customer_2.id, created_at: static_time_2) }
       let!(:invoice_3) { create(:invoice, customer_id: customer_3.id, created_at: static_time_3) }
       
+      let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2) }
+      let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
+      let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id, status: 2) }
+
       it '#customer_full_name' do
         expect(invoice_1.customer_full_name).to eq("Branden Smith")
         expect(invoice_2.customer_full_name).to eq("Reilly Robertson")
         expect(invoice_3.customer_full_name).to eq("Grace Chavez")
+      end
+
+      it '#items_name' do
+        expect(invoice_1.items_name).to eq("Grandaddy Purple")
+        expect(invoice_2.items_name).to eq("Girl Scout Cookies")
+        expect(invoice_3.items_name).to eq("OG Kush")
       end
     end
   end
