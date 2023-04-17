@@ -7,7 +7,7 @@ RSpec.describe 'admin_merchants_index', type: :feature do
       @merchant_2 = create(:merchant)
       @merchant_3 = create(:merchant, status: 'enabled')
       @merchant_4 = create(:merchant)
-
+      
       visit admin_merchants_path
     end
 
@@ -118,6 +118,137 @@ RSpec.describe 'admin_merchants_index', type: :feature do
       expect(page).to have_link('Create New Merchant')
       click_link 'Create New Merchant'
       expect(current_path).to eq(new_admin_merchant_path)
+    end
+  end
+  
+  describe 'I see the names of the top 5 merchants by total revenue generated' do
+    before(:each) do
+      @customers = create_list(:customer, 20)
+
+      @merchant_1 = create(:merchant, status: 'enabled')
+      @merchant_2 = create(:merchant)
+      @merchant_3 = create(:merchant, status: 'enabled')
+      @merchant_4 = create(:merchant)
+      @merchant_5 = create(:merchant)
+      @merchant_6 = create(:merchant)
+      @merchant_7 = create(:merchant)
+
+      @merchant_item_1 = create(:item, merchant_id: @merchant_1.id, unit_price: 10000)
+      @merchant_item_2 = create(:item, merchant_id: @merchant_2.id, unit_price: 10000)
+      @merchant_item_3 = create(:item, merchant_id: @merchant_3.id, unit_price: 10000)
+      @merchant_item_4 = create(:item, merchant_id: @merchant_4.id, unit_price: 10000)
+      @merchant_item_5 = create(:item, merchant_id: @merchant_5.id, unit_price: 10000)
+      @merchant_item_6 = create(:item, merchant_id: @merchant_6.id, unit_price: 10000)
+      @merchant_item_7 = create(:item, merchant_id: @merchant_7.id, unit_price: 10000)
+
+      @invoice_1 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice_2 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice_3 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice_4 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice_5 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice_6 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice_7 = create(:invoice, customer_id: @customers.sample.id)
+    end
+
+    it 'and should calculate revenue for an invoice by sum of revenue of all invoice items and each merchant name links to its show page' do
+
+      create_list(:invoice_item, 1, item_id: @merchant_item_1.id, invoice_id: @invoice_1.id, quantity: 1, unit_price:10000)
+      create_list(:invoice_item, 2, item_id: @merchant_item_2.id, invoice_id: @invoice_2.id, quantity: 1, unit_price:10000)
+      create_list(:invoice_item, 3, item_id: @merchant_item_3.id, invoice_id: @invoice_3.id, quantity: 1, unit_price:10000)
+      create_list(:invoice_item, 4, item_id: @merchant_item_4.id, invoice_id: @invoice_4.id, quantity: 1, unit_price:10000)
+      create_list(:invoice_item, 5, item_id: @merchant_item_5.id, invoice_id: @invoice_5.id, quantity: 1, unit_price:10000)
+      create_list(:invoice_item, 6, item_id: @merchant_item_6.id, invoice_id: @invoice_6.id, quantity: 1, unit_price:10000)
+      create_list(:invoice_item, 7, item_id: @merchant_item_7.id, invoice_id: @invoice_7.id, quantity: 1, unit_price:10000)
+
+      create(:transaction, invoice_id: @invoice_2.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_3.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_4.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_5.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_6.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_7.id, result: 'success')
+
+      visit admin_merchants_path
+      
+      within("div#top_5_merchants_by_revenue") do
+        expect(page).to have_content("Top 5 Merchants by Revenue")
+
+        expect(page).to have_link("#{@merchant_7.name}", href: admin_merchant_path(@merchant_7))
+        expect(page).to have_link("#{@merchant_6.name}", href: admin_merchant_path(@merchant_6))
+        expect(page).to have_link("#{@merchant_5.name}", href: admin_merchant_path(@merchant_5))
+        expect(page).to have_link("#{@merchant_4.name}", href: admin_merchant_path(@merchant_4))
+        expect(page).to have_link("#{@merchant_3.name}", href: admin_merchant_path(@merchant_3))
+        expect(page).to_not have_link("#{@merchant_2.name}")
+        expect(page).to_not have_link("#{@merchant_1.name}")
+
+        expect(@merchant_7.name).to appear_before(@merchant_6.name)
+        expect(@merchant_6.name).to appear_before(@merchant_5.name)
+        expect(@merchant_5.name).to appear_before(@merchant_4.name)
+        expect(@merchant_4.name).to appear_before(@merchant_3.name)
+      end
+    end
+
+    it 'and calculates each invoice item revenue by unit_price and quantity' do
+      @invoice_1 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice_2 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice_3 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice_4 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice_5 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice_6 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice_7 = create(:invoice, customer_id: @customers.sample.id)
+
+      create(:invoice_item, item_id: @merchant_item_1.id, invoice_id: @invoice_1.id, quantity: 1, unit_price:10000)
+      create(:invoice_item, item_id: @merchant_item_2.id, invoice_id: @invoice_2.id, quantity: 2, unit_price:10000)
+      create(:invoice_item, item_id: @merchant_item_3.id, invoice_id: @invoice_3.id, quantity: 3, unit_price:10000)
+      create(:invoice_item, item_id: @merchant_item_4.id, invoice_id: @invoice_4.id, quantity: 4, unit_price:10000)
+      create(:invoice_item, item_id: @merchant_item_5.id, invoice_id: @invoice_5.id, quantity: 5, unit_price:10000)
+      create(:invoice_item, item_id: @merchant_item_6.id, invoice_id: @invoice_6.id, quantity: 6, unit_price:10000)
+      create(:invoice_item, item_id: @merchant_item_7.id, invoice_id: @invoice_7.id, quantity: 7, unit_price:10000)
+
+      create(:transaction, invoice_id: @invoice_2.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_3.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_4.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_5.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_6.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_7.id, result: 'success')      
+
+      visit admin_merchants_path
+      
+      within("div#top_5_merchants_by_revenue") do
+        expect(@merchant_7.name).to appear_before(@merchant_6.name)
+        expect(@merchant_6.name).to appear_before(@merchant_5.name)
+        expect(@merchant_5.name).to appear_before(@merchant_4.name)
+        expect(@merchant_4.name).to appear_before(@merchant_3.name)
+      end
+    end
+
+    it 'and only invoices with at least one successful transaction should count towards revenue' do
+      create_list(:invoice_item, 1, item_id: @merchant_item_1.id, invoice_id: @invoice_1.id, quantity: 1, unit_price:10000)
+      create_list(:invoice_item, 2, item_id: @merchant_item_2.id, invoice_id: @invoice_2.id, quantity: 1, unit_price:10000)
+      create_list(:invoice_item, 3, item_id: @merchant_item_3.id, invoice_id: @invoice_3.id, quantity: 1, unit_price:10000)
+      create_list(:invoice_item, 4, item_id: @merchant_item_4.id, invoice_id: @invoice_4.id, quantity: 1, unit_price:10000)
+      create_list(:invoice_item, 5, item_id: @merchant_item_5.id, invoice_id: @invoice_5.id, quantity: 1, unit_price:10000)
+      create_list(:invoice_item, 6, item_id: @merchant_item_6.id, invoice_id: @invoice_6.id, quantity: 1, unit_price:10000)
+      create_list(:invoice_item, 7, item_id: @merchant_item_7.id, invoice_id: @invoice_7.id, quantity: 1, unit_price:10000)
+
+      create(:transaction, invoice_id: @invoice_1.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_2.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_3.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_4.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_5.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_6.id, result: 'failed')
+      create(:transaction, invoice_id: @invoice_6.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_7.id, result: 'failed')
+
+      visit admin_merchants_path
+
+      within("div#top_5_merchants_by_revenue") do
+        expect(@merchant_6.name).to appear_before(@merchant_5.name)
+        expect(@merchant_5.name).to appear_before(@merchant_4.name)
+        expect(@merchant_4.name).to appear_before(@merchant_3.name)
+        expect(@merchant_3.name).to appear_before(@merchant_2.name)
+        expect(page).to_not have_content(@merchant_7.name)
+        expect(page).to_not have_content(@merchant_1.name)
+      end
     end
   end
 end
