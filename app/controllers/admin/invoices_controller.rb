@@ -10,11 +10,6 @@ class Admin::InvoicesController < ApplicationController
   def update
     invoice = Invoice.find(params[:id])
     invoice.update(invoice_params)
-    if (params[:invoice][:status] == "completed")
-      invoice.update(status: 'completed')
-    elsif (params[:invoice][:status] == "shipped")
-      invoice.update(status: 'shipped')
-    end
     redirect_to admin_invoice_path(invoice.id)
   end
 
