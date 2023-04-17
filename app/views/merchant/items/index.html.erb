@@ -1,6 +1,6 @@
 <h2><%= @merchant.name %></h2>
 
-<div class="enabled-items-column">
+<div class="items-column">
   <%= content_tag :div, id: "enabled_items" do %>
     <h3>Enabled Items</h3>
     <% @merchant.items.each do |item| %>
@@ -15,4 +15,18 @@
     </ul>
     <% end %>
   <% end %>
+  <%= content_tag :div, id: "disabled_items" do %>
+  <h3>Disabled Items</h3>
+  <% @merchant.items.each do |item| %>
+  <ul>
+    <li id="merchant_<%= item.id %>">
+    <%= link_to item.name,  merchant_item_path(@merchant, item) %>         
+      <%= form_with model: item, url: merchant_item_path(@merchant, item), local: true do |form| %> 
+        <%= form.hidden_field :status, value: "enabled" %>
+        <%= form.submit "Enable" %>
+      <% end %>
+    </li>
+  </ul>
+  <% end %>
+<% end %>
 </div>

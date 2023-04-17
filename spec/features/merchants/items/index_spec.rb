@@ -7,9 +7,9 @@ RSpec.describe 'Merchant Items Index Page' do
   
   let!(:item_1) { create(:item, merchant_id: merchant.id) }
   let!(:item_2) { create(:item, merchant_id: merchant.id, status: 1) }
-  let!(:item_3) { create(:item, merchant_id: merchant.id) }
-  let!(:item_4) { create(:item, merchant_id: merchant.id) }
-  let!(:item_5) { create(:item, merchant_id: merchant.id) }
+  let!(:item_3) { create(:item, merchant_id: merchant.id, status: 1) }
+  let!(:item_4) { create(:item, merchant_id: merchant.id, status: 1) }
+  let!(:item_5) { create(:item, merchant_id: merchant.id, status: 1) }
   let!(:item_6) { create(:item, merchant_id: merchant.id) }
   let!(:item_7) { create(:item, merchant_id: merchant.id) }
   let!(:item_8) { create(:item, merchant_id: merchant.id) }
@@ -108,12 +108,10 @@ RSpec.describe 'Merchant Items Index Page' do
     end
   end
 
-#   As a merchant
-# When I visit my items index page
-# Next to each item name I see a button to disable or enable that item.
-# When I click this button
-# Then I am redirected back to the items index
-# And I see that the items status has changed
+  # As a merchant,
+  # When I visit my merchant items index page
+  # Then I see two sections, one for "Enabled Items" and one for "Disabled Items"
+  # And I see that each Item is listed in the appropriate section
   describe 'disable/enable buttons for items' do
     it 'next to each item there is a button to enable/disable the item' do
       visit merchant_items_path(merchant)
@@ -123,14 +121,15 @@ RSpec.describe 'Merchant Items Index Page' do
         expect(page).to_not have_button("Enable")
       end
 
-      # within("li#merchant_#{item_2.id}") do
-      #   expect(page).to have_button("Enable")
-      #   expect(page).to_not have_button("Disable")
-      # end
+      within("li#merchant_#{item_2.id}") do
+        expect(page).to have_button("Enable")
+        expect(page).to_not have_button("Disable")
+      end
     end
 
     it 'when button is clicked item status is changed and page is redirected to merchant items index' do
       visit merchant_items_path(merchant)
+      save_and_open_page
         
       within("li#merchant_#{item_1.id}") do
         expect(item_1.status).to eq("enabled")
@@ -139,12 +138,74 @@ RSpec.describe 'Merchant Items Index Page' do
         expect(Item.find(item_1.id).status).to eq('disabled')
       end
 
-      # within("li#merchant_#{item_2.id}") do
-      #   expect(item_2.status).to eq("disabled")
-      #   click_button "Enable"
-      #   expect(current_path).to eq(merchant_items_path(merchant))
-      #   expect(Item.find(item_2.id).status).to eq('enabled')
-      # end
+      within("li#merchant_#{item_2.id}") do
+        expect(item_2.status).to eq("disabled")
+        click_button "Enable"
+        expect(current_path).to eq(merchant_items_path(merchant))
+        expect(Item.find(item_2.id).status).to eq('enabled')
+      end
+    end
+
+    it 'items appear in enabled or disabled column based on their status' do
+      visit merchant_items_path(merchant)
+
+      within("#enabled_items") do
+        expect(page).to have_content(item_1.name)
+        expect(page).to have_content(item_6.name)
+        expect(page).to have_content(item_7.name)
+        expect(page).to have_content(item_8.name)
+      end
+
+      within("#disables_items") do
+        expect(page).to have_content(item_2.name)
+        expect(page).to have_content(item_3.name)
+        expect(page).to have_content(item_4.name)
+        expect(page).to have_content(item_5.name)
+      end
+    end
+
+    it 'if item status is disabled then Enable button appears next to it and vise versa' do
+      visit merchant_items_path(merchant)
+
+      within("li#merchant_#{item_1.id}") do
+        expect(item_1.status).to eq("enabled")
+        expect(page).to have_button("Disable")
+      end
+
+      within("li#merchant_#{item_6.id}") do
+        expect(item_6.status).to eq("enabled")
+        expect(page).to have_button("Disable")
+      end
+      
+      within("li#merchant_#{item_7.id}") do
+        expect(item_7.status).to eq("enabled")
+        expect(page).to have_button("Disable")
+      end
+
+      within("li#merchant_#{item_8.id}") do
+        expect(item_8.status).to eq("enabled")
+        expect(page).to have_button("Disable")
+      end
+
+      within("li#merchant_#{item_2.id}") do
+        expect(item_2.status).to eq("disabled")
+        expect(page).to have_button("Enable")
+      end
+
+      within("li#merchant_#{item_3.id}") do
+        expect(item_3.status).to eq("disabled")
+        expect(page).to have_button("Enable")
+      end
+
+      within("li#merchant_#{item_4.id}") do
+        expect(item_4.status).to eq("disabled")
+        expect(page).to have_button("Enable")
+      end
+
+      within("li#merchant_#{item_5.id}") do
+        expect(item_5.status).to eq("disabled")
+        expect(page).to have_button("Enable")
+      end
     end
   end
 end
