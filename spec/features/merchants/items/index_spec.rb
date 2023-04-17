@@ -219,7 +219,7 @@ RSpec.describe 'Merchant Items Index Page' do
 
     it 'when item is clicked page is redirected to item creation form' do
       visit merchant_items_path(merchant)
-
+      
       within("#item_create") do
         click_link "Create Item"
         expect(current_path).to eq(new_merchant_item_path(merchant))

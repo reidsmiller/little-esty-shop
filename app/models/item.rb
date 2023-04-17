@@ -2,6 +2,7 @@ class Item < ApplicationRecord
   self.primary_key = :id
   validates :name, presence: true
   validates :description, presence: true
+  validates :description, length: { minimum: 6 }
   validates :unit_price, presence: true
   validates :status, presence: true
   belongs_to :merchant

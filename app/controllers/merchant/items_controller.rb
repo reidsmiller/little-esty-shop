@@ -28,7 +28,20 @@ class Merchant::ItemsController < ApplicationController
   end
 
   def new
-    
+    @merchant = Merchant.find(params[:merchant_id])
+    @item = Item.new
+  end
+
+  def create
+    @merchant = Merchant.find(params[:merchant_id])
+    @item = @merchant.items.create(item_params)
+     if @item.save
+      flash[:notice] = "Item succesfully created"
+      redirect_to merchant_items_path(@merchant)
+     else
+      flash[:alert] = "Item not created: description has to be at least 6 charachters long"
+      redirect_to new_merchant_item_path(@merchant)
+     end
   end
 
   private
