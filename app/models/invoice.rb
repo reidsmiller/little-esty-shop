@@ -21,7 +21,7 @@ class Invoice < ApplicationRecord
   "#{customer.first_name} #{customer.last_name}"
   end
 
-  def items_name
-    items.first.name
+  def total_revenue
+    invoice_items.sum("(quantity * unit_price )/ 100.0").round(2).to_s
   end
 end

@@ -88,9 +88,10 @@ RSpec.describe Invoice, type: :model do
       let!(:invoice_2) { create(:invoice, customer_id: customer_2.id, created_at: static_time_2) }
       let!(:invoice_3) { create(:invoice, customer_id: customer_3.id, created_at: static_time_3) }
       
-      let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2) }
-      let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
+      let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2, unit_price: 6000, quantity: 3) }
+      let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2, unit_price: 1000, quantity: 12) }
       let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id, status: 2) }
+      let!(:invoice_item_4) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_2.id, status: 2, unit_price: 8800, quantity: 10) }
 
       it '#customer_full_name' do
         expect(invoice_1.customer_full_name).to eq("Branden Smith")
@@ -98,10 +99,9 @@ RSpec.describe Invoice, type: :model do
         expect(invoice_3.customer_full_name).to eq("Grace Chavez")
       end
 
-      it '#items_name' do
-        expect(invoice_1.items_name).to eq("Grandaddy Purple")
-        expect(invoice_2.items_name).to eq("Girl Scout Cookies")
-        expect(invoice_3.items_name).to eq("OG Kush")
+      it '#total_revenue' do
+        expect(invoice_1.total_revenue).to eq("180.0")
+        expect(invoice_2.total_revenue).to eq("1000.0")
       end
     end
   end

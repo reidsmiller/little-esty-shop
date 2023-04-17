@@ -16,9 +16,9 @@ RSpec.describe InvoiceItem, type: :model do
     let!(:merchant) { create(:merchant) }
     let!(:merchant_1) { create(:merchant) }
 
-    let!(:item_1) { create(:item, merchant_id: merchant.id) }
-    let!(:item_2) { create(:item, merchant_id: merchant.id) }
-    let!(:item_3) { create(:item, merchant_id: merchant.id) }
+    let!(:item_1) { create(:item, merchant_id: merchant.id, name: "Grandaddy Purple") }
+    let!(:item_2) { create(:item, merchant_id: merchant.id, name: "Girl Scout Cookies") }
+    let!(:item_3) { create(:item, merchant_id: merchant.id, name: "OG Kush") }
     let!(:item_9) { create(:item, merchant_id: merchant_1.id) }
 
     let!(:customer_1) { create(:customer, first_name: 'Branden', last_name: 'Smith') }
@@ -43,6 +43,12 @@ RSpec.describe InvoiceItem, type: :model do
     it '#format_unit_price' do
       expect(invoice_item_1.format_unit_price).to eq("400.01")
       expect(invoice_item_7.format_unit_price).to eq("123.45")
+    end
+
+    it '#items_name' do
+        expect(invoice_item_1.items_name).to eq("Grandaddy Purple")
+        expect(invoice_item_2.items_name).to eq("Girl Scout Cookies")
+        expect(invoice_item_3.items_name).to eq("OG Kush")
     end
   end
 end
