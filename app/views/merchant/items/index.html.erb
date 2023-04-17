@@ -1,5 +1,11 @@
 <h2><%= @merchant.name %></h2>
 
+<div class=item_create_cloumn>
+  <%= content_tag :div, id: "item_create" do %>
+    <%= link_to "Create Item", new_merchant_item_path(@merchant) %>
+  <% end %>
+</div>
+
 <div class="items-column">
   <%= content_tag :div, id: "enabled_items" do %>
     <h3>Enabled Items</h3>

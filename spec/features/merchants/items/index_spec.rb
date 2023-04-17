@@ -5,14 +5,14 @@ RSpec.describe 'Merchant Items Index Page' do
   let!(:merchant) { create(:merchant) }
   let!(:merchant_1) { create(:merchant) }
   
-  let!(:item_1) { create(:item, merchant_id: merchant.id) }
+  let!(:item_1) { create(:item, merchant_id: merchant.id, status: 0) }
   let!(:item_2) { create(:item, merchant_id: merchant.id, status: 1) }
   let!(:item_3) { create(:item, merchant_id: merchant.id, status: 1) }
   let!(:item_4) { create(:item, merchant_id: merchant.id, status: 1) }
   let!(:item_5) { create(:item, merchant_id: merchant.id, status: 1) }
-  let!(:item_6) { create(:item, merchant_id: merchant.id) }
-  let!(:item_7) { create(:item, merchant_id: merchant.id) }
-  let!(:item_8) { create(:item, merchant_id: merchant.id) }
+  let!(:item_6) { create(:item, merchant_id: merchant.id, status: 0) }
+  let!(:item_7) { create(:item, merchant_id: merchant.id, status: 0) }
+  let!(:item_8) { create(:item, merchant_id: merchant.id, status: 0) }
   let!(:item_9) { create(:item, merchant_id: merchant_1.id) }
 
   let!(:customer_1) { create(:customer, first_name: 'Branden', last_name: 'Smith') }
@@ -94,7 +94,6 @@ RSpec.describe 'Merchant Items Index Page' do
       expect(current_path).to eq(merchant_item_path(merchant, item_1))
       visit "/merchants/#{merchant.id}/items"
 
-
       click_link item_2.name
       expect(current_path).to eq(merchant_item_path(merchant, item_2))
       visit "/merchants/#{merchant.id}/items"
@@ -104,10 +103,6 @@ RSpec.describe 'Merchant Items Index Page' do
     end
   end
 
-  # As a merchant,
-  # When I visit my merchant items index page
-  # Then I see two sections, one for "Enabled Items" and one for "Disabled Items"
-  # And I see that each Item is listed in the appropriate section
   describe 'disable/enable buttons for items' do
     it 'next to each item there is a button to enable/disable the item' do
       visit merchant_items_path(merchant)
@@ -200,6 +195,34 @@ RSpec.describe 'Merchant Items Index Page' do
       within("li#merchant_#{item_5.id}") do
         expect(item_5.status).to eq("disabled")
         expect(page).to have_button("Enable")
+      end
+    end
+  end
+
+#   As a merchant
+# When I visit my items index page
+# I see a link to create a new item.
+# When I click on the link,
+# I am taken to a form that allows me to add item information.
+# When I fill out the form I click ‘Submit’
+# Then I am taken back to the items index page
+# And I see the item I just created displayed in the list of items.
+
+  describe 'item_creation' do
+    it 'index page shows a link to create a new item' do
+      visit merchant_items_path(merchant)
+
+      within("#item_create") do
+        expect(page).to have_link("Create Item")
+      end
+    end
+
+    it 'when item is clicked page is redirected to item creation form' do
+      visit merchant_items_path(merchant)
+      
+      within("#item_create") do
+        click_link "Create Item"
+        expect(current_path).to eq(new_merchant_item_path(merchant))
       end
     end
   end
