@@ -49,7 +49,7 @@ RSpec.describe 'admin_dashboard', type: :feature do
       create(:invoice_item, invoice_id: @invoice_3.id, item_id: @item_5.id, status: 'pending')
       create(:invoice_item, invoice_id: @invoice_4.id, item_id: @item_6.id, status: 'packaged')
       create(:invoice_item, invoice_id: @invoice_5.id, item_id: @item_7.id, status: 'shipped')
-      
+
       visit admin_index_path
     end
     
