@@ -4,7 +4,8 @@ RSpec.describe Merchant, type: :model do
   describe 'relationships' do
     it { should have_many :items }
     it { should have_many(:invoice_items).through(:items)}
-    it { should have_many(:invoices).through(:items)}
+    it { should have_many(:invoices).through(:invoice_items)}
+    it { should have_many(:customers).through(:invoices)}
     it { should have_many(:transactions).through(:invoices)}
   end
 
@@ -72,6 +73,14 @@ RSpec.describe Merchant, type: :model do
       create_list(:invoice_item, 6, item_id: @merchant_item_6.id, invoice_id: invoice_6.id, quantity: 1, unit_price:10000)
       create_list(:invoice_item, 7, item_id: @merchant_item_7.id, invoice_id: invoice_7.id, quantity: 1, unit_price:10000)
 
+      create(:transaction, invoice_id: invoice_1.id, result: 'success')
+      create(:transaction, invoice_id: invoice_2.id, result: 'success')
+      create(:transaction, invoice_id: invoice_3.id, result: 'success')
+      create(:transaction, invoice_id: invoice_4.id, result: 'success')
+      create(:transaction, invoice_id: invoice_5.id, result: 'success')
+      create(:transaction, invoice_id: invoice_6.id, result: 'success')
+      create(:transaction, invoice_id: invoice_7.id, result: 'success')
+
       merchants = Merchant.top_5_merchants_by_total_revenue
       
       expect(merchants.first.total_revenue).to eq(70000)
@@ -98,6 +107,14 @@ RSpec.describe Merchant, type: :model do
       create(:invoice_item, item_id: @merchant_item_6.id, invoice_id: invoice_6.id, quantity: 6, unit_price:10000)
       create(:invoice_item, item_id: @merchant_item_7.id, invoice_id: invoice_7.id, quantity: 7, unit_price:10000)
 
+      create(:transaction, invoice_id: invoice_1.id, result: 'success')
+      create(:transaction, invoice_id: invoice_2.id, result: 'success')
+      create(:transaction, invoice_id: invoice_3.id, result: 'success')
+      create(:transaction, invoice_id: invoice_4.id, result: 'success')
+      create(:transaction, invoice_id: invoice_5.id, result: 'success')
+      create(:transaction, invoice_id: invoice_6.id, result: 'success')
+      create(:transaction, invoice_id: invoice_7.id, result: 'success')
+      
       merchants = Merchant.top_5_merchants_by_total_revenue
       
       expect(merchants.first.total_revenue).to eq(70000)
@@ -106,7 +123,7 @@ RSpec.describe Merchant, type: :model do
       expect(merchants).to eq([@merchant_7, @merchant_6, @merchant_5, @merchant_4, @merchant_3])
     end
 
-    xit 'only invoices with at least one successful transaction should count towards revenue' do
+    it 'only invoices with at least one successful transaction should count towards revenue' do
       invoice_1 = create(:invoice, customer_id: @customers.sample.id)
       invoice_2 = create(:invoice, customer_id: @customers.sample.id)
       invoice_3 = create(:invoice, customer_id: @customers.sample.id)
