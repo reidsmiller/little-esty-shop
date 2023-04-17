@@ -11,4 +11,8 @@ class InvoiceItem < ApplicationRecord
   def format_unit_price
     (unit_price / 100.0).round(2).to_s
   end
+
+  def items_name
+    item.name
+  end
 end
