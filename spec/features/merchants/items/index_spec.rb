@@ -104,10 +104,6 @@ RSpec.describe 'Merchant Items Index Page' do
     end
   end
 
-  # As a merchant,
-  # When I visit my merchant items index page
-  # Then I see two sections, one for "Enabled Items" and one for "Disabled Items"
-  # And I see that each Item is listed in the appropriate section
   describe 'disable/enable buttons for items' do
     it 'next to each item there is a button to enable/disable the item' do
       visit merchant_items_path(merchant)
