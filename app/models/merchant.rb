@@ -22,4 +22,12 @@ class Merchant < ApplicationRecord
     .where("invoice_items.status != 2 AND items.merchant_id = ?", self.id)
     .order(:creation_date)
   end
+
+  def enabled_items
+    items.where(status: :enabled)
+  end
+
+  def disabled_items
+    items.where(status: :disabled)
+  end
 end
