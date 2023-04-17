@@ -5,7 +5,7 @@
   <h3>Top 5 Merchants by Revenue</h3>
   <ol>
     <% @top_5_merchants.each do |merchant| %>
-      <li><%= link_to "#{merchant.name}", admin_merchant_path(merchant) %></li>
+      <li id="top_5_<%= merchant.id %>"><%= link_to "#{merchant.name}", admin_merchant_path(merchant) %></li>
     <% end %>
   </ol>
 </div>
