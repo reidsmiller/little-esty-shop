@@ -1,4 +1,5 @@
 class Merchant::ItemsController < ApplicationController
+
   def index
     @merchant = Merchant.find(params[:merchant_id])
   end
@@ -24,6 +25,10 @@ class Merchant::ItemsController < ApplicationController
       flash[:alert] = "Item not updated: Required information not filled out or filled out incorrectly"
       redirect_to edit_merchant_item_path(@merchant, @item)
     end
+  end
+
+  def new
+    
   end
 
   private
