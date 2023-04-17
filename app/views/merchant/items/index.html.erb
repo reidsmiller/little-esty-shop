@@ -3,7 +3,7 @@
 <div class="items-column">
   <%= content_tag :div, id: "enabled_items" do %>
     <h3>Enabled Items</h3>
-    <% @merchant.items.each do |item| %>
+    <% @merchant.enabled_items.each do |item| %>
     <ul>
       <li id="merchant_<%= item.id %>">
       <%= link_to item.name,  merchant_item_path(@merchant, item) %>         
@@ -17,7 +17,7 @@
   <% end %>
   <%= content_tag :div, id: "disabled_items" do %>
   <h3>Disabled Items</h3>
-  <% @merchant.items.each do |item| %>
+  <% @merchant.disabled_items.each do |item| %>
   <ul>
     <li id="merchant_<%= item.id %>">
     <%= link_to item.name,  merchant_item_path(@merchant, item) %>         
