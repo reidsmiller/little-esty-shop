@@ -14,14 +14,14 @@ RSpec.describe Merchant, type: :model do
     let!(:merchant) { create(:merchant) }
     let!(:merchant_1) { create(:merchant) }
     
-    let!(:item_1) { create(:item, merchant_id: merchant.id) }
-    let!(:item_2) { create(:item, merchant_id: merchant.id) }
-    let!(:item_3) { create(:item, merchant_id: merchant.id) }
-    let!(:item_4) { create(:item, merchant_id: merchant.id) }
-    let!(:item_5) { create(:item, merchant_id: merchant.id) }
-    let!(:item_6) { create(:item, merchant_id: merchant.id) }
-    let!(:item_7) { create(:item, merchant_id: merchant.id) }
-    let!(:item_8) { create(:item, merchant_id: merchant.id) }
+    let!(:item_1) { create(:item, merchant_id: merchant.id, status: 0) }
+    let!(:item_2) { create(:item, merchant_id: merchant.id, status: 0) }
+    let!(:item_3) { create(:item, merchant_id: merchant.id, status: 0) }
+    let!(:item_4) { create(:item, merchant_id: merchant.id, status: 0) }
+    let!(:item_5) { create(:item, merchant_id: merchant.id, status: 1) }
+    let!(:item_6) { create(:item, merchant_id: merchant.id, status: 1) }
+    let!(:item_7) { create(:item, merchant_id: merchant.id, status: 1) }
+    let!(:item_8) { create(:item, merchant_id: merchant.id, status: 1) }
     let!(:item_9) { create(:item, merchant_id: merchant_1.id) }
     let!(:item_10) { create(:item, merchant_id: merchant_1.id) }
 
@@ -69,6 +69,20 @@ RSpec.describe Merchant, type: :model do
     describe '#unshipped_items' do
       it 'retrieves items from this merchant that have an order and that order status is not shipped' do
         expect(merchant.unshipped_items).to eq([item_4, item_5, item_6])
+      end
+    end
+
+    describe '#enabled_items' do
+      it 'retreives only items that have enabled status from this merchant' do
+        expect(merchant.enabled_items).to eq([item_1, item_2, item_3, item_4])
+        expect(merchant.enabled_items).to_not eq([item_5, item_6, item_7, item_8])
+      end
+    end
+
+    describe '#disabled_items' do
+      it 'retreives only items that have disabled status from this merchant' do
+        expect(merchant.disabled_items).to eq([item_5, item_6, item_7, item_8])
+        expect(merchant.disabled_items).to_not eq([item_1, item_2, item_3, item_4])
       end
     end
   end 

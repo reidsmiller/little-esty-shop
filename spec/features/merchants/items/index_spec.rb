@@ -129,7 +129,6 @@ RSpec.describe 'Merchant Items Index Page' do
 
     it 'when button is clicked item status is changed and page is redirected to merchant items index' do
       visit merchant_items_path(merchant)
-      save_and_open_page
         
       within("li#merchant_#{item_1.id}") do
         expect(item_1.status).to eq("enabled")
