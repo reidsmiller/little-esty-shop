@@ -20,4 +20,8 @@ class Invoice < ApplicationRecord
   def customer_full_name
   "#{customer.first_name} #{customer.last_name}"
   end
+
+  def items_name
+    items.first.name
+  end
 end
