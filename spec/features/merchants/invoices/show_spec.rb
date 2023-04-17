@@ -1,12 +1,4 @@
-# As a merchant
-# When I visit my merchant invoice show page
-# Then I see all of my items on the invoice including:
 
-# Item name
-# The quantity of the item ordered
-# The price the Item sold for
-# The Invoice Item status
-# And I do not see any information related to Items for other merchants
 require 'rails_helper'
 
 RSpec.describe 'Merchant/invoice show page', type: :feature do
@@ -43,13 +35,14 @@ let!(:invoice_5) { create(:invoice, customer_id: customer_5.id) }
 let!(:invoice_6) { create(:invoice, customer_id: customer_6.id) }
 let!(:invoice_7) { create(:invoice, customer_id: customer_6.id) }
 
-let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2) }
+let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2, unit_price: 6000, quantity: 3) }
 let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
 let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id, status: 2) }
 let!(:invoice_item_4) { create(:invoice_item, item_id: item_4.id, invoice_id: invoice_4.id, status: 0) }
 let!(:invoice_item_5) { create(:invoice_item, item_id: item_5.id, invoice_id: invoice_5.id, status: 0) }
-let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id, status: 1) }
+let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id, status: 1, unit_price: 999, quantity: 12) }
 let!(:invoice_item_7) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_7.id, status: 1) }
+let!(:invoice_item_8) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_6.id, status: 1, unit_price: 8800, quantity: 10) }
 
 let!(:inv_1_transaction_s) { create_list(:transaction, 10, result: 1, invoice_id: invoice_1.id) }
 let!(:inv_1_transaction_f) { create_list(:transaction, 5, result: 0, invoice_id: invoice_1.id) }
@@ -82,6 +75,16 @@ let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id:
       expect(page).to have_content(invoice_2.customer_full_name)
       expect(invoice_2.customer.first_name).to appear_before(invoice_2.customer.last_name)
     end
+
+    it 'should display the total revenue of items on the invoice' do
+      visit merchant_invoice_path(merchant, invoice_1.id)
+      
+      expect(page).to have_content("Total Revenue: $180.0")
+      
+      visit merchant_invoice_path(merchant, invoice_6.id)
+      
+      expect(page).to have_content("Total Revenue: $999.88")
+    end
   end
 
   describe 'Items associated with an invoice belonging to a merchant' do
@@ -89,19 +92,22 @@ let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id:
       visit merchant_invoice_path(merchant, invoice_1.id)
       
       within("#invoice_items") do
-        expect(page).to have_content(invoice_1.items_name)
+        expect(page).to have_content(invoice_item_1.items_name)
         expect(page).to have_content(invoice_item_1.status)
         expect(page).to have_content(invoice_item_1.quantity)
         expect(page).to have_content(invoice_item_1.format_unit_price)
       end
       
-      visit merchant_invoice_path(merchant_1, invoice_7.id)
-      save_and_open_page
+      visit merchant_invoice_path(merchant_1, invoice_6.id)
+      
       within("#invoice_items") do
-        expect(page).to have_content(invoice_7.items_name)
-        expect(page).to have_content(invoice_item_7.status)
-        expect(page).to have_content(invoice_item_7.quantity)
-        expect(page).to have_content(invoice_item_7.format_unit_price)
+        expect(page).to have_content(invoice_item_6.items_name)
+        expect(page).to have_content(invoice_item_6.status)
+        expect(page).to have_content(invoice_item_6.quantity)
+        expect(page).to have_content(invoice_item_6.format_unit_price)
+        expect(page).to have_content(invoice_item_8.status)
+        expect(page).to have_content(invoice_item_8.quantity)
+        expect(page).to have_content(invoice_item_8.format_unit_price)
       end
     end
   end
