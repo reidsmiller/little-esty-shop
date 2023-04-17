@@ -6,6 +6,8 @@ class Merchant < ApplicationRecord
   has_many :customers, through: :invoices
   has_many :transactions, through: :invoices
 
+  validates :name, presence: true
+
   def top_five_customers
     Customer.joins(invoices: [:transactions, :invoice_items => :item])  
     .select("customers.*, COUNT(result) as transactions_count")
