@@ -87,5 +87,21 @@ RSpec.describe 'admin_invoice_show3333', type: :feature do
         expect(page).to have_content(@invoice_1.format_total_revenue)
       end
     end
+
+    it 'displays the form for the invoice status' do
+      within("#status_invoice") do
+        expect(page).to have_select('invoice_status', selected: 'in progress')
+        expect(page).to_not have_select('invoice_status', selected: 'completed')
+        find("#invoice_status option[value='completed']").select_option
+        click_button("Update Invoice")
+        expect(current_path).to eq(admin_invoice_path(@invoice_1.id))
+        expect(page).to have_select('invoice_status', selected: 'completed')
+      end
+
+      within("div#invoice_info") do
+        expect(page).to have_content("completed")
+        expect(page).to_not have_content("in progress")
+      end
+    end
   end
 end
