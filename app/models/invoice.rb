@@ -1,6 +1,5 @@
 class Invoice < ApplicationRecord
   self.primary_key = :id
-  validates :status, presence: true
   belongs_to :customer
   has_many :invoice_items
   has_many :items, through: :invoice_items
@@ -14,5 +13,13 @@ class Invoice < ApplicationRecord
 
   def format_time_stamp
     created_at.strftime("%A, %B %e, %Y")
+  end
+
+  def total_revenue
+    invoice_items.sum("unit_price * quantity")
+  end
+
+  def format_total_revenue
+    (total_revenue/ 100.0).round(2).to_s
   end
 end
