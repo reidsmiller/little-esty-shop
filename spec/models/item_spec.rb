@@ -84,11 +84,5 @@ RSpec.describe Item, type: :model do
         expect("(#)$*@0982&^%".to_s.gsub(/\D/, '').to_i).to eq(982)
       end
     end
-
-    describe 'self.top_5_items' do
-      it 'returns the top 5 items ranked by total revenue generated, but only if they have at least one succesful transaction' do
-        expect(Item.top_5_items).to eq([item_6, item_3, item_5, item_2, item_4])
-      end
-    end
   end
 end

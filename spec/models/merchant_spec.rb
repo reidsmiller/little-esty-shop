@@ -15,41 +15,41 @@ RSpec.describe Merchant, type: :model do
     let!(:merchant_1) { create(:merchant) }
     
     let!(:item_1) { create(:item, merchant_id: merchant.id, status: 0) }
-    let!(:item_2) { create(:item, merchant_id: merchant.id, status: 0) }
-    let!(:item_3) { create(:item, merchant_id: merchant.id, status: 0) }
-    let!(:item_4) { create(:item, merchant_id: merchant.id, status: 0) }
+    let!(:item_2) { create(:item, merchant_id: merchant.id, status: 1) }
+    let!(:item_3) { create(:item, merchant_id: merchant.id, status: 1) }
+    let!(:item_4) { create(:item, merchant_id: merchant.id, status: 1) }
     let!(:item_5) { create(:item, merchant_id: merchant.id, status: 1) }
-    let!(:item_6) { create(:item, merchant_id: merchant.id, status: 1) }
-    let!(:item_7) { create(:item, merchant_id: merchant.id, status: 1) }
-    let!(:item_8) { create(:item, merchant_id: merchant.id, status: 1) }
+    let!(:item_6) { create(:item, merchant_id: merchant.id, status: 0) }
+    let!(:item_7) { create(:item, merchant_id: merchant.id, status: 0) }
+    let!(:item_8) { create(:item, merchant_id: merchant.id, status: 0) }
     let!(:item_9) { create(:item, merchant_id: merchant_1.id) }
-    let!(:item_10) { create(:item, merchant_id: merchant_1.id) }
-
+  
     let!(:customer_1) { create(:customer, first_name: 'Branden', last_name: 'Smith') }
     let!(:customer_2) { create(:customer, first_name: 'Reilly', last_name: 'Robertson') }
     let!(:customer_3) { create(:customer, first_name: 'Grace', last_name: 'Chavez') }
     let!(:customer_4) { create(:customer, first_name: 'Logan', last_name: 'Nguyen') }
     let!(:customer_5) { create(:customer, first_name: 'Brandon', last_name: 'Popular') }
     let!(:customer_6) { create(:customer, first_name: 'Caroline', last_name: 'Rasmussen') }
-
+  
+    static_time_1 = Time.zone.parse('2023-04-13 00:50:37')
+    static_time_2 = Time.zone.parse('2023-04-12 00:50:37')
+  
     let!(:invoice_1) { create(:invoice, customer_id: customer_1.id) }
     let!(:invoice_2) { create(:invoice, customer_id: customer_2.id) }
     let!(:invoice_3) { create(:invoice, customer_id: customer_3.id) }
-    let!(:invoice_4) { create(:invoice, customer_id: customer_4.id) }
-    let!(:invoice_5) { create(:invoice, customer_id: customer_5.id) }
+    let!(:invoice_4) { create(:invoice, customer_id: customer_4.id, created_at: static_time_1) }
+    let!(:invoice_5) { create(:invoice, customer_id: customer_5.id, created_at: static_time_2) }
     let!(:invoice_6) { create(:invoice, customer_id: customer_6.id) }
     let!(:invoice_7) { create(:invoice, customer_id: customer_6.id) }
-    let!(:invoice_8) { create(:invoice, customer_id: customer_6.id) }
-
-    let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2) }
-    let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
-    let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id, status: 2) }
-    let!(:invoice_item_4) { create(:invoice_item, item_id: item_4.id, invoice_id: invoice_4.id, status: 0) }
-    let!(:invoice_item_5) { create(:invoice_item, item_id: item_5.id, invoice_id: invoice_5.id, status: 0) }
-    let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id, status: 1) }
-    let!(:invoice_item_7) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_7.id, status: 1) }
-    let!(:invoice_item_8) { create(:invoice_item, item_id: item_10.id, invoice_id: invoice_8.id, status: 1) }
-
+  
+    let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2, unit_price: 1000, quantity: 5) }
+    let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2, unit_price: 500, quantity: 25) }
+    let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id, status: 2, unit_price: 10000, quantity: 4) }
+    let!(:invoice_item_4) { create(:invoice_item, item_id: item_4.id, invoice_id: invoice_4.id, status: 0, unit_price: 1000, quantity: 10) }
+    let!(:invoice_item_5) { create(:invoice_item, item_id: item_5.id, invoice_id: invoice_5.id, status: 0, unit_price: 500, quantity: 60) }
+    let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id, status: 1, unit_price: 5000, quantity: 10) }
+    let!(:invoice_item_7) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_7.id, status: 1, unit_price: 10000, quantity: 20) }
+  
     let!(:inv_1_transaction_s) { create_list(:transaction, 10, result: 1, invoice_id: invoice_1.id) }
     let!(:inv_1_transaction_f) { create_list(:transaction, 5, result: 0, invoice_id: invoice_1.id) }
     let!(:inv_2_transaction_s) { create_list(:transaction, 5, result: 1, invoice_id: invoice_2.id) }
@@ -58,7 +58,7 @@ RSpec.describe Merchant, type: :model do
     let!(:inv_4_transaction_f) { create_list(:transaction, 20, result: 0, invoice_id: invoice_4.id) }
     let!(:inv_5_transaction_s) { create_list(:transaction, 11, result: 1, invoice_id: invoice_5.id) }
     let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id: invoice_6.id) }
-    let!(:inv_7_transaction_s) { create_list(:transaction, 20, result: 1, invoice_id: invoice_8.id) }
+    let!(:inv_7_transaction_f) { create_list(:transaction, 60, result: 0, invoice_id: invoice_7.id)}
     
     describe '#top_five_customers' do
       it '#customers retrieves five customers with the highest number of successful transactions from highest to lowest' do
@@ -67,22 +67,28 @@ RSpec.describe Merchant, type: :model do
     end
   
     describe '#unshipped_items' do
-      it 'retrieves items from this merchant that have an order and that order status is not shipped' do
-        expect(merchant.unshipped_items).to eq([item_4, item_5, item_6])
+      it 'retrieves items from this merchant that have an order and that order status is not shipped from oldest to newest' do
+        expect(merchant.unshipped_items).to eq([item_5, item_4, item_6])
       end
     end
 
     describe '#enabled_items' do
       it 'retreives only items that have enabled status from this merchant' do
-        expect(merchant.enabled_items).to eq([item_1, item_2, item_3, item_4])
-        expect(merchant.enabled_items).to_not eq([item_5, item_6, item_7, item_8])
+        expect(merchant.enabled_items.sort).to eq([item_1, item_6, item_7, item_8].sort)
+        expect(merchant.enabled_items).to_not eq([item_2, item_3, item_4, item_5])
       end
     end
 
     describe '#disabled_items' do
       it 'retreives only items that have disabled status from this merchant' do
-        expect(merchant.disabled_items).to eq([item_5, item_6, item_7, item_8])
-        expect(merchant.disabled_items).to_not eq([item_1, item_2, item_3, item_4])
+        expect(merchant.disabled_items.sort).to eq([item_2, item_3, item_4, item_5].sort)
+        expect(merchant.disabled_items).to_not eq([item_1, item_6, item_7, item_8])
+      end
+    end
+
+    describe 'top_5_items' do
+      it 'returns the top 5 items ranked by total revenue generated, but only if they have at least one succesful transaction for this merchant' do
+        expect(merchant.top_5_items).to eq([item_6, item_5, item_3, item_2, item_1])
       end
     end
   end 
