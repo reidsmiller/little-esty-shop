@@ -56,32 +56,32 @@ RSpec.describe 'Items index page' do
     it 'dispays the top 5 items ranked by total revenue generated, but only if they have at least one succesful transaction' do
       visit items_path 
 
-      within("top_5_items") do
+      within("#top_5_items") do 
           expect(page).to have_content(item_6.name)
-          expect(page).to have_content(item_3.name)
           expect(page).to have_content(item_5.name)
+          expect(page).to have_content(item_3.name)
           expect(page).to have_content(item_2.name)
-          expect(page).to have_content(item_4.name)
+          expect(page).to have_content(item_1.name)
 
-          expect(page).to_not have_content(item_1.name)
+          expect(page).to_not have_content(item_4.name)
           expect(page).to_not have_content(item_9.name)
 
-          expect(item_6.name).to appear_before(item_3.total_revenue)
-          expect(item_3.name).to appear_before(item_5.total_revenue)
-          expect(item_5.name).to appear_before(item_2.total_revenue)
-          expect(item_2.name).to appear_before(item_4.total_revenue)
+          expect(item_6.name).to appear_before(item_5.name)
+          expect(item_5.name).to appear_before(item_3.name)
+          expect(item_3.name).to appear_before(item_2.name)
+          expect(item_2.name).to appear_before(item_1.name)
       end
     end
 
     it 'each item name is a link that redirects to the mechant item show page for that item' do
       visit items_path 
 
-      within("top_5_items") do
+      within("#top_5_items") do
         expect(page).to have_link(item_6.name)
         expect(page).to have_link(item_3.name)
         expect(page).to have_link(item_5.name)
         expect(page).to have_link(item_2.name)
-        expect(page).to have_link(item_4.name)
+        expect(page).to have_link(item_1.name)
 
         click_link(item_6.name)
         expect(current_path).to eq(merchant_item_path(merchant, item_6))
@@ -89,18 +89,20 @@ RSpec.describe 'Items index page' do
     end
 
     it 'next to each item link is the total revenue generated for that item' do
-      within("top_5_items") do
-        expect(page).to have_content(item_6.total_revenue)
-        expect(page).to have_content(item_3.total_revenue)
-        expect(page).to have_content(item_5.total_revenue)
-        expect(page).to have_content(item_2.total_revenue)
-        expect(page).to have_content(item_4.total_revenue)
+      visit items_path 
 
-        expect(item_6.name).to appear_before(item_6.total_revenue)
-        expect(item_3.name).to appear_before(item_3.total_revenue)
-        expect(item_5.name).to appear_before(item_5.total_revenue)
-        expect(item_2.name).to appear_before(item_2.total_revenue)
-        expect(item_4.name).to appear_before(item_4.total_revenue)
+      within("#top_5_items") do
+        expect(page).to have_content(400000)
+        expect(page).to have_content(330000)
+        expect(page).to have_content(280000)
+        expect(page).to have_content(62500)
+        expect(page).to have_content(50000)
+
+        expect(item_6.name).to appear_before("400000")
+        expect(item_5.name).to appear_before("330000")
+        expect(item_3.name).to appear_before("280000")
+        expect(item_2.name).to appear_before("62500")
+        expect(item_1.name).to appear_before("50000")
       end
     end
   end
