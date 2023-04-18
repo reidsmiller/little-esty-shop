@@ -11,41 +11,39 @@
 <br>
 <style>
 table, th, td {
-  border:1px solid black;
+  border: 1px solid black;
   padding: 15px;
   margin: 2px;
   font-size: 20px;
 }
 </style>
 <body>
-<div id="invoice_items"> 
+
 <h2>Items on this Invoice:</h2>
 
-<table style="width:100%">
+<div id="invoice_items"> 
+<table style="width:99%">
   <tr>
-    <td style="background-color:DarkGrey; color:White"><center>Item Name</td>
-    <td style="background-color:DarkGrey; color:White"><center>Quantity</td>
-    <td style="background-color:DarkGrey; color:White"><center>Unit Price</td>
-    <td style="background-color:DarkGrey; color:White"><center>Status</td>
+    <th style="background-color:DarkGrey; color:White"><center>Item Name</th>
+    <th style="background-color:DarkGrey; color:White"><center>Quantity</th>
+    <th style="background-color:DarkGrey; color:White"><center>Unit Price</th>
+    <th style="background-color:DarkGrey; color:White"><center>Status</th>
   </tr>
   <% @invoice.invoice_items.each do |invoice_item| %>
-    <tr>
+    <tr id="items-<%= invoice_item.item.id %>">
         <td style="background-color:LightGrey;"><center><%= invoice_item.items_name %></td>
         <td style="background-color:LightGrey;"><center><%= invoice_item.quantity %></td>
         <td style="background-color:LightGrey;"><center>$<%= invoice_item.format_unit_price %></td>
-        <td style="background-color:LightGrey;"><center><select style="font-size:20px" id="status" name="status">
-          <option value="1"><%= invoice_item.status %></option>
-          <option value="2"><%= @invoice.invoice_items.last.status %></option>
-          <option value="3"><%= invoice_item.status %></option>
-          </select>
+        <td style="background-color:LightGrey; font-size:20px;"><center>
+        <%= form_with model: [@merchant, invoice_item] do |form|%>
+        <%= form.label :status, hidden: true %>
+        <%= form.select :status, options_for_select([["pending", :pending], [:packaged, "packaged"], [:shipped, "shipped"]], invoice_item.status)%>
+        <%= form.submit "Update Item Status", style: "background-color:Black; font-size:12px; color:White;"%>
+        <% end %> 
         </td>
     </tr>
   <% end %>
 </table>
 </div>
 </body>
-
-
-
-
-
+        
