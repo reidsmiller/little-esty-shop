@@ -1,0 +1,46 @@
+
+<h1>Admin Dashboard - Invoice Show Page</h1>
+<div id="invoice_info">
+  <h3>Invoice Info:</h3>
+  <ul>
+    <li>Invoice ID: <%= @invoice.id %></li>
+    <li>Status: <%= @invoice.status %></li>
+    <li>Created At: <%= @invoice.format_time_stamp %></li>
+    <li>Customer: <%= @invoice.customer.first_name %> <%= @invoice.customer.last_name %></li>
+  </ul>
+</div>
+<br>
+<div id="total_revenue">
+  <h3>Total Revenue:</h3>
+  <ul>
+    <li>Total Revenue: $<%= @invoice.format_total_revenue %></li>
+  </ul>
+</div>
+<br>
+<div id="invoice_items">
+  <h2>Invoice Items:</h2>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Unit Price</th>
+        <th>Status</th>
+      </tr>
+      <% @invoice.invoice_items.each do |invoice_item| %>
+        <tr>
+          <td><%= invoice_item.item.name %></td>
+          <td><%= invoice_item.quantity %></td>
+          <td>$<%= invoice_item.item.format_unit_price %></td>
+          <td><%= invoice_item.status %></td>
+        </tr>
+      <% end %>
+    </table>
+</div>
+<br>
+<div id="status_invoice">
+  <%= form_with model: @invoice, url: admin_invoice_path(@invoice) do |form| %>
+    <%= form.label "Status: " %>
+    <%= form.select :status, ["cancelled", "in progress", "completed"], selected: @invoice.status %>
+    <%= form.submit %>
+  <% end %>
+</div>
