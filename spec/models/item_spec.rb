@@ -84,5 +84,33 @@ RSpec.describe Item, type: :model do
         expect("(#)$*@0982&^%".to_s.gsub(/\D/, '').to_i).to eq(982)
       end
     end
+
+    describe '.best_selling_date' do
+      let!(:invoice_8) { create(:invoice, customer_id: customer_4.id, created_at: static_time_1) }
+      let!(:invoice_9) { create(:invoice, customer_id: customer_5.id, created_at: static_time_2) }
+
+      let!(:invoice_item_8) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_8.id, status: 1, unit_price: 5000000, quantity: 10) }
+      let!(:invoice_item_9) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_9.id, status: 1, unit_price: 10000000, quantity: 20) }
+      
+      let!(:inv_8_transaction_s) { create_list(:transaction, 1, result: 1, invoice_id: invoice_8.id) }
+      let!(:inv_9_transaction_s) { create_list(:transaction, 1, result: 1, invoice_id: invoice_9.id)}
+
+      let!(:invoice_10) { create(:invoice, customer_id: customer_4.id, created_at: static_time_1) }
+      let!(:invoice_11) { create(:invoice, customer_id: customer_5.id, created_at: static_time_2) }
+
+      let!(:invoice_item_10) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_10.id, status: 1, unit_price: 5000000, quantity: 10) }
+      let!(:invoice_item_11) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_11.id, status: 1, unit_price: 5000000, quantity: 10) }
+      
+      let!(:inv_10_transaction_s) { create_list(:transaction, 1, result: 1, invoice_id: invoice_10.id) }
+      let!(:inv_11_transaction_s) { create_list(:transaction, 1, result: 1, invoice_id: invoice_11.id) }
+      
+      it "provides the formatted date of the item's highest revenue sales day by invoice creation date" do
+        expect(item_1.best_selling_date).to eq("Wednesday, April 12, 2023")
+      end
+
+      it 'if there are multiple invoices with equal number of sales the most recent date is returned' do
+        expect(item_2.best_selling_date).to eq("Thursday, April 13, 2023")
+      end
+    end
   end
 end

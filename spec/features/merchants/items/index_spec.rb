@@ -281,6 +281,32 @@ RSpec.describe 'Merchant Items Index Page' do
         expect(item_2.name).to appear_before("62500")
         expect(item_1.name).to appear_before("50000")
       end
+    end    
+  end
+
+  describe 'Top_5_items best day' do
+    it 'next to the most popular items the creation date of the invoice with the highest revenue generated is displayed' do
+      visit merchant_items_path(merchant)
+      
+      within("li#item_#{item_6.id}") do
+        expect(page).to have_content("Top day for six was Tuesday, April 18, 2023")
+      end
+
+      within("li#item_#{item_5.id}") do
+        expect(page).to have_content("Top day for five was Wednesday, April 12, 2023")
+      end
+
+      within("li#item_#{item_3.id}") do
+        expect(page).to have_content("Top day for three was Tuesday, April 18, 2023")
+      end
+
+      within("li#item_#{item_2.id}") do
+        expect(page).to have_content("Top day for two was Tuesday, April 18, 2023")
+      end
+
+      within("li#item_#{item_1.id}") do
+        expect(page).to have_content("Top day for one was Tuesday, April 18, 2023")
+      end
     end
   end
 end
