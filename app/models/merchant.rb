@@ -33,7 +33,7 @@ class Merchant < ApplicationRecord
       .where(transactions: {result: :success})
       .group('invoices.created_at')
       .select('invoices.created_at, SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue')
-      .order(created_at: :desc)
+      .order('revenue DESC, created_at DESC')
       .first
       .format_time_stamp
   end
