@@ -26,4 +26,15 @@ class Merchant < ApplicationRecord
       .order(total_revenue: :desc)
       .limit(5)
   end
+
+  def top_selling_date
+    self.invoices
+      .joins(:invoice_items, :transactions)
+      .where(transactions: {result: :success})
+      .group('invoices.created_at')
+      .select('invoices.created_at, SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue')
+      .order(created_at: :desc)
+      .first
+      .format_time_stamp
+  end
 end

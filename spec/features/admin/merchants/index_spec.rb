@@ -160,6 +160,7 @@ RSpec.describe 'admin_merchants_index', type: :feature do
       create_list(:invoice_item, 6, item_id: @merchant_item_6.id, invoice_id: @invoice_6.id, quantity: 1, unit_price:10000)
       create_list(:invoice_item, 7, item_id: @merchant_item_7.id, invoice_id: @invoice_7.id, quantity: 1, unit_price:10000)
 
+      create(:transaction, invoice_id: @invoice_1.id, result: 'success')
       create(:transaction, invoice_id: @invoice_2.id, result: 'success')
       create(:transaction, invoice_id: @invoice_3.id, result: 'success')
       create(:transaction, invoice_id: @invoice_4.id, result: 'success')
@@ -188,14 +189,6 @@ RSpec.describe 'admin_merchants_index', type: :feature do
     end
 
     it 'and calculates each invoice item revenue by unit_price and quantity' do
-      @invoice_1 = create(:invoice, customer_id: @customers.sample.id)
-      @invoice_2 = create(:invoice, customer_id: @customers.sample.id)
-      @invoice_3 = create(:invoice, customer_id: @customers.sample.id)
-      @invoice_4 = create(:invoice, customer_id: @customers.sample.id)
-      @invoice_5 = create(:invoice, customer_id: @customers.sample.id)
-      @invoice_6 = create(:invoice, customer_id: @customers.sample.id)
-      @invoice_7 = create(:invoice, customer_id: @customers.sample.id)
-
       create(:invoice_item, item_id: @merchant_item_1.id, invoice_id: @invoice_1.id, quantity: 1, unit_price:10000)
       create(:invoice_item, item_id: @merchant_item_2.id, invoice_id: @invoice_2.id, quantity: 2, unit_price:10000)
       create(:invoice_item, item_id: @merchant_item_3.id, invoice_id: @invoice_3.id, quantity: 3, unit_price:10000)
@@ -204,6 +197,7 @@ RSpec.describe 'admin_merchants_index', type: :feature do
       create(:invoice_item, item_id: @merchant_item_6.id, invoice_id: @invoice_6.id, quantity: 6, unit_price:10000)
       create(:invoice_item, item_id: @merchant_item_7.id, invoice_id: @invoice_7.id, quantity: 7, unit_price:10000)
 
+      create(:transaction, invoice_id: @invoice_1.id, result: 'success')
       create(:transaction, invoice_id: @invoice_2.id, result: 'success')
       create(:transaction, invoice_id: @invoice_3.id, result: 'success')
       create(:transaction, invoice_id: @invoice_4.id, result: 'success')
@@ -248,6 +242,56 @@ RSpec.describe 'admin_merchants_index', type: :feature do
         expect(@merchant_3.name).to appear_before(@merchant_2.name)
         expect(page).to_not have_content(@merchant_7.name)
         expect(page).to_not have_content(@merchant_1.name)
+      end
+    end
+  end
+
+  describe 'top merchants best day' do
+    before(:each) do
+      @customers = create_list(:customer, 20)
+
+      @invoice_1 = create(:invoice, customer_id: @customers.sample.id, created_at: 2.days.ago)
+      @invoice_2 = create(:invoice, customer_id: @customers.sample.id, created_at: 2.days.ago)
+      @invoice_3 = create(:invoice, customer_id: @customers.sample.id, created_at: 3.days.ago)
+      @invoice_4 = create(:invoice, customer_id: @customers.sample.id, created_at: 4.days.ago)
+      @invoice_5 = create(:invoice, customer_id: @customers.sample.id, created_at: 5.days.ago)
+      @invoice_6 = create(:invoice, customer_id: @customers.sample.id, created_at: 4.days.ago)
+      @invoice_7 = create(:invoice, customer_id: @customers.sample.id, created_at: 3.days.ago)
+   
+      @merchant_1 = create(:merchant)
+      @merchant_2 = create(:merchant)
+
+      @merchant_item_1 = create(:item, merchant_id: @merchant_1.id, unit_price: 10000)
+      @merchant_item_2 = create(:item, merchant_id: @merchant_2.id, unit_price: 10000)
+      
+      create_list(:invoice_item, 1, item_id: @merchant_item_1.id, invoice_id: @invoice_1.id, quantity: 5, unit_price:10000)
+      create_list(:invoice_item, 1, item_id: @merchant_item_1.id, invoice_id: @invoice_2.id, quantity: 6, unit_price:10000)
+      create_list(:invoice_item, 1, item_id: @merchant_item_1.id, invoice_id: @invoice_3.id, quantity: 3, unit_price:10000)
+      create_list(:invoice_item, 1, item_id: @merchant_item_1.id, invoice_id: @invoice_4.id, quantity: 1, unit_price:10000)
+      create_list(:invoice_item, 1, item_id: @merchant_item_2.id, invoice_id: @invoice_5.id, quantity: 3, unit_price:10000)
+      create_list(:invoice_item, 1, item_id: @merchant_item_2.id, invoice_id: @invoice_6.id, quantity: 10, unit_price:10000)
+      create_list(:invoice_item, 1, item_id: @merchant_item_2.id, invoice_id: @invoice_7.id, quantity: 10, unit_price:10000)
+      
+      create(:transaction, invoice_id: @invoice_1.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_2.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_3.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_4.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_5.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_6.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_7.id, result: 'success')
+    end
+
+    it 'and it shows the date with the most revenue for each merchant' do
+      visit admin_merchants_path
+      within("li#top_5_#{@merchant_1.id}") do
+        expect(page).to have_content("Top selling date for #{@merchant_1.name} was #{@invoice_2.format_time_stamp}")
+        expect(page).to_not have_content("#{@invoice_3.format_time_stamp}")
+      end
+
+      within("li#top_5_#{@merchant_2.id}") do
+        expect(page).to have_content("Top selling date for #{@merchant_2.name} was #{@invoice_7.format_time_stamp}")
+        expect(page).to_not have_content("#{@invoice_6.format_time_stamp}")
+        expect(page).to_not have_content("#{@invoice_5.format_time_stamp}")
       end
     end
   end

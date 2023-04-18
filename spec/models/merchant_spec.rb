@@ -82,7 +82,7 @@ RSpec.describe Merchant, type: :model do
       create(:transaction, invoice_id: invoice_7.id, result: 'success')
 
       merchants = Merchant.top_5_merchants_by_total_revenue
-      
+
       expect(merchants.first.total_revenue).to eq(70000)
       expect(merchants.second.total_revenue).to eq(60000)
       expect(merchants.third.total_revenue).to eq(50000)
@@ -114,9 +114,9 @@ RSpec.describe Merchant, type: :model do
       create(:transaction, invoice_id: invoice_5.id, result: 'success')
       create(:transaction, invoice_id: invoice_6.id, result: 'success')
       create(:transaction, invoice_id: invoice_7.id, result: 'success')
-      
+
       merchants = Merchant.top_5_merchants_by_total_revenue
-      
+
       expect(merchants.first.total_revenue).to eq(70000)
       expect(merchants.second.total_revenue).to eq(60000)
       expect(merchants.third.total_revenue).to eq(50000)
@@ -153,12 +153,55 @@ RSpec.describe Merchant, type: :model do
       create(:transaction, invoice_id: invoice_8.id, result: 'success')
 
       merchants = Merchant.top_5_merchants_by_total_revenue
-      
+
       expect(merchants).to eq([@merchant_6, @merchant_5, @merchant_4, @merchant_3, @merchant_7])
-      expect(merchants.first.total_revenue).to eq(60000)
-      expect(merchants.second.total_revenue).to eq(50000)
-      expect(merchants.third.total_revenue).to eq(40000)
-      expect(merchants.last.total_revenue).to eq(20000)
+      expect(merchants.first.total_revenue).to eq(60_000)
+      expect(merchants.second.total_revenue).to eq(50_000)
+      expect(merchants.third.total_revenue).to eq(40_000)
+      expect(merchants.last.total_revenue).to eq(20_000)
+    end
+  end
+
+  describe 'instance methods' do
+    describe '#top_selling_date' do
+      before(:each) do
+        @customers = create_list(:customer, 20)
+
+        @merchant_1 = create(:merchant)
+        @merchant_2 = create(:merchant)
+
+        @invoice_1 = create(:invoice, customer_id: @customers.sample.id, created_at: 2.days.ago)
+        @invoice_2 = create(:invoice, customer_id: @customers.sample.id, created_at: 2.days.ago)
+        @invoice_3 = create(:invoice, customer_id: @customers.sample.id, created_at: 3.days.ago)
+        @invoice_4 = create(:invoice, customer_id: @customers.sample.id, created_at: 4.days.ago)
+        @invoice_5 = create(:invoice, customer_id: @customers.sample.id, created_at: 5.days.ago)
+        @invoice_6 = create(:invoice, customer_id: @customers.sample.id, created_at: 4.days.ago)
+        @invoice_7 = create(:invoice, customer_id: @customers.sample.id, created_at: 3.days.ago)
+
+        @merchant_item_1 = create(:item, merchant_id: @merchant_1.id, unit_price: 10_000)
+        @merchant_item_2 = create(:item, merchant_id: @merchant_2.id, unit_price: 10_000)
+
+        create_list(:invoice_item, 1, item_id: @merchant_item_1.id, invoice_id: @invoice_1.id, quantity: 5, unit_price:10_000)
+        create_list(:invoice_item, 1, item_id: @merchant_item_1.id, invoice_id: @invoice_2.id, quantity: 6, unit_price:10_000)
+        create_list(:invoice_item, 1, item_id: @merchant_item_1.id, invoice_id: @invoice_3.id, quantity: 3, unit_price:10_000)
+        create_list(:invoice_item, 1, item_id: @merchant_item_1.id, invoice_id: @invoice_4.id, quantity: 1, unit_price:10_000)
+        create_list(:invoice_item, 1, item_id: @merchant_item_2.id, invoice_id: @invoice_5.id, quantity: 3, unit_price:10_000)
+        create_list(:invoice_item, 1, item_id: @merchant_item_2.id, invoice_id: @invoice_6.id, quantity: 10, unit_price:10_000)
+        create_list(:invoice_item, 1, item_id: @merchant_item_2.id, invoice_id: @invoice_7.id, quantity: 10, unit_price:10_000)
+
+        create(:transaction, invoice_id: @invoice_1.id, result: 'success')
+        create(:transaction, invoice_id: @invoice_2.id, result: 'success')
+        create(:transaction, invoice_id: @invoice_3.id, result: 'success')
+        create(:transaction, invoice_id: @invoice_4.id, result: 'success')
+        create(:transaction, invoice_id: @invoice_5.id, result: 'success')
+        create(:transaction, invoice_id: @invoice_6.id, result: 'success')
+        create(:transaction, invoice_id: @invoice_7.id, result: 'success')
+      end
+
+      it 'can find top selling date for each merchant, if two days are equal retrun most recent day' do
+        expect(@merchant_1.top_selling_date).to eq(@invoice_2.format_time_stamp)
+        expect(@merchant_2.top_selling_date).to eq(@invoice_7.format_time_stamp)
+      end
     end
   end
 end
