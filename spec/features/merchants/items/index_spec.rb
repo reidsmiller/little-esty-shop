@@ -1,19 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe 'Merchant Items Index Page' do
-
   let!(:merchant) { create(:merchant) }
   let!(:merchant_1) { create(:merchant) }
   
-  let!(:item_1) { create(:item, merchant_id: merchant.id, status: 0) }
-  let!(:item_2) { create(:item, merchant_id: merchant.id, status: 1) }
-  let!(:item_3) { create(:item, merchant_id: merchant.id, status: 1) }
-  let!(:item_4) { create(:item, merchant_id: merchant.id, status: 1) }
-  let!(:item_5) { create(:item, merchant_id: merchant.id, status: 1) }
-  let!(:item_6) { create(:item, merchant_id: merchant.id, status: 0) }
-  let!(:item_7) { create(:item, merchant_id: merchant.id, status: 0) }
-  let!(:item_8) { create(:item, merchant_id: merchant.id, status: 0) }
-  let!(:item_9) { create(:item, merchant_id: merchant_1.id) }
+  let!(:item_1) { create(:item, name: "one", merchant_id: merchant.id, status: 0) }
+  let!(:item_2) { create(:item, name: "two", merchant_id: merchant.id, status: 1) }
+  let!(:item_3) { create(:item, name: "three", merchant_id: merchant.id, status: 1) }
+  let!(:item_4) { create(:item, name: "four", merchant_id: merchant.id, status: 1) }
+  let!(:item_5) { create(:item, name: "five", merchant_id: merchant.id, status: 1) }
+  let!(:item_6) { create(:item, name: "six", merchant_id: merchant.id, status: 0) }
+  let!(:item_7) { create(:item, name: "seven", merchant_id: merchant.id, status: 0) }
+  let!(:item_8) { create(:item, name: "eight", merchant_id: merchant.id, status: 0) }
+  let!(:item_9) { create(:item, name: "nine", merchant_id: merchant_1.id) }
 
   let!(:customer_1) { create(:customer, first_name: 'Branden', last_name: 'Smith') }
   let!(:customer_2) { create(:customer, first_name: 'Reilly', last_name: 'Robertson') }
@@ -33,13 +32,13 @@ RSpec.describe 'Merchant Items Index Page' do
   let!(:invoice_6) { create(:invoice, customer_id: customer_6.id) }
   let!(:invoice_7) { create(:invoice, customer_id: customer_6.id) }
 
-  let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2) }
-  let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
-  let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id, status: 2) }
-  let!(:invoice_item_4) { create(:invoice_item, item_id: item_4.id, invoice_id: invoice_4.id, status: 0) }
-  let!(:invoice_item_5) { create(:invoice_item, item_id: item_5.id, invoice_id: invoice_5.id, status: 0) }
-  let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id, status: 1) }
-  let!(:invoice_item_7) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_7.id, status: 1) }
+  let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2, unit_price: 1000, quantity: 5) }
+  let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2, unit_price: 500, quantity: 25) }
+  let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id, status: 2, unit_price: 10000, quantity: 4) }
+  let!(:invoice_item_4) { create(:invoice_item, item_id: item_4.id, invoice_id: invoice_4.id, status: 0, unit_price: 1000, quantity: 10) }
+  let!(:invoice_item_5) { create(:invoice_item, item_id: item_5.id, invoice_id: invoice_5.id, status: 0, unit_price: 500, quantity: 60) }
+  let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id, status: 1, unit_price: 5000, quantity: 10) }
+  let!(:invoice_item_7) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_7.id, status: 1, unit_price: 10000, quantity: 20) }
 
   let!(:inv_1_transaction_s) { create_list(:transaction, 10, result: 1, invoice_id: invoice_1.id) }
   let!(:inv_1_transaction_f) { create_list(:transaction, 5, result: 0, invoice_id: invoice_1.id) }
@@ -49,6 +48,7 @@ RSpec.describe 'Merchant Items Index Page' do
   let!(:inv_4_transaction_f) { create_list(:transaction, 20, result: 0, invoice_id: invoice_4.id) }
   let!(:inv_5_transaction_s) { create_list(:transaction, 11, result: 1, invoice_id: invoice_5.id) }
   let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id: invoice_6.id) }
+  let!(:inv_7_transaction_f) { create_list(:transaction, 60, result: 0, invoice_id: invoice_7.id)}
 
   describe 'Display of all items' do
     it 'Displays Name of merchant' do
@@ -81,25 +81,36 @@ RSpec.describe 'Merchant Items Index Page' do
     it "each item name is a link that redirects to it's own merchant item show page" do
       visit "/merchants/#{merchant.id}/items"
       
-      expect(page).to have_link(item_1.name)
-      expect(page).to have_link(item_2.name)
-      expect(page).to have_link(item_3.name)
-      expect(page).to have_link(item_4.name)
-      expect(page).to have_link(item_5.name)
-      expect(page).to have_link(item_6.name)
-      expect(page).to have_link(item_7.name)
-      expect(page).to have_link(item_8.name)
+      within("#enabled_items") do
+        expect(page).to have_link(item_1.name)
+        expect(page).to have_link(item_6.name)
+        expect(page).to have_link(item_7.name)
+        expect(page).to have_link(item_8.name)
+      end
 
-      click_link item_1.name
-      expect(current_path).to eq(merchant_item_path(merchant, item_1))
-      visit "/merchants/#{merchant.id}/items"
+      within("#disabled_items") do
+        expect(page).to have_link(item_2.name)
+        expect(page).to have_link(item_3.name)
+        expect(page).to have_link(item_4.name)
+        expect(page).to have_link(item_5.name)
+      end
 
-      click_link item_2.name
-      expect(current_path).to eq(merchant_item_path(merchant, item_2))
-      visit "/merchants/#{merchant.id}/items"
+      within("#enabled_items") do
+        click_link item_1.name
+        expect(current_path).to eq(merchant_item_path(merchant, item_1))
+        visit "/merchants/#{merchant.id}/items"
+      end
 
-      click_link item_3.name
-      expect(current_path).to eq(merchant_item_path(merchant, item_3))
+      within("#disabled_items") do
+        click_link item_2.name
+        expect(current_path).to eq(merchant_item_path(merchant, item_2))
+        visit "/merchants/#{merchant.id}/items"
+      end
+
+      within("#disabled_items") do
+        click_link item_3.name
+        expect(current_path).to eq(merchant_item_path(merchant, item_3))
+      end
     end
   end
 
@@ -199,15 +210,6 @@ RSpec.describe 'Merchant Items Index Page' do
     end
   end
 
-#   As a merchant
-# When I visit my items index page
-# I see a link to create a new item.
-# When I click on the link,
-# I am taken to a form that allows me to add item information.
-# When I fill out the form I click ‘Submit’
-# Then I am taken back to the items index page
-# And I see the item I just created displayed in the list of items.
-
   describe 'item_creation' do
     it 'index page shows a link to create a new item' do
       visit merchant_items_path(merchant)
@@ -223,6 +225,61 @@ RSpec.describe 'Merchant Items Index Page' do
       within("#item_create") do
         click_link "Create Item"
         expect(current_path).to eq(new_merchant_item_path(merchant))
+      end
+    end
+  end
+
+  describe 'top_5_items' do
+    it 'dispays the top 5 items ranked by total revenue generated, but only if they have at least one succesful transaction' do
+      visit merchant_items_path(merchant)
+
+      within("#top_5_items") do 
+          expect(page).to have_content(item_6.name)
+          expect(page).to have_content(item_5.name)
+          expect(page).to have_content(item_3.name)
+          expect(page).to have_content(item_2.name)
+          expect(page).to have_content(item_1.name)
+
+          expect(page).to_not have_content(item_4.name)
+          expect(page).to_not have_content(item_9.name)
+
+          expect(item_6.name).to appear_before(item_5.name)
+          expect(item_5.name).to appear_before(item_3.name)
+          expect(item_3.name).to appear_before(item_2.name)
+          expect(item_2.name).to appear_before(item_1.name)
+      end
+    end
+
+    it 'each item name is a link that redirects to the mechant item show page for that item' do
+      visit merchant_items_path(merchant)
+
+      within("#top_5_items") do
+        expect(page).to have_link(item_6.name)
+        expect(page).to have_link(item_3.name)
+        expect(page).to have_link(item_5.name)
+        expect(page).to have_link(item_2.name)
+        expect(page).to have_link(item_1.name)
+
+        click_link(item_6.name)
+        expect(current_path).to eq(merchant_item_path(merchant, item_6))
+      end
+    end
+
+    it 'next to each item link is the total revenue generated for that item' do
+      visit merchant_items_path(merchant)
+
+      within("#top_5_items") do
+        expect(page).to have_content(400000)
+        expect(page).to have_content(330000)
+        expect(page).to have_content(280000)
+        expect(page).to have_content(62500)
+        expect(page).to have_content(50000)
+
+        expect(item_6.name).to appear_before("400000")
+        expect(item_5.name).to appear_before("330000")
+        expect(item_3.name).to appear_before("280000")
+        expect(item_2.name).to appear_before("62500")
+        expect(item_1.name).to appear_before("50000")
       end
     end
   end
