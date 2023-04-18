@@ -26,4 +26,13 @@ class Item < ApplicationRecord
   def format_unit_price
     (unit_price / 100.00).round(2).to_s
   end
+
+  def self.top_5_items
+    joins(invoices: :transactions)
+    .where('transactions.result = ?', "1")
+    .select("items.*, SUM(invoice_items.unit_price * invoice_items.quantity) as total_revenue")
+    .group(:id)
+    .order(total_revenue: :desc)
+    .limit(5)
+  end
 end

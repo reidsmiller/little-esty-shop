@@ -1,0 +1,11 @@
+<h1>Items Index</h1>
+
+<div class=top_5_items_cloumn>
+  <%= content_tag :div, id: "top_5_items" do %>
+    <h2>Top 5 Items<h2>
+    <%= @items.top_5_items do |item|%>
+      <li><%= link_to item.name, merchant_item_path(item.merchant, item) %>
+      <%= item.total_revenue %></li>
+    <% end %>
+  <% end %>
+</div>

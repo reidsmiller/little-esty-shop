@@ -199,15 +199,6 @@ RSpec.describe 'Merchant Items Index Page' do
     end
   end
 
-#   As a merchant
-# When I visit my items index page
-# I see a link to create a new item.
-# When I click on the link,
-# I am taken to a form that allows me to add item information.
-# When I fill out the form I click ‘Submit’
-# Then I am taken back to the items index page
-# And I see the item I just created displayed in the list of items.
-
   describe 'item_creation' do
     it 'index page shows a link to create a new item' do
       visit merchant_items_path(merchant)

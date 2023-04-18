@@ -17,14 +17,14 @@ RSpec.describe Item, type: :model do
     let!(:merchant) { create(:merchant) }
     let!(:merchant_1) { create(:merchant) }
     
-    let!(:item_1) { create(:item, merchant_id: merchant.id) }
-    let!(:item_2) { create(:item, merchant_id: merchant.id) }
-    let!(:item_3) { create(:item, merchant_id: merchant.id) }
-    let!(:item_4) { create(:item, merchant_id: merchant.id) }
-    let!(:item_5) { create(:item, merchant_id: merchant.id) }
-    let!(:item_6) { create(:item, merchant_id: merchant.id) }
-    let!(:item_7) { create(:item, merchant_id: merchant.id) }
-    let!(:item_8) { create(:item, merchant_id: merchant.id) }
+    let!(:item_1) { create(:item, merchant_id: merchant.id, status: 0) }
+    let!(:item_2) { create(:item, merchant_id: merchant.id, status: 1) }
+    let!(:item_3) { create(:item, merchant_id: merchant.id, status: 1) }
+    let!(:item_4) { create(:item, merchant_id: merchant.id, status: 1) }
+    let!(:item_5) { create(:item, merchant_id: merchant.id, status: 1) }
+    let!(:item_6) { create(:item, merchant_id: merchant.id, status: 0) }
+    let!(:item_7) { create(:item, merchant_id: merchant.id, status: 0) }
+    let!(:item_8) { create(:item, merchant_id: merchant.id, status: 0) }
     let!(:item_9) { create(:item, merchant_id: merchant_1.id) }
   
     let!(:customer_1) { create(:customer, first_name: 'Branden', last_name: 'Smith') }
@@ -36,7 +36,7 @@ RSpec.describe Item, type: :model do
   
     static_time_1 = Time.zone.parse('2023-04-13 00:50:37')
     static_time_2 = Time.zone.parse('2023-04-12 00:50:37')
-
+  
     let!(:invoice_1) { create(:invoice, customer_id: customer_1.id) }
     let!(:invoice_2) { create(:invoice, customer_id: customer_2.id) }
     let!(:invoice_3) { create(:invoice, customer_id: customer_3.id) }
@@ -45,22 +45,23 @@ RSpec.describe Item, type: :model do
     let!(:invoice_6) { create(:invoice, customer_id: customer_6.id) }
     let!(:invoice_7) { create(:invoice, customer_id: customer_6.id) }
   
-    let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2) }
-    let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
-    let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id, status: 2) }
-    let!(:invoice_item_4) { create(:invoice_item, item_id: item_4.id, invoice_id: invoice_4.id, status: 0) }
-    let!(:invoice_item_5) { create(:invoice_item, item_id: item_5.id, invoice_id: invoice_5.id, status: 0) }
-    let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id, status: 1) }
-    let!(:invoice_item_7) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_7.id, status: 1) }
+    let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2, unit_price: 1000, quantity: 5) }
+    let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2, unit_price: 500, quantity: 25) }
+    let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id, status: 2, unit_price: 10000, quantity: 4) }
+    let!(:invoice_item_4) { create(:invoice_item, item_id: item_4.id, invoice_id: invoice_4.id, status: 0, unit_price: 1000, quantity: 10) }
+    let!(:invoice_item_5) { create(:invoice_item, item_id: item_5.id, invoice_id: invoice_5.id, status: 0, unit_price: 500, quantity: 60) }
+    let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id, status: 1, unit_price: 5000, quantity: 10) }
+    let!(:invoice_item_7) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_7.id, status: 1, unit_price: 10000, quantity: 20) }
   
     let!(:inv_1_transaction_s) { create_list(:transaction, 10, result: 1, invoice_id: invoice_1.id) }
-    let!(:inv_1_transaction_f) { create_list(:transaction, 5, result: 0, invoice_id: invoice_1.id) }
-    let!(:inv_2_transaction_s) { create_list(:transaction, 5, result: 1, invoice_id: invoice_2.id) }
-    let!(:inv_3_transaction_s) { create_list(:transaction, 7, result: 1, invoice_id: invoice_3.id) }
-    let!(:inv_4_transaction_s) { create_list(:transaction, 3, result: 1, invoice_id: invoice_4.id) }
-    let!(:inv_4_transaction_f) { create_list(:transaction, 20, result: 0, invoice_id: invoice_4.id) }
-    let!(:inv_5_transaction_s) { create_list(:transaction, 11, result: 1, invoice_id: invoice_5.id) }
-    let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id: invoice_6.id) }
+    let!(:inv_1_transaction_f) { create_list(:transaction, 10, result: 0, invoice_id: invoice_1.id) }
+    let!(:inv_2_transaction_s) { create_list(:transaction, 10, result: 1, invoice_id: invoice_2.id) }
+    let!(:inv_3_transaction_s) { create_list(:transaction, 10, result: 1, invoice_id: invoice_3.id) }
+    let!(:inv_4_transaction_s) { create_list(:transaction, 10, result: 1, invoice_id: invoice_4.id) }
+    let!(:inv_4_transaction_f) { create_list(:transaction, 10, result: 0, invoice_id: invoice_4.id) }
+    let!(:inv_5_transaction_s) { create_list(:transaction, 10, result: 1, invoice_id: invoice_5.id) }
+    let!(:inv_6_transaction_s) { create_list(:transaction, 10, result: 1, invoice_id: invoice_6.id) }
+    let!(:inv_7_transaction_f) { create_list(:transaction, 60, result: 0, invoice_id: invoice_7.id)}
   
     describe 'item_invoice_id' do
       it 'locates the id of the invoice joined to this item through invoice_items for a partcular merchant' do
@@ -81,6 +82,12 @@ RSpec.describe Item, type: :model do
         expect("$20.39".to_s.gsub(/\D/, '').to_i).to eq(2039)
         expect("$%^93802".to_s.gsub(/\D/, '').to_i).to eq(93802)
         expect("(#)$*@0982&^%".to_s.gsub(/\D/, '').to_i).to eq(982)
+      end
+    end
+
+    describe 'self.top_5_items' do
+      it 'returns the top 5 items ranked by total revenue generated, but only if they have at least one succesful transaction' do
+        expect(Item.top_5_items).to eq([item_6, item_3, item_5, item_2, item_4])
       end
     end
   end
