@@ -70,22 +70,28 @@ RSpec.describe Invoice, type: :model do
     end
 
     describe '.total_revenue' do
-      it 'returns the total revenue for an invoice' do
-        expect(@invoice_1.total_revenue).to eq(934662)
-        expect(@invoice_2.total_revenue).to eq(1900773)
-        expect(@invoice_3.total_revenue).to eq(589665)
-        expect(@invoice_4.total_revenue).to eq(717288)
-        expect(@invoice_5.total_revenue).to eq(94741)
+      it 'returns the total revenue for an invoice formatted to dollars and cents' do
+        expect(@invoice_1.total_revenue).to eq("9346.62")
+        expect(@invoice_2.total_revenue).to eq("19007.73")
+        expect(@invoice_3.total_revenue).to eq("5896.65")
+        expect(@invoice_4.total_revenue).to eq("7172.88")
+        expect(@invoice_5.total_revenue).to eq("947.41")
       end
     end
+    
+    describe 'additional instance methods' do
+      let!(:customer_1) { create(:customer, first_name: 'Branden', last_name: 'Smith') }
+      let!(:customer_2) { create(:customer, first_name: 'Reilly', last_name: 'Robertson') }
+      let!(:customer_3) { create(:customer, first_name: 'Grace', last_name: 'Chavez') }
 
-    describe '.format_total_revenue' do
-      it 'returns the total revenue for an invoice formatted to dollars and cents' do
-        expect(@invoice_1.format_total_revenue).to eq("9346.62")
-        expect(@invoice_2.format_total_revenue).to eq("19007.73")
-        expect(@invoice_3.format_total_revenue).to eq("5896.65")
-        expect(@invoice_4.format_total_revenue).to eq("7172.88")
-        expect(@invoice_5.format_total_revenue).to eq("947.41")
+      let!(:invoice_1) { create(:invoice, customer_id: customer_1.id) }
+      let!(:invoice_2) { create(:invoice, customer_id: customer_2.id) }
+      let!(:invoice_3) { create(:invoice, customer_id: customer_3.id) }
+
+      it '#customer_full_name' do
+        expect(invoice_1.customer_full_name).to eq("Branden Smith")
+        expect(invoice_2.customer_full_name).to eq("Reilly Robertson")
+        expect(invoice_3.customer_full_name).to eq("Grace Chavez")
       end
     end
   end

@@ -186,7 +186,7 @@ RSpec.describe 'Merchant Dashboard/Show Page' do
     
     it 'each ID is a link that routes to the merchants invoice show page' do
       visit "/merchants/#{merchant.id}/dashboard"
-
+      
       within "#shippable_items" do
         expect(page).to have_content(invoice_4.id)
         expect(page).to have_content(invoice_5.id)

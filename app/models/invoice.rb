@@ -5,6 +5,7 @@ class Invoice < ApplicationRecord
   has_many :invoice_items
   has_many :items, through: :invoice_items
   has_many :transactions
+  has_many :merchants, through: :items
 
   enum status: ['cancelled', 'in progress', 'completed']
 
@@ -16,11 +17,11 @@ class Invoice < ApplicationRecord
     created_at.strftime('%A, %B %e, %Y')
   end
 
-  def total_revenue
-    invoice_items.sum("unit_price * quantity")
+  def customer_full_name
+  "#{customer.first_name} #{customer.last_name}"
   end
 
-  def format_total_revenue
-    (total_revenue/ 100.0).round(2).to_s
+  def total_revenue
+    invoice_items.sum("(quantity * unit_price )/ 100.0").round(2).to_s
   end
 end
