@@ -1,4 +1,3 @@
-
 require 'rails_helper'
 
 RSpec.describe 'Merchant/invoice show page', type: :feature do
@@ -35,12 +34,12 @@ let!(:invoice_5) { create(:invoice, customer_id: customer_5.id) }
 let!(:invoice_6) { create(:invoice, customer_id: customer_6.id) }
 let!(:invoice_7) { create(:invoice, customer_id: customer_6.id) }
 
-let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 2, unit_price: 6000, quantity: 3) }
+let!(:invoice_item_1) { create(:invoice_item, item_id: item_1.id, invoice_id: invoice_1.id, status: 0, unit_price: 6000, quantity: 3) }
 let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
 let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id, status: 2) }
 let!(:invoice_item_4) { create(:invoice_item, item_id: item_4.id, invoice_id: invoice_4.id, status: 0) }
 let!(:invoice_item_5) { create(:invoice_item, item_id: item_5.id, invoice_id: invoice_5.id, status: 0) }
-let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id, status: 1, unit_price: 999, quantity: 12) }
+let!(:invoice_item_6) { create(:invoice_item, item_id: item_6.id, invoice_id: invoice_6.id, status: 2, unit_price: 999, quantity: 12) }
 let!(:invoice_item_7) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_7.id, status: 1) }
 let!(:invoice_item_8) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_6.id, status: 1, unit_price: 8800, quantity: 10) }
 
@@ -108,6 +107,55 @@ let!(:inv_6_transaction_s) { create_list(:transaction, 8, result: 1, invoice_id:
         expect(page).to have_content(invoice_item_8.status)
         expect(page).to have_content(invoice_item_8.quantity)
         expect(page).to have_content(invoice_item_8.format_unit_price)
+      end
+    end
+
+    describe 'Selector shows invoice items statuses and they can be updated' do
+      it 'should display the selector with a dropdown menu with status options' do
+        visit merchant_invoice_path(merchant, invoice_1.id)
+        
+        within("#invoice_items") do
+          expect(page).to have_select(selected: 'pending')
+          expect(page).to have_button('Update Item Status')
+          
+          select("shipped", from: "Status")
+          click_button('Update Item Status')
+          expect(current_path).to eq(merchant_invoice_path(merchant, invoice_1.id))
+        end
+
+        visit merchant_invoice_path(merchant, invoice_6.id)
+        
+        within("#items-#{invoice_item_6.item_id}") do
+          expect(page).to have_select(selected: 'shipped')
+          expect(page).to have_button('Update Item Status')
+    
+          select("packaged", from: "Status")
+          click_button('Update Item Status')
+          expect(current_path).to eq(merchant_invoice_path(merchant, invoice_6.id))
+        end
+        
+        visit merchant_invoice_path(merchant, invoice_6.id)
+        
+        within("#items-#{invoice_item_8.item_id}") do
+          expect(page).to have_select(selected: 'packaged')
+          expect(page).to have_button('Update Item Status')
+    
+          select("pending", from: "Status")
+          click_button('Update Item Status')
+          expect(current_path).to eq(merchant_invoice_path(merchant, invoice_6.id))
+        end
+        
+        visit merchant_invoice_path(merchant, invoice_6.id)
+        
+        expect(page).to have_select(selected: 'packaged')
+        expect(page).to have_select(selected: 'pending')
+        expect(page).to_not have_select(selected: 'shipped')
+        
+        visit merchant_invoice_path(merchant, invoice_1.id)
+        
+        expect(page).to_not have_select(selected: 'packaged')
+        expect(page).to_not have_select(selected: 'pending')
+        expect(page).to have_select(selected: 'shipped')
       end
     end
   end
