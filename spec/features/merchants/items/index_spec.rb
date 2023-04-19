@@ -289,23 +289,23 @@ RSpec.describe 'Merchant Items Index Page' do
       visit merchant_items_path(merchant)
       
       within("li#item_#{item_6.id}") do
-        expect(page).to have_content("Top day for six was Tuesday, April 18, 2023")
+        expect(page).to have_content("Top day for six was #{item_6.best_selling_date}")
       end
 
       within("li#item_#{item_5.id}") do
-        expect(page).to have_content("Top day for five was Wednesday, April 12, 2023")
+        expect(page).to have_content("Top day for five was #{item_5.best_selling_date}")
       end
 
       within("li#item_#{item_3.id}") do
-        expect(page).to have_content("Top day for three was Tuesday, April 18, 2023")
+        expect(page).to have_content("Top day for three was #{item_3.best_selling_date}")
       end
 
       within("li#item_#{item_2.id}") do
-        expect(page).to have_content("Top day for two was Tuesday, April 18, 2023")
+        expect(page).to have_content("Top day for two was #{item_2.best_selling_date}")
       end
 
       within("li#item_#{item_1.id}") do
-        expect(page).to have_content("Top day for one was Tuesday, April 18, 2023")
+        expect(page).to have_content("Top day for one was #{item_1.best_selling_date}")
       end
     end
   end
