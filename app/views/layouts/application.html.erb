@@ -10,6 +10,8 @@
   </head>
 
   <body>
+  <%= image_tag get_logo, cache: true %>
+  <p>Likes: <%= get_logo_likes %></p>
   <h1 style="background-color:#dcdcdc;"><center>Little Etsy Shoppe<center></h1>
      <% flash.each do |type, msg| %>
       <div>
