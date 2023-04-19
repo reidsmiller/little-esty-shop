@@ -6,6 +6,8 @@
   <% end %>
 </div>
 
+<%= image_tag @item_photo.url, cache: true %>
+
 <div class="item_attributes_column">
   <%= content_tag :div, id: "item_attributes" do %>
     <p>Description: <%= @item.description %></p>
