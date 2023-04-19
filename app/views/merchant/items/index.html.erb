@@ -41,8 +41,10 @@
   <%= content_tag :div, id: "top_5_items" do %>
     <h2>Top 5 Items<h2>
     <% @merchant.top_5_items.each do |item|%>
-      <li><%= link_to item.name, merchant_item_path(item.merchant, item) %>
-      <%= item.total_revenue %></li>
+      <li><%= link_to item.name, merchant_item_path(item.merchant, item) %> -
+      $<%= item.total_revenue %> in sales</li>
+      <li id="item_<%= item.id %>">
+      Top day for <%= item.name %> was <%= item.best_selling_date%></li>
     <% end %>
   <% end %>
 </div>
