@@ -1,0 +1,20 @@
+<h2><%= @merchant.name %></h2>
+
+<div class="item_name_header">
+  <%= content_tag :div, id: "item_name" do %>
+    <h3><%= @item.name %></h3>
+  <% end %>
+</div>
+
+<div class="item_attributes_column">
+  <%= content_tag :div, id: "item_attributes" do %>
+    <p>Description: <%= @item.description %></p>
+    <p>Current Price: $<%= @item.format_unit_price %></p>
+  <% end %>
+</div>
+
+<div class="update_item_column">
+  <%= content_tag :div, id: "update_item" do %>
+    <p><%= link_to "Update Item", edit_merchant_item_path(@merchant, @item) %></p>
+  <% end %>
+</div>

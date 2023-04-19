@@ -1,0 +1,50 @@
+<h2><%= @merchant.name %></h2>
+
+<div class=item_create_column>
+  <%= content_tag :div, id: "item_create" do %>
+    <%= link_to "Create Item", new_merchant_item_path(@merchant) %>
+  <% end %>
+</div>
+
+<div class="items-column">
+  <%= content_tag :div, id: "enabled_items" do %>
+    <h3>Enabled Items</h3>
+    <% @merchant.enabled_items.each do |item| %>
+    <ul>
+      <li id="merchant_<%= item.id %>">
+      <%= link_to item.name,  merchant_item_path(@merchant, item) %>         
+        <%= form_with model: item, url: merchant_item_path(@merchant, item), local: true do |form| %> 
+          <%= form.hidden_field :status, value: "disabled" %>
+          <%= form.submit "Disable" %>
+        <% end %>
+      </li>
+    </ul>
+    <% end %>
+  <% end %>
+  <%= content_tag :div, id: "disabled_items" do %>
+  <h3>Disabled Items</h3>
+  <% @merchant.disabled_items.each do |item| %>
+  <ul>
+    <li id="merchant_<%= item.id %>">
+    <%= link_to item.name,  merchant_item_path(@merchant, item) %>         
+      <%= form_with model: item, url: merchant_item_path(@merchant, item), local: true do |form| %> 
+        <%= form.hidden_field :status, value: "enabled" %>
+        <%= form.submit "Enable" %>
+      <% end %>
+    </li>
+  </ul>
+  <% end %>
+<% end %>
+</div>
+
+<div class=top_5_items_cloumn>
+  <%= content_tag :div, id: "top_5_items" do %>
+    <h2>Top 5 Items<h2>
+    <% @merchant.top_5_items.each do |item|%>
+      <li><%= link_to item.name, merchant_item_path(item.merchant, item) %> -
+      $<%= item.total_revenue %> in sales</li>
+      <li id="item_<%= item.id %>">
+      Top day for <%= item.name %> was <%= item.best_selling_date%></li>
+    <% end %>
+  <% end %>
+</div>
