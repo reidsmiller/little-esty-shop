@@ -66,14 +66,14 @@ RSpec.describe 'admin_dashboard', type: :feature do
 
     it 'I see a link to the admin invoices index' do
       expect(page).to have_link('Admin Invoices Index', href: admin_invoices_path)
-      
+
       click_link 'Admin Invoices Index'
       expect(current_path).to eq(admin_invoices_path)
     end
 
     it 'I see the names of the top 5 customers who have conducted the largest number of successful transactions' do
-      within("div#successful_transactions") do
-        expect(page).to have_content("Top 5 Customers with largest number of successful transactions:")
+      within('div#successful_transactions') do
+        expect(page).to have_content('Top 5 Customers with largest number of successful transactions:')
         expect(page).to have_content(@customer_5.last_name)
         expect(page).to have_content(@customer_4.last_name)
         expect(page).to have_content(@customer_3.last_name)

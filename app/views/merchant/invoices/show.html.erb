@@ -1,0 +1,49 @@
+<h3 style="background-color:LightGray;"><center>Invoice #<%= @invoice.id %><center></h3>
+<ul><b>Status:</b> <%= @invoice.status %></ul>
+<br>
+<ul><b>Created on:</b> <%= @invoice.format_time_stamp %></ul>
+<ul><b>Total Revenue:</b> $<%= @invoice.total_revenue %></ul>
+<ul><h2>Customer:</h2>
+<ul style="font-size:20px;"><%= @invoice.customer_full_name%></ul>
+<ul style="font-size:20px;">123 Main St.</ul>
+<ul style="font-size:20px;">Anywhere, USA</ul>
+<br>
+<br>
+<style>
+table, th, td {
+  border: 1px solid black;
+  padding: 15px;
+  margin: 2px;
+  font-size: 20px;
+}
+</style>
+<body>
+
+<h2>Items on this Invoice:</h2>
+
+<div id="invoice_items"> 
+<table style="width:99%">
+  <tr>
+    <th style="background-color:DarkGrey; color:White"><center>Item Name</th>
+    <th style="background-color:DarkGrey; color:White"><center>Quantity</th>
+    <th style="background-color:DarkGrey; color:White"><center>Unit Price</th>
+    <th style="background-color:DarkGrey; color:White"><center>Status</th>
+  </tr>
+  <% @invoice.invoice_items.each do |invoice_item| %>
+    <tr id="items-<%= invoice_item.item.id %>">
+        <td style="background-color:LightGrey;"><center><%= invoice_item.items_name %></td>
+        <td style="background-color:LightGrey;"><center><%= invoice_item.quantity %></td>
+        <td style="background-color:LightGrey;"><center>$<%= invoice_item.format_unit_price %></td>
+        <td style="background-color:LightGrey; font-size:20px;"><center>
+        <%= form_with model: [@merchant, invoice_item] do |form|%>
+        <%= form.label :status, hidden: true %>
+        <%= form.select :status, options_for_select([["pending", :pending], [:packaged, "packaged"], [:shipped, "shipped"]], invoice_item.status)%>
+        <%= form.submit "Update Item Status", style: "background-color:Black; font-size:12px; color:White;"%>
+        <% end %> 
+        </td>
+    </tr>
+  <% end %>
+</table>
+</div>
+</body>
+        
