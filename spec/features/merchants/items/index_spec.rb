@@ -289,6 +289,7 @@ RSpec.describe 'Merchant Items Index Page' do
       visit merchant_items_path(merchant)
       
       within("li#item_#{item_6.id}") do
+      save_and_open_page
         expect(page).to have_content("Top day for six was Tuesday, April 18, 2023")
       end
 

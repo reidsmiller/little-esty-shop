@@ -1,0 +1,44 @@
+<h1>Admin Merchant Index Page</h1>
+<%= link_to "Create New Merchant", new_admin_merchant_path %>
+
+<div id="top_5_merchants_by_revenue">
+  <h3>Top 5 Merchants by Revenue</h3>
+  <ol>
+    <% @top_5_merchants.each do |merchant| %>
+      <li id="top_5_<%= merchant.id %>">
+        <%= link_to "#{merchant.name}", admin_merchant_path(merchant) %> 
+        | Top selling date for <%= merchant.name %> was <%= merchant.top_selling_date %>
+      </li>
+    <% end %>
+  </ol>
+</div>
+
+<div id="enabled_merchants">
+  <h3>Enabled Merchants</h3>
+  <ol>
+    <% @enabled_merchants.each do |merchant| %>
+      <li id="admin_<%= merchant.id %>">
+        <%= link_to "#{merchant.name}", admin_merchant_path(merchant) %>
+        <%= render partial: 'endisable', locals: {
+          merchant: merchant, 
+          status: 'disabled',
+          button_text: 'Disable'} %>
+      </li>
+    <% end %>
+  </ol>
+</div>
+
+<div id="disabled_merchants">
+  <h3>Disabled Merchants</h3>
+  <ol>
+    <% @disabled_merchants.each do |merchant| %>
+      <li id="admin_<%= merchant.id %>">
+        <%= link_to "#{merchant.name}", admin_merchant_path(merchant) %>
+        <%= render partial: 'endisable', locals: {
+          merchant: merchant, 
+          status: 'enabled', 
+          button_text: 'Enable'} %>
+      </li>
+    <% end %>
+  </ol>
+</div>

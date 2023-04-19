@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 2023_04_17_023012) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status", default: 0
     t.index ["id"], name: "index_merchants_on_id", unique: true
   end
 
