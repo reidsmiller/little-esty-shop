@@ -1,42 +1,41 @@
 # Little Esty Shop
+### Name of Contributors & Github Links
 
-## Background and Description
+[Alejandro Lopez](https://github.com/AlejandroLopez1992)<br>
+[Julian Beldotti](https://github.com/JCBeldo)<br>
+[Reid Miller](https://github.com/reidsmiller)<br>
+[Stephen McPhee](https://github.com/SMcPhee19)<br>
 
-"Little Esty Shop" is a group project that requires students to build a fictitious e-commerce platform where merchants and admins can manage inventory and fulfill customer invoices.
+### Descirption of Project
+This project, entitled "Little Esty Shop", is a Turing BE-Mod2 Group Project focusing on designing an e-commerce platform. It's funcitonality would allow merchants as well as admins to manage inventory & fulfill customers orders. 
 
-## Learning Goals
-- Practice designing a normalized database schema and defining model relationships
-- Utilize advanced routing techniques including namespacing to organize and group like functionality together.
-- Utilize advanced active record techniques to perform complex database queries
-- Practice consuming a public API while utilizing POROs as a way to apply OOP principles to organize code
+The project was completed using `Ruby on Rails` and `PostgreSQL` for the database, `Render` for app deployment to the web, and `Github Projects` for time and project management. 
 
-## Requirements
-- must use Rails 5.2.x
-- must use PostgreSQL
-- all code must be tested via feature tests and model tests, respectively
-- must use GitHub branching, team code reviews via GitHub PR comments, and either GitHub Projects or a project management tool of your group's choice (Trello, Notion, etc.)
-- must include a thorough README to describe the project
-   - README should include a basic description of the project, a summary of the work completed, and some ideas for a potential contributor to work on/refactor next. Also include the names and GitHub links of all student contributors on your project. 
-- must deploy completed code to Heroku
-- Continuous Integration / Continuous Deployment is not allowed
-- Use of scaffolding is not allowed
-- Any gems added to the project must be approved by an instructor
+New concepts learned during the course of this project included: 
+- implementing `rake tasks` in order to seed data from the `CSV` files into the database; 
+- working with new gems for additional functionality including `factory_bot_rails`, `faker` and `HTTParty`
+- creating complex `ActiveRecord` queries to the database; 
+- Consumed an external `API` to serve data to our site.
 
-## Setup
+Goals achieved during this project:
+- 100% coverage of Model and Feature tests using simplecov
+- Worked with and extracted information from multiple objects using `ActiveRecord` queries.
+- 100% completion of all the user stories
+- Collaborated togeher as a group and then in pairs to successfully complete the project.
+- Used GitHub projects, milestones, and issues to effectively coordinate all tasks amongst the team.
 
-This project requires Ruby 2.7.4.
+Summary of Milestones:
+- Merchant Dashboard - This page shows details for a particular merchant, including the items that are ready to ship and favorite customers
+- Merchant Invoices - This displays an index page for invoices that links to a show page which shows information for the customer on this invoice and a table that shows each item on the invoice including a selector which allows for the user update the status
+- Merchant Items - These pages allow a visitor to enable/disable particular items and click into those items to see a description. Additionally it reflects the sales of the top five items that this merchant has sold alongside their sales amount and best date of purchases
+- Admin Dashboard - Shows top 5 customers by successful transactions and all incomplete invoices
+- Admin Merchants - Merchant index and show pages, with top 5 merchants by revenue, disabled and enabled merchants, and edit merchants functionality
+- Admin Invoices - Shows an index page of all IDs in the system and then Shows the details of each individual invoice. Detailed customer, invoice, and item information
+- Unsplash API consumption - Adds images to various show pages and a logo to all pages
 
-* Fork this repository
-* Clone your fork
-* From the command line, install gems and set up your DB:
-    * `bundle`
-    * `rails db:create`
-* Run the test suite with `bundle exec rspec`.
-* Run your development server with `rails s` to see the app in action.
-
-## Phases
-
-1. [Database Setup](./doc/db_setup.md)
-1. [User Stories](./doc/user_stories.md)
-1. [Extensions](./doc/extensions.md)
-1. [Evaluation](./doc/evaluation.md)
+Potential Refactor Opportunities
+- Make two partials to display easy access links for a user and admin to navigate between dashboard, items, and invoice pages.
+- Create a welcome page.
+- Style the whole app with CSS.
+- Within methods that calculate total revenue implement a subquery that insures only one successful transaction is taken into account per invoice.
+- Add number_to_currency to the view page to nicely format the prices and total revenue.
