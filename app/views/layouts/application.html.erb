@@ -10,6 +10,7 @@
   </head>
 
   <body>
+  <%= image_tag get_logo, cache: true %>
   <h1 style="background-color:#dcdcdc;"><center>Little Etsy Shoppe<center></h1>
      <% flash.each do |type, msg| %>
       <div>
