@@ -28,7 +28,7 @@ class Merchant < ApplicationRecord
   end
 
   def top_selling_date
-    self.invoices
+    invoices
       .joins(:invoice_items, :transactions)
       .where(transactions: {result: :success})
       .group('invoices.created_at')
