@@ -244,6 +244,46 @@ RSpec.describe 'admin_merchants_index', type: :feature do
         expect(page).to_not have_content(@merchant_1.name)
       end
     end
+
+    it 'shows the total revenue for each merchant' do
+      create(:invoice_item, item_id: @merchant_item_1.id, invoice_id: @invoice_1.id, quantity: 1, unit_price:10000)
+      create(:invoice_item, item_id: @merchant_item_2.id, invoice_id: @invoice_2.id, quantity: 2, unit_price:10000)
+      create(:invoice_item, item_id: @merchant_item_3.id, invoice_id: @invoice_3.id, quantity: 3, unit_price:10000)
+      create(:invoice_item, item_id: @merchant_item_4.id, invoice_id: @invoice_4.id, quantity: 4, unit_price:10000)
+      create(:invoice_item, item_id: @merchant_item_5.id, invoice_id: @invoice_5.id, quantity: 5, unit_price:10000)
+      create(:invoice_item, item_id: @merchant_item_6.id, invoice_id: @invoice_6.id, quantity: 6, unit_price:10000)
+      create(:invoice_item, item_id: @merchant_item_7.id, invoice_id: @invoice_7.id, quantity: 7, unit_price:10000)
+
+      create(:transaction, invoice_id: @invoice_1.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_2.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_3.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_4.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_5.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_6.id, result: 'success')
+      create(:transaction, invoice_id: @invoice_7.id, result: 'success')
+
+      visit admin_merchants_path
+
+      within("li#top_5_#{@merchant_7.id}") do
+        expect(page).to have_content(70_000)
+      end
+
+      within("li#top_5_#{@merchant_6.id}") do
+        expect(page).to have_content(60_000)
+      end
+
+      within("li#top_5_#{@merchant_5.id}") do
+        expect(page).to have_content(50_000)
+      end
+
+      within("li#top_5_#{@merchant_4.id}") do
+        expect(page).to have_content(40_000)
+      end
+
+      within("li#top_5_#{@merchant_3.id}") do
+        expect(page).to have_content(30_000)
+      end
+    end
   end
 
   describe 'top merchants best day' do
