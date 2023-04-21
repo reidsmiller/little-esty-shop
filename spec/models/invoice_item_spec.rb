@@ -90,7 +90,7 @@ RSpec.describe InvoiceItem, type: :model do
 
           expect(invoice_item1.check_for_bulk_discounts).to eq(96_000)
           expect(invoice_item2.check_for_bulk_discounts).to eq(105_000)
-          expect(@invoice1.total_revenue).to eq('2110.0')
+          expect(@invoice1.total_revenue).to eq('2010.0')
         end
       end
 
@@ -118,7 +118,7 @@ RSpec.describe InvoiceItem, type: :model do
           expect(invoice_item1.check_for_bulk_discounts).to eq(80_000)
           expect(invoice_item2.check_for_bulk_discounts).to eq(105_000)
           expect(invoice_item3.check_for_bulk_discounts).to eq(150_000)
-          expect(@invoice1.total_revenue).to eq('3660.0')
+          expect(@invoice1.total_revenue).to eq('3350.0')
         end
       end
     end

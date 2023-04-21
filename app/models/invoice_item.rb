@@ -22,8 +22,7 @@ class InvoiceItem < ApplicationRecord
       discounted_price = item.unit_price - (item.unit_price * selected_bulk_discounts.first.discount_percent)
       update(unit_price: discounted_price)
     elsif selected_bulk_discounts.length > 1
-      highest_eligable_discount = selected_bulk_discounts.max(:discount_percent)
-      discounted_price = item.unit_price - (item.unit_price * highest_eligable_discount.discount_percent)
+      discounted_price = item.unit_price - (item.unit_price * selected_bulk_discounts.maximum(:discount_percent))
       update(unit_price: discounted_price)
     else
       update(unit_price: item.unit_price)
