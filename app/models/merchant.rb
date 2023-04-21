@@ -3,6 +3,7 @@ class Merchant < ApplicationRecord
   validates :name, presence: true
   validates :status, presence: true
   has_many :items
+  has_many :bulk_discounts
   has_many :invoice_items, through: :items
   has_many :invoices, through: :invoice_items
   has_many :customers, through: :invoices
