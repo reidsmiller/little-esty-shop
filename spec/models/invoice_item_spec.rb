@@ -4,6 +4,8 @@ RSpec.describe InvoiceItem, type: :model do
   describe 'relationships' do
     it { should belong_to :invoice }
     it { should belong_to :item }
+    it { should have_one(:merchant).through(:item) }
+    it { should have_many(:bulk_discounts).through(:merchant)}
     it { should have_many(:transactions).through(:invoice) }
   end
 
@@ -35,16 +37,16 @@ RSpec.describe InvoiceItem, type: :model do
       let!(:invoice_item_2) { create(:invoice_item, item_id: item_2.id, invoice_id: invoice_2.id, status: 2) }
       let!(:invoice_item_3) { create(:invoice_item, item_id: item_3.id, invoice_id: invoice_3.id, status: 2) }
       let!(:invoice_item_7) { create(:invoice_item, item_id: item_9.id, invoice_id: invoice_7.id, status: 1, unit_price: 12345) }
-      
+
       it '#format_unit_price' do
         expect(invoice_item_1.format_unit_price).to eq("400.01")
         expect(invoice_item_7.format_unit_price).to eq("123.45")
       end
 
       it '#items_name' do
-          expect(invoice_item_1.items_name).to eq("Grandaddy Purple")
-          expect(invoice_item_2.items_name).to eq("Girl Scout Cookies")
-          expect(invoice_item_3.items_name).to eq("OG Kush")
+        expect(invoice_item_1.items_name).to eq("Grandaddy Purple")
+        expect(invoice_item_2.items_name).to eq("Girl Scout Cookies")
+        expect(invoice_item_3.items_name).to eq("OG Kush")
       end
     end
 
@@ -57,53 +59,53 @@ RSpec.describe InvoiceItem, type: :model do
         @item2 = create(:item, merchant_id: @merchant1.id, unit_price: 10_000)
         @invoice1 = create(:invoice, customer_id: @customers.sample.id)
       end
-  
+
       describe 'example 1' do
         it 'does not apply discount on items below threshold' do
           invoice_item1 = create(:invoice_item, invoice_id: @invoice1.id, item_id: @item1.id, quantity: 5)
           invoice_item2 = create(:invoice_item, invoice_id: @invoice1.id, item_id: @item2.id, quantity: 5)
-  
-          expect(@invoice1.total_revenue).to eq(1_000.00)
-          expect(invoice_item1.discounted_revenue).to eq(500.00)
-          expect(invoice_item2.discounted_revenue).to eq(500.00)
+
+          expect(invoice_item1.check_for_bulk_discounts).to eq(50_000)
+          expect(invoice_item2.check_for_bulk_discounts).to eq(50_000)
+          expect(@invoice1.total_revenue).to eq('1000.0')
         end
       end
-  
+
       describe 'example 2' do
         it 'discounts an item at threshold but not one below' do
           invoice_item1 = create(:invoice_item, invoice_id: @invoice1.id, item_id: @item1.id, quantity: 10)
           invoice_item2 = create(:invoice_item, invoice_id: @invoice1.id, item_id: @item2.id, quantity: 5)
-  
-          expect(@invoice1.total_revenue).to eq(1_300.00)
-          expect(invoice_item1.discounted_revenue).to eq(800.00)
-          expect(invoice_item2.discounted_revenue).to eq(500.00)
+
+          expect(invoice_item1.check_for_bulk_discounts).to eq(80_000)
+          expect(invoice_item2.check_for_bulk_discounts).to eq(50_000)
+          expect(@invoice1.total_revenue).to eq('1300.0')
         end
       end
-  
+
       describe 'example 3' do
         it 'chooses correct bulk discount based on threshold' do
           BulkDiscount.create!(discount_percent: 0.30, quantity_threshold: 15, merchant_id: @merchant1.id)
           invoice_item1 = create(:invoice_item, invoice_id: @invoice1.id, item_id: @item1.id, quantity: 12)
           invoice_item2 = create(:invoice_item, invoice_id: @invoice1.id, item_id: @item2.id, quantity: 15)
-    
-          expect(@invoice1.total_revenue).to eq(2_110.00)
-          expect(invoice_item1.discounted_revenue).to eq(960.00)
-          expect(invoice_item2.discounted_revenue).to eq(1_050.00)
+
+          expect(invoice_item1.check_for_bulk_discounts).to eq(96_000)
+          expect(invoice_item2.check_for_bulk_discounts).to eq(105_000)
+          expect(@invoice1.total_revenue).to eq('2110.0')
         end
       end
-  
+
       describe 'example 4' do
-        it 'chooses correct bulk discount based on threshold' do
+        it 'will not choose a bulk discount with less discount percent but higher threshold' do
           BulkDiscount.create!(discount_percent: 0.15, quantity_threshold: 15, merchant_id: @merchant1.id)
           invoice_item1 = create(:invoice_item, invoice_id: @invoice1.id, item_id: @item1.id, quantity: 12)
           invoice_item2 = create(:invoice_item, invoice_id: @invoice1.id, item_id: @item2.id, quantity: 15)
-    
-          expect(@invoice1.total_revenue).to eq(2_160.00)
-          expect(invoice_item1.discounted_revenue).to eq(960.00)
-          expect(invoice_item2.discounted_revenue).to eq(1_200.00)
+
+          expect(invoice_item1.check_for_bulk_discounts).to eq(96_000)
+          expect(invoice_item2.check_for_bulk_discounts).to eq(120_000)
+          expect(@invoice1.total_revenue).to eq('2160.0')
         end
       end
-  
+
       describe 'example 5' do
         it 'does not apply to a merchant or its items when it does not belong to it but is on the same invoice' do
           merchant2 = create(:merchant)
@@ -112,11 +114,11 @@ RSpec.describe InvoiceItem, type: :model do
           invoice_item1 = create(:invoice_item, invoice_id: @invoice1.id, item_id: @item1.id, quantity: 10)
           invoice_item2 = create(:invoice_item, invoice_id: @invoice1.id, item_id: @item2.id, quantity: 15)
           invoice_item3 = create(:invoice_item, invoice_id: @invoice1.id, item_id: item3.id, quantity: 15)
-    
-          expect(@invoice1.total_revenue).to eq(2_160.00)
-          expect(invoice_item1.discounted_revenue).to eq(800.00)
-          expect(invoice_item2.discounted_revenue).to eq(1_050.00)
-          expect(invoice_item3.discounted_revenue).to eq(1_500.00)
+
+          expect(invoice_item1.check_for_bulk_discounts).to eq(80_000)
+          expect(invoice_item2.check_for_bulk_discounts).to eq(105_000)
+          expect(invoice_item3.check_for_bulk_discounts).to eq(150_000)
+          expect(@invoice1.total_revenue).to eq('3660.0')
         end
       end
     end
