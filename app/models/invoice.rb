@@ -22,6 +22,6 @@ class Invoice < ApplicationRecord
   end
 
   def total_revenue
-    invoice_items.sum("(quantity * unit_price )/ 100.0").round(2).to_s
+    invoice_items.sum('(quantity * unit_price)/ 100.0').round(2).to_s
   end
 end
