@@ -28,7 +28,7 @@ RSpec.describe 'New Merchant Bulk Discount Page', type: :feature do
 
       expect(current_path).to eq(merchant_bulk_discounts_path(@merchant))
       expect(page).to have_content('Discount Successfully Created')
-      expect(page).to have_content('Percent Discount: 30.0%')
+      expect(page).to have_content('Discount Percent: 30.0%')
       expect(page).to have_content('Quantity Threshold: 30')
     end
 
@@ -39,7 +39,7 @@ RSpec.describe 'New Merchant Bulk Discount Page', type: :feature do
       fill_in 'bulk_discount[quantity_threshold]', with: 'mag'
       click_button 'Create Bulk Discount'
 
-      expect(current_path).to eq(new_merchant_bulk_discounts_path(@merchant))
+      expect(current_path).to eq(new_merchant_bulk_discount_path(@merchant))
       expect(page).to have_content('Discount Not Created: Invalid Input')
 
       visit new_merchant_bulk_discount_path(@merchant)
@@ -48,7 +48,7 @@ RSpec.describe 'New Merchant Bulk Discount Page', type: :feature do
       fill_in 'bulk_discount[quantity_threshold]', with: ''
       click_button 'Create Bulk Discount'
 
-      expect(current_path).to eq(new_merchant_bulk_discounts_path(@merchant))
+      expect(current_path).to eq(new_merchant_bulk_discount_path(@merchant))
       expect(page).to have_content('Discount Not Created: Invalid Input')
     end
   end

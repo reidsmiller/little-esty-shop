@@ -1,6 +1,6 @@
 class BulkDiscount < ApplicationRecord
-  validates :discount_percent, presence: true
-  validates :quantity_threshold, presence: true
+  validates :discount_percent, presence: true, numericality: true
+  validates :quantity_threshold, presence: true, numericality: true
   belongs_to :merchant
   has_many :invoice_items, through: :merchant
 
