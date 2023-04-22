@@ -9,6 +9,8 @@ Rails.application.routes.draw do
     resources :bulk_discounts, only: :index, controller: 'merchant/bulk_discounts'
   end
 
+  resources :bulk_discounts, only: :show
+
   resources :admin, only: :index
   namespace :admin do
     resources :merchants, except: [:destroy]
