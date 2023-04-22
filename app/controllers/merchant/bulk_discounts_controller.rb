@@ -4,6 +4,9 @@ class Merchant::BulkDiscountsController < ApplicationController
     @bulk_discounts = BulkDiscount.merchant_bulk_discounts(params[:merchant_id])
   end
 
+  def show
+  end
+
   def new
     @merchant = Merchant.find(params[:merchant_id])
     @bulk_discount = BulkDiscount.new
@@ -19,6 +22,12 @@ class Merchant::BulkDiscountsController < ApplicationController
       flash[:notice] = 'Discount Not Created: Invalid Input'
       redirect_to new_merchant_bulk_discount_path(merchant)
     end
+  end
+
+  def destroy
+    merchant = Merchant.find(params[:merchant_id])
+    BulkDiscount.destroy(params[:id])
+    redirect_to merchant_bulk_discounts_path(merchant)
   end
 
   private

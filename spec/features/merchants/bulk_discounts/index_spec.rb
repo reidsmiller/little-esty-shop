@@ -20,11 +20,11 @@ RSpec.describe 'Merchant Bulk Discounts Index Page' do
       expect(page).to have_content('Quantity Threshold: 20')
 
       click_link @bulk_discount1.id.to_s
-      expect(current_path).to eq(bulk_discount_path(@bulk_discount1))
+      expect(current_path).to eq(merchant_bulk_discount_path(@merchant, @bulk_discount1))
 
       visit merchant_bulk_discounts_path(@merchant)
       click_link @bulk_discount2.id.to_s
-      expect(current_path).to eq(bulk_discount_path(@bulk_discount2))
+      expect(current_path).to eq(merchant_bulk_discount_path(@merchant, @bulk_discount2))
     end
 
     it 'I see a link to create a new discount, and I can click a link' do
@@ -38,7 +38,7 @@ RSpec.describe 'Merchant Bulk Discounts Index Page' do
     it 'I see next to each discount a button to delete it' do
       visit merchant_bulk_discounts_path(@merchant)
 
-      within("li#discount_#{@bulk_discount1}") do
+     within("li#discount_#{@bulk_discount1.id}") do
         expect(page).to have_button('Delete Discount')
         click_button 'Delete Discount'
       end
@@ -51,7 +51,7 @@ RSpec.describe 'Merchant Bulk Discounts Index Page' do
       expect(page).to have_content('Discount Percent: 25.0%')
       expect(page).to have_content('Quantity Threshold: 20')
 
-      within("li#discount_#{@bulk_discount2}") do
+      within("li#discount_#{@bulk_discount2.id}") do
         expect(page).to have_button('Delete Discount')
         click_button 'Delete Discount'
       end
