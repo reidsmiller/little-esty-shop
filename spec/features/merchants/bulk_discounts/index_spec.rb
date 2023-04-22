@@ -34,5 +34,35 @@ RSpec.describe 'Merchant Bulk Discounts Index Page' do
       click_link 'Add New Bulk Discount'
       expect(current_path).to eq(new_merchant_bulk_discount_path(@merchant))
     end
+
+    it 'I see next to each discount a button to delete it' do
+      visit merchant_bulk_discounts_path(@merchant)
+
+      within("li#discount_#{@bulk_discount1}") do
+        expect(page).to have_button('Delete Discount')
+        click_button 'Delete Discount'
+      end
+
+      expect(current_path).to eq(merchant_bulk_discounts_path(@merchant))
+      expect(page).to_not have_link(@bulk_discount1.id.to_s)
+      expect(page).to_not have_content('Discount Percent: 15.0%')
+      expect(page).to_not have_content('Quantity Threshold: 10')
+      expect(page).to have_link(@bulk_discount2.id.to_s)
+      expect(page).to have_content('Discount Percent: 25.0%')
+      expect(page).to have_content('Quantity Threshold: 20')
+
+      within("li#discount_#{@bulk_discount2}") do
+        expect(page).to have_button('Delete Discount')
+        click_button 'Delete Discount'
+      end
+
+      expect(current_path).to eq(merchant_bulk_discounts_path(@merchant))
+      expect(page).to_not have_link(@bulk_discount1.id.to_s)
+      expect(page).to_not have_content('Discount Percent: 15.0%')
+      expect(page).to_not have_content('Quantity Threshold: 10')
+      expect(page).to_not have_link(@bulk_discount2.id.to_s)
+      expect(page).to_not have_content('Discount Percent: 25.0%')
+      expect(page).to_not have_content('Quantity Threshold: 20')
+    end
   end
 end
