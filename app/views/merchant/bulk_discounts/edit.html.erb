@@ -1,0 +1,5 @@
+<h1>Edit Bulk Discount <%= @bulk_discount.id %></h1>
+<%= render partial: 'form', locals: {
+  bulk_discount: @bulk_discount,
+  url: merchant_bulk_discount_path(@merchant, @bulk_discount)
+} %>
