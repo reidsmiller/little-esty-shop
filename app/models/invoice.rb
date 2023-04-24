@@ -6,6 +6,7 @@ class Invoice < ApplicationRecord
   has_many :items, through: :invoice_items
   has_many :transactions
   has_many :merchants, through: :items
+  has_many :bulk_discounts, through: :invoice_items
 
   enum status: ['cancelled', 'in progress', 'completed']
 
@@ -22,6 +23,28 @@ class Invoice < ApplicationRecord
   end
 
   def total_revenue
-    invoice_items.sum('(quantity * unit_price)/ 100.0').round(2).to_s
+    invoice_items.joins(:item).sum('(invoice_items.quantity * items.unit_price)/ 100.0').round(2).to_s
   end
+
+  def discounted_revenue
+    sum = invoice_items
+      .map(&:check_for_bulk_discounts)
+      .sum
+    discounted_revenue = (sum/100.0).round(2).to_s
+  end
+
+  # def discounted_revenue
+  #   discounted_invoice_items_sum = invoice_items
+  #     .joins(:bulk_discounts)
+  #     .where('invoice_items.quantity >= bulk_discounts.quantity_threshold')
+  #     .select('invoice_items.*, MAX(bulk_discounts.discount_percent) AS discount_percent')
+  #     .sum('invoice_items.quantity * invoice_items.unit_price * (1 - discount_percent)/100.0')
+     
+  #   # undiscounted_invoice_item_sum = invoice_items
+  #   #   .joins(:bulk_discounts)
+  #   #   .select('invoice_items.*, MIN(bulk_discounts.quantity_threshold) AS quantity_threshold')
+  #   #   .where('invoice_items.quantity < quantity_threshold')
+  #   #   .sum('invoice_items.quantity * invoice_items.unit_price')
+  #   # (discounted_invoice_item_sum + undiscounted_invoice_item_sum)
+  # end
 end

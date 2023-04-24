@@ -1,15 +1,14 @@
 <h3 style="background-color:LightGray;"><center>Invoice #<%= @invoice.id %><center></h3>
-<ul><b>Status:</b> <%= @invoice.status %></ul>
-<br>
-<ul><b>Created on:</b> <%= @invoice.format_time_stamp %></ul>
-<ul><b>Total Revenue:</b> $<%= @invoice.total_revenue %></ul>
-<ul><h2>Customer:</h2>
-<ul style="font-size:20px;"><%= @invoice.customer_full_name%></ul>
-<ul style="font-size:20px;">123 Main St.</ul>
-<ul style="font-size:20px;">Anywhere, USA</ul>
-<br>
-<br>
-<style>
+
+<ul>
+  <li>Status:</b> <%= @invoice.status %></li>
+  <li>Created on: <%= @invoice.format_time_stamp %></li>
+  <li>Total Revenue: $<%= @invoice.total_revenue %></li>
+  <li>Total Revenue with Discounts: $<%= @invoice.discounted_revenue %></li>
+</ul>
+
+<h2>Customer:</h2>
+
 table, th, td {
   border: 1px solid black;
   padding: 15px;
