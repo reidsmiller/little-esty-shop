@@ -34,7 +34,11 @@ table, th, td {
         <td style="background-color:LightGrey;"><center><%= invoice_item.items_name %></td>
         <td style="background-color:LightGrey;"><center><%= invoice_item.quantity %></td>
         <td style="background-color:LightGrey;"><center>$<%= invoice_item.format_unit_price %></td>
-        <td style="background-color:LightGrey;"><center><%= link_to invoice_item.find_max_discount.id.to_s, merchant_bulk_discount_path(@merchant, invoice_item.find_max_discount) %></td>
+        <td style="background-color:LightGrey;"><center>
+          <% if invoice_item.find_max_discount != nil %>
+            <%= link_to invoice_item.find_max_discount.id.to_s, merchant_bulk_discount_path(@merchant, invoice_item.find_max_discount) %>
+          <% end %>
+        </td>
         <td style="background-color:LightGrey; font-size:20px;"><center>
           <%= form_with model: [@merchant, invoice_item] do |form|%>
             <%= form.label :status, hidden: true %>

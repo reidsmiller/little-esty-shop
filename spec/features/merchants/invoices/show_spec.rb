@@ -175,10 +175,10 @@ RSpec.describe 'Merchant/invoice show page', type: :feature do
       @item4 = create(:item, merchant: @merchant, unit_price: 1000)
       @invoice1 = create(:invoice, customer_id: @customers.sample.id)
       @invoice2 = create(:invoice, customer_id: @customers.sample.id)
-      create(:invoice_item, item: @item1, invoice: @invoice1, quantity: 5, unit_price: 1000)
-      create(:invoice_item, item: @item2, invoice: @invoice1, quantity: 10, unit_price: 1000)
-      create(:invoice_item, item: @item3, invoice: @invoice2, quantity: 15, unit_price: 1000)
-      create(:invoice_item, item: @item4, invoice: @invoice2, quantity: 20, unit_price: 1000)
+      @invoice_item1 = create(:invoice_item, item: @item1, invoice: @invoice1, quantity: 5, unit_price: 1000)
+      @invoice_item2 = create(:invoice_item, item: @item2, invoice: @invoice1, quantity: 10, unit_price: 1000)
+      @invoice_item3 = create(:invoice_item, item: @item3, invoice: @invoice2, quantity: 15, unit_price: 1000)
+      @invoice_item4 = create(:invoice_item, item: @item4, invoice: @invoice2, quantity: 20, unit_price: 1000)
     end
 
     it 'I see the total revenue for my merchant from this invoice (not including discounts)' do
@@ -199,29 +199,29 @@ RSpec.describe 'Merchant/invoice show page', type: :feature do
       expect(page).to have_content('Total Revenue with Discounts: $277.5')
     end
 
-    xit 'I see a link to the show page for the bulk discout that was applied (if any)' do
-      visit merhcant_invoice_path(@merchant, @invoice1)
+    it 'I see a link to the show page for the bulk discout that was applied (if any)' do
+      visit merchant_invoice_path(@merchant, @invoice1)
 
-      within("#invoice_item_#{invoice_item_1.id}") do
-        expect(page).to_not have_link(@bulk_discount1.id)
-        expect(page).to_not have_link(@bulk_discount2.id)
+      within("#invoice_item_#{@invoice_item1.id}") do
+        expect(page).to_not have_link(@bulk_discount1.id.to_s)
+        expect(page).to_not have_link(@bulk_discount2.id.to_s)
       end
 
-      within("#invoice_item_#{invoice_item_2.id}") do
-        expect(page).to have_link(@bulk_discount1.id)
-        expect(page).to_not have_link(@bulk_discount2.id)
+      within("#invoice_item_#{@invoice_item2.id}") do
+        expect(page).to have_link(@bulk_discount1.id.to_s)
+        expect(page).to_not have_link(@bulk_discount2.id.to_s)
       end
 
       visit merchant_invoice_path(@merchant, @invoice2)
 
-      within("#invoice_item_#{invoice_item_3.id}") do
-        expect(page).to have_link(@bulk_discount1.id)
-        expect(page).to_not have_link(@bulk_discount2.id)
+      within("#invoice_item_#{@invoice_item3.id}") do
+        expect(page).to have_link(@bulk_discount1.id.to_s)
+        expect(page).to_not have_link(@bulk_discount2.id.to_s)
       end
 
-      within("#invoice_item_#{invoice_item_4.id}") do
-        expect(page).to_not have_link(@bulk_discount1.id)
-        expect(page).to have_link(@bulk_discount2.id)
+      within("#invoice_item_#{@invoice_item4.id}") do
+        expect(page).to_not have_link(@bulk_discount1.id.to_s)
+        expect(page).to have_link(@bulk_discount2.id.to_s)
       end
     end
   end
