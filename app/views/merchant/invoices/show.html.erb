@@ -3,8 +3,9 @@
 <ul>
   <li>Status:</b> <%= @invoice.status %></li>
   <li>Created on: <%= @invoice.format_time_stamp %></li>
+  <li>Customer: <%= @invoice.customer_full_name %></li>
   <li>Total Revenue: $<%= @invoice.total_revenue %></li>
-  <li>Total Revenue with Discounts: $<%= @invoice.discounted_revenue %></li>
+  <li>Total Revenue with Discounts: $<%= @invoice.total_revenue_with_discount %></li>
 </ul>
 
 <h2>Customer:</h2>
@@ -29,16 +30,17 @@ table, th, td {
     <th style="background-color:DarkGrey; color:White"><center>Status</th>
   </tr>
   <% @invoice.invoice_items.each do |invoice_item| %>
-    <tr id="items-<%= invoice_item.item.id %>">
+    <tr id="invoice_item_<%= invoice_item.id %>">
         <td style="background-color:LightGrey;"><center><%= invoice_item.items_name %></td>
         <td style="background-color:LightGrey;"><center><%= invoice_item.quantity %></td>
         <td style="background-color:LightGrey;"><center>$<%= invoice_item.format_unit_price %></td>
+        <td style="background-color:LightGrey;"><center><%= link_to invoice_item.find_max_discount.id.to_s, merchant_bulk_discount_path(@merchant, invoice_item.find_max_discount) %></td>
         <td style="background-color:LightGrey; font-size:20px;"><center>
-        <%= form_with model: [@merchant, invoice_item] do |form|%>
-        <%= form.label :status, hidden: true %>
-        <%= form.select :status, options_for_select([["pending", :pending], [:packaged, "packaged"], [:shipped, "shipped"]], invoice_item.status)%>
-        <%= form.submit "Update Item Status", style: "background-color:Black; font-size:12px; color:White;"%>
-        <% end %> 
+          <%= form_with model: [@merchant, invoice_item] do |form|%>
+            <%= form.label :status, hidden: true %>
+            <%= form.select :status, options_for_select([["pending", :pending], [:packaged, "packaged"], [:shipped, "shipped"]], invoice_item.status)%>
+            <%= form.submit "Update Item Status", style: "background-color:Black; font-size:12px; color:White;"%>
+          <% end %> 
         </td>
     </tr>
   <% end %>

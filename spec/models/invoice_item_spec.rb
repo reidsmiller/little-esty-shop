@@ -54,7 +54,7 @@ RSpec.describe InvoiceItem, type: :model do
       before(:each) do
         @customers = create_list(:customer, 20)
         @merchant1 = create(:merchant)
-        BulkDiscount.create!(discount_percent: 0.20, quantity_threshold: 10, merchant_id: @merchant1.id)
+        @bulk_discount1 = BulkDiscount.create!(discount_percent: 0.20, quantity_threshold: 10, merchant_id: @merchant1.id)
         @item1 = create(:item, merchant_id: @merchant1.id, unit_price: 10_000)
         @item2 = create(:item, merchant_id: @merchant1.id, unit_price: 10_000)
         @invoice1 = create(:invoice, customer_id: @customers.sample.id)
@@ -114,6 +114,21 @@ RSpec.describe InvoiceItem, type: :model do
           expect(invoice_item1.check_for_bulk_discounts).to eq(80_000)
           expect(invoice_item2.check_for_bulk_discounts).to eq(105_000)
           expect(invoice_item3.check_for_bulk_discounts).to eq(150_000)
+        end
+      end
+
+      describe '#find_max_discount' do
+        it 'finds the max bulk discount for an invoice_item' do
+          merchant2 = create(:merchant)
+          bulk_discount2 = BulkDiscount.create!(discount_percent: 0.30, quantity_threshold: 15, merchant_id: @merchant1.id)
+          item3 = create(:item, merchant_id: merchant2.id, unit_price: 10_000)
+          invoice_item1 = create(:invoice_item, invoice_id: @invoice1.id, item_id: @item1.id, quantity: 10)
+          invoice_item2 = create(:invoice_item, invoice_id: @invoice1.id, item_id: @item2.id, quantity: 15)
+          invoice_item3 = create(:invoice_item, invoice_id: @invoice1.id, item_id: item3.id, quantity: 15)
+
+          expect(invoice_item1.find_max_discount).to eq(@bulk_discount1)
+          expect(invoice_item2.find_max_discount).to eq(bulk_discount2)
+          expect(invoice_item3.find_max_discount).to eq(nil)
         end
       end
     end

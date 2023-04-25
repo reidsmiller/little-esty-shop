@@ -29,4 +29,8 @@ class InvoiceItem < ApplicationRecord
     end
     unit_price * quantity
   end
+
+  def find_max_discount
+    bulk_discounts.where('quantity_threshold <= ?', quantity).maximum(:discount_percent)
+  end
 end

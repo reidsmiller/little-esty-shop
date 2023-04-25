@@ -72,18 +72,18 @@ RSpec.describe 'Merchant/invoice show page', type: :feature do
   
       it 'should display the first and last name of the customer associated with this invoice.' do
         visit merchant_invoice_path(merchant, invoice_2.id)
-        
+
         expect(page).to have_content(invoice_2.customer_full_name)
         expect(invoice_2.customer.first_name).to appear_before(invoice_2.customer.last_name)
       end
-  
+
       it 'should display the total revenue of items on the invoice' do
         visit merchant_invoice_path(merchant, invoice_1.id)
-        
+
         expect(page).to have_content("Total Revenue: $180.0")
-        
+
         visit merchant_invoice_path(merchant, invoice_6.id)
-        
+
         expect(page).to have_content("Total Revenue: $999.88")
       end
     end
@@ -127,7 +127,7 @@ RSpec.describe 'Merchant/invoice show page', type: :feature do
   
           visit merchant_invoice_path(merchant, invoice_6.id)
           
-          within("#items-#{invoice_item_6.item_id}") do
+          within("#invoice_item_#{invoice_item_6.id}") do
             expect(page).to have_select(selected: 'shipped')
             expect(page).to have_button('Update Item Status')
       
@@ -138,7 +138,7 @@ RSpec.describe 'Merchant/invoice show page', type: :feature do
           
           visit merchant_invoice_path(merchant, invoice_6.id)
           
-          within("#items-#{invoice_item_8.item_id}") do
+          within("#invoice_item_#{invoice_item_8.id}") do
             expect(page).to have_select(selected: 'packaged')
             expect(page).to have_button('Update Item Status')
       
@@ -175,10 +175,10 @@ RSpec.describe 'Merchant/invoice show page', type: :feature do
       @item4 = create(:item, merchant: @merchant, unit_price: 1000)
       @invoice1 = create(:invoice, customer_id: @customers.sample.id)
       @invoice2 = create(:invoice, customer_id: @customers.sample.id)
-      create(:invoice_item, item: @item1, invoice: @invoice1, quantity: 5)
-      create(:invoice_item, item: @item2, invoice: @invoice1, quantity: 10)
-      create(:invoice_item, item: @item3, invoice: @invoice2, quantity: 15)
-      create(:invoice_item, item: @item4, invoice: @invoice2, quantity: 20)
+      create(:invoice_item, item: @item1, invoice: @invoice1, quantity: 5, unit_price: 1000)
+      create(:invoice_item, item: @item2, invoice: @invoice1, quantity: 10, unit_price: 1000)
+      create(:invoice_item, item: @item3, invoice: @invoice2, quantity: 15, unit_price: 1000)
+      create(:invoice_item, item: @item4, invoice: @invoice2, quantity: 20, unit_price: 1000)
     end
 
     it 'I see the total revenue for my merchant from this invoice (not including discounts)' do
@@ -197,6 +197,32 @@ RSpec.describe 'Merchant/invoice show page', type: :feature do
       visit merchant_invoice_path(@merchant, @invoice2)
       expect(page).to have_content('Total Revenue: $350.0')
       expect(page).to have_content('Total Revenue with Discounts: $277.5')
+    end
+
+    xit 'I see a link to the show page for the bulk discout that was applied (if any)' do
+      visit merhcant_invoice_path(@merchant, @invoice1)
+
+      within("#invoice_item_#{invoice_item_1.id}") do
+        expect(page).to_not have_link(@bulk_discount1.id)
+        expect(page).to_not have_link(@bulk_discount2.id)
+      end
+
+      within("#invoice_item_#{invoice_item_2.id}") do
+        expect(page).to have_link(@bulk_discount1.id)
+        expect(page).to_not have_link(@bulk_discount2.id)
+      end
+
+      visit merchant_invoice_path(@merchant, @invoice2)
+
+      within("#invoice_item_#{invoice_item_3.id}") do
+        expect(page).to have_link(@bulk_discount1.id)
+        expect(page).to_not have_link(@bulk_discount2.id)
+      end
+
+      within("#invoice_item_#{invoice_item_4.id}") do
+        expect(page).to_not have_link(@bulk_discount1.id)
+        expect(page).to have_link(@bulk_discount2.id)
+      end
     end
   end
 end

@@ -114,7 +114,7 @@ RSpec.describe Invoice, type: :model do
             create(:invoice_item, invoice_id: @invoice1.id, item_id: @item1.id, quantity: 5, unit_price: 10_000)
             create(:invoice_item, invoice_id: @invoice1.id, item_id: @item2.id, quantity: 5, unit_price: 10_000)
 
-            expect(@invoice1.discounted_revenue).to eq('1000.0')
+            expect(@invoice1.total_revenue_with_discount).to eq('1000.0')
           end
         end
 
@@ -123,7 +123,7 @@ RSpec.describe Invoice, type: :model do
             create(:invoice_item, invoice_id: @invoice1.id, item_id: @item1.id, quantity: 10, unit_price: 10_000)
             create(:invoice_item, invoice_id: @invoice1.id, item_id: @item2.id, quantity: 5, unit_price: 10_000)
 
-            expect(@invoice1.discounted_revenue).to eq('1300.0')
+            expect(@invoice1.total_revenue_with_discount).to eq('1300.0')
           end
         end
 
@@ -133,7 +133,7 @@ RSpec.describe Invoice, type: :model do
             create(:invoice_item, invoice_id: @invoice1.id, item_id: @item1.id, quantity: 12, unit_price: 10_000)
             create(:invoice_item, invoice_id: @invoice1.id, item_id: @item2.id, quantity: 15, unit_price: 10_000)
 
-            expect(@invoice1.discounted_revenue).to eq('2010.0')
+            expect(@invoice1.total_revenue_with_discount).to eq('2010.0')
           end
         end
 
@@ -143,7 +143,7 @@ RSpec.describe Invoice, type: :model do
             create(:invoice_item, invoice_id: @invoice1.id, item_id: @item1.id, quantity: 12, unit_price: 10_000)
             create(:invoice_item, invoice_id: @invoice1.id, item_id: @item2.id, quantity: 15, unit_price: 10_000)
 
-            expect(@invoice1.discounted_revenue).to eq('2160.0')
+            expect(@invoice1.total_revenue_with_discount).to eq('2160.0')
           end
         end
 
@@ -156,7 +156,7 @@ RSpec.describe Invoice, type: :model do
             create(:invoice_item, invoice_id: @invoice1.id, item_id: @item2.id, quantity: 15, unit_price: 10_000)
             create(:invoice_item, invoice_id: @invoice1.id, item_id: item3.id, quantity: 15, unit_price: 10_000)
 
-            expect(@invoice1.discounted_revenue).to eq('3350.0')
+            expect(@invoice1.total_revenue_with_discount).to eq('3350.0')
           end
         end
       end
