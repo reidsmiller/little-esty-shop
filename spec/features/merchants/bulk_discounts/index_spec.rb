@@ -64,5 +64,15 @@ RSpec.describe 'Merchant Bulk Discounts Index Page' do
       expect(page).to_not have_content('Discount Percent: 25.0%')
       expect(page).to_not have_content('Quantity Threshold: 20')
     end
+
+    it 'I see a section of upcoming holidays and the next 3 upcoming US holidays are listed' do
+      visit merchant_bulk_discounts_path(@merchant)
+      within('#upcoming_holidays') do
+        expect(page).to have_content('Upcoming Holidays')
+        expect(page).to have_content('Memorial Day: 2023-05-29')
+        expect(page).to have_content('Juneteenth: 2023-06-19')
+        expect(page).to have_content('Independence Day: 2023-07-04')
+      end
+    end
   end
 end
