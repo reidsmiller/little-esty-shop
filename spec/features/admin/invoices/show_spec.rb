@@ -104,4 +104,30 @@ RSpec.describe 'admin_invoice_show3333', type: :feature do
       end
     end
   end
+  describe 'discounts' do
+    before(:each) do
+      @customers = create_list(:customer, 5)
+      @merchant = create(:merchant)
+      @bulk_discount1 = BulkDiscount.create!(discount_percent: 0.15, quantity_threshold: 10, merchant_id: @merchant.id)
+      @bulk_discount2 = BulkDiscount.create!(discount_percent: 0.25, quantity_threshold: 20, merchant_id: @merchant.id)
+      @item1 = create(:item, merchant: @merchant, unit_price: 1000)
+      @item2 = create(:item, merchant: @merchant, unit_price: 1000)
+      @item3 = create(:item, merchant: @merchant, unit_price: 1000)
+      @item4 = create(:item, merchant: @merchant, unit_price: 1000)
+      @invoice1 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice2 = create(:invoice, customer_id: @customers.sample.id)
+      @invoice_item1 = create(:invoice_item, item: @item1, invoice: @invoice1, quantity: 5, unit_price: 1000)
+      @invoice_item2 = create(:invoice_item, item: @item2, invoice: @invoice1, quantity: 10, unit_price: 1000)
+      @invoice_item3 = create(:invoice_item, item: @item3, invoice: @invoice2, quantity: 15, unit_price: 1000)
+      @invoice_item4 = create(:invoice_item, item: @item4, invoice: @invoice2, quantity: 20, unit_price: 1000)
+    end
+
+    it 'displays the total discounted revenue that will be generated from this invoice' do
+      visit admin_invoice_path(@invoice1)
+      expect(page).to have_content("Total Discounted Revenue: $#{@invoice1.total_revenue_with_discount}")
+
+      visit admin_invoice_path(@invoice2)
+      expect(page).to have_content("Total Discounted Revenue: $#{@invoice2.total_revenue_with_discount}")
+    end
+  end
 end

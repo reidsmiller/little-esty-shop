@@ -26,7 +26,7 @@ class Invoice < ApplicationRecord
     invoice_items.joins(:item).sum('(invoice_items.quantity * items.unit_price)/ 100.0').round(2).to_s
   end
 
-  # def discounted_revenue
+  # def total_revenue_with_discount
   #   sum = invoice_items
   #     .map(&:check_for_bulk_discounts)
   #     .sum
@@ -41,6 +41,21 @@ class Invoice < ApplicationRecord
       .group('invoice_items.id')
       .sum{ |invoice_item| invoice_item.quantity * invoice_item.unit_price * invoice_item.max_discount_percent / 100.0}
   end
+
+  # def discounted_revenue
+  #   invoice_items
+  #     .select("SUM(invoice_items.quantity * invoice_items.unit_price * max_discount_percent / 100.0) AS discounted_revenue")
+  #     .from(
+  #       invoice_items
+  #         .select("invoice_items.*, MAX(bulk_discounts.discount_percent) AS max_discount_percent")
+  #         .left_outer_joins(:bulk_discounts)
+  #         .where('bulk_discounts.quantity_threshold <= invoice_items.quantity')
+  #         .group('invoice_items.id'),
+  #       :invoice_items
+  #     )
+  #     .first
+  #     .discounted_revenue || 0
+  # end
 
   def total_revenue_with_discount
     (total_revenue.to_f - discounted_revenue.to_f).round(2).to_s
