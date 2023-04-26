@@ -1,6 +1,6 @@
 <div id="invoices">
   <h3 style="background-color:LightGray;"><center>My Invoices</center></h3>
-  <% @merchant.invoices.each do |invoice| %> 
+  <% @invoices.each do |invoice| %> 
     <p>Invoice #<%= link_to "#{invoice.id}", merchant_invoice_path(@merchant.id, invoice.id) %></p>
   <% end %>
 </div>

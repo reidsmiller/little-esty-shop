@@ -27,10 +27,10 @@ BulkDiscount.create!(discount_percent: 0.15, quantity_threshold: 10, merchant_id
 BulkDiscount.create!(discount_percent: 0.25, quantity_threshold: 20, merchant_id: merchant1.id)
 BulkDiscount.create!(discount_percent: 0.10, quantity_threshold: 15, merchant_id: merchant2.id)
 
-item1 = Item.create!(name: 'Hogwarts Robe', description: 'One-size-fits-all', unit_price: 30, merchant_id: merchant1.id)
-item2 = Item.create!(name: 'Sneakoscope', description: 'Whistles when sneaky people are nearby', unit_price: 15, merchant_id: merchant1.id)
-item3 = Item.create!(name: 'Cloak of Invisibility', description: 'The ultimate in stealth wear', unit_price: 300, merchant_id: merchant1.id)
-item4 = Item.create!(name: 'Beans', description: 'Every flavor imaginable!', unit_price: 3, merchant_id: merchant2.id)
+item1 = Item.create!(name: 'Hogwarts Robe', description: 'One-size-fits-all', unit_price: 3_000, merchant_id: merchant1.id)
+item2 = Item.create!(name: 'Sneakoscope', description: 'Whistles when sneaky people are nearby', unit_price: 1_500, merchant_id: merchant1.id)
+item3 = Item.create!(name: 'Cloak of Invisibility', description: 'The ultimate in stealth wear', unit_price: 30_000, merchant_id: merchant1.id)
+item4 = Item.create!(name: 'Beans', description: 'Every flavor imaginable!', unit_price: 300, merchant_id: merchant2.id)
 
 invoice1 = Invoice.create!(customer_id: customer1.id, status: 1)
 invoice2 = Invoice.create!(customer_id: customer2.id, status: 1)
